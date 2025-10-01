@@ -108,7 +108,7 @@
                     </small>
                 </td>
                 <td width="15%" align="center">
-                <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kemirigede">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kemirigede">
                 </td>
             </tr>
         </table>
@@ -121,12 +121,27 @@
     </div>
 
     <div class="nomor">
-        Nomor : 475 / &nbsp;&nbsp;&nbsp;&nbsp;/ 409.41.2 / {{ \Carbon\Carbon::now()->year }}
+        @php
+            // jika sudah ada nomor_surat (misal: "475 / 007 / 409.41.2 / 2025"), pakai itu
+            $nomor =
+                $data->nomor_surat ??
+                '475 / ' .
+                    str_pad((string) ($data->nomor_urut ?? 0), 3, '0', STR_PAD_LEFT) .
+                    ' / 409.41.2 / ' .
+                    ($data->tahun_nomor ?? \Carbon\Carbon::now()->year);
+            // fallback terakhir (ketika belum ada nomor_urut sama sekali)
+            if (empty($data->nomor_surat) && empty($data->nomor_urut)) {
+                $nomor = '475 / ---- / 409.41.2 / ' . \Carbon\Carbon::now()->year;
+            }
+        @endphp
+
+        Nomor : {{ $nomor }}
     </div>
 
     {{-- ISI SURAT --}}
     <div class="isi">
-        <p>Yang bertanda tangan di bawah ini Kepala Desa Kemirigede, Kecamatan Kemirigede, Kabupaten Blitar, menerangkan dengan sebenarnya bahwa :</p>
+        <p>Yang bertanda tangan di bawah ini Kepala Desa Kemirigede, Kecamatan Kemirigede, Kabupaten Blitar, menerangkan dengan
+            sebenarnya bahwa :</p>
 
         <table class="data-diri">
             <tr>
@@ -168,12 +183,14 @@
         </table>
 
         <p>
-            Orang tersebut di atas benar-benar penduduk Desa Kemirigede Kecamatan Kemirigede Kabupaten Blitar dan yang bersangkutan tergolong keluarga yang tidak mampu.
+            Orang tersebut di atas benar-benar penduduk Desa Kemirigede Kecamatan Kemirigede Kabupaten Blitar dan yang
+            bersangkutan tergolong keluarga yang tidak mampu.
             Surat keterangan ini diberikan untuk kelengkapan <strong>{{ $data->keterangan_fungsi_surat }}</strong>.
         </p>
 
         <p>
-            Demikian surat keterangan ini dibuat atas dasar yang sebenarnya untuk menjadikan periksa dan dapat dipergunakan sebagaimana perlunya.
+            Demikian surat keterangan ini dibuat atas dasar yang sebenarnya untuk menjadikan periksa dan dapat
+            dipergunakan sebagaimana perlunya.
         </p>
     </div>
 

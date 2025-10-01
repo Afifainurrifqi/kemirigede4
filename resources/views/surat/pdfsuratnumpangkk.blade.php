@@ -73,9 +73,18 @@
     </div>
 
     <!-- NOMOR SURAT -->
-    <div class="nomor text-center">
-        <strong>Nomor: {{ $nomorSurat }}</strong>
-    </div>
+   <div class="nomor text-center">
+    @php
+        $nomorSurat = $data->nomor_surat ?? null;
+        if (!$nomorSurat) {
+            $urut  = $data->nomor_urut ?? null;
+            $tahun = $data->tahun_nomor ?? now('Asia/Jakarta')->year;
+            $nnn   = $urut ? str_pad($urut, 3, '0', STR_PAD_LEFT) : '---';
+            $nomorSurat = "400 / {$nnn} / 409.41.2 / {$tahun}";
+        }
+    @endphp
+    <strong>Nomor: {{ $nomorSurat }}</strong>
+</div>
 
     <!-- ISI SURAT -->
     <div class="tulisan">Saya yang bertanda tangan di bawah ini:</div>
