@@ -31,29 +31,48 @@ class Importdatapenduduk implements \PhpOffice\PhpSpreadsheet\Reader\IReadFilter
     public function model(array $row)
     {
         $datapenduduk = new dataPenduduk;
-            $datapenduduk->nik = strval($row[1]);
-            $datapenduduk->gelarawal = $row[2];
-            $datapenduduk->nama = $row[3];
-            $datapenduduk->gelarakhir = $row[4];
-            $datapenduduk->jenis_kelamin = $row[5];
-            $datapenduduk->tempat_lahir = $row[6];
-            $datapenduduk->tanggal_lahir = Carbon::createFromFormat('d/m/Y', $row[7])->format('Y-m-d');
-            $datapenduduk->agama_id = $row[8];
-            $datapenduduk->pendidikan_id =  $row[9];
-            $datapenduduk->pekerjaan_id = $row[10];
-            $datapenduduk->goldar_id = $row[11];
-            $datapenduduk->status_id = $row[12];
-            if (!empty($row[13])) {
-                $datapenduduk->tanggal_perkawinan = Carbon::createFromFormat('d/m/Y', $row[13])->format('Y-m-d');
+        $datapenduduk->nik = strval($row[1]);
+        $datapenduduk->gelarawal = $row[2];
+        $datapenduduk->nama = $row[3];
+        $datapenduduk->gelarakhir = $row[4];
+        $datapenduduk->jenis_kelamin = $row[5];
+        $datapenduduk->tempat_lahir = $row[6];
+        if (!empty($row[7])) {
+            $tgl = str_replace('/', '-', trim($row[7]));
+
+            // Jika format 2 digit tahun (misal 29/02/00), tambahkan logika koreksi
+            $parts = explode('-', $tgl);
+            if (strlen($parts[2]) == 2) {
+                $year = intval($parts[2]);
+                // Tahun 00-24 dianggap 2000–2024, selebihnya 1900–1999
+                $year += ($year <= 24) ? 2000 : 1900;
+                $tgl = "{$parts[0]}-{$parts[1]}-$year";
             }
-            $datapenduduk->hubungan = $row[14];
-            $datapenduduk->ayah = $row[15];
-            $datapenduduk->ibu = $row[16];
-            $datapenduduk->alamat = $row[17];
-            $datapenduduk->rt = $row[18];
-            $datapenduduk->rw = $row[19];
-            $datapenduduk->datak = $row[20];
-            $datapenduduk->save();
+
+            try {
+                $datapenduduk->tanggal_lahir = Carbon::createFromFormat('d-m-Y', $tgl)->format('Y-m-d');
+            } catch (\Exception $e) {
+                // Jika masih gagal (misal 29/02/2000 salah format), isi NULL
+                $datapenduduk->tanggal_lahir = null;
+            }
+        }
+
+        $datapenduduk->agama_id = $row[8];
+        $datapenduduk->pendidikan_id =  $row[9];
+        $datapenduduk->pekerjaan_id = $row[10];
+        $datapenduduk->goldar_id = $row[11];
+        $datapenduduk->status_id = $row[12];
+        if (!empty($row[13])) {
+            $datapenduduk->tanggal_perkawinan = Carbon::createFromFormat('d/m/Y', $row[13])->format('Y-m-d');
+        }
+        $datapenduduk->hubungan = $row[14];
+        $datapenduduk->ayah = $row[15];
+        $datapenduduk->ibu = $row[16];
+        $datapenduduk->alamat = $row[17];
+        $datapenduduk->rt = $row[18];
+        $datapenduduk->rw = $row[19];
+        $datapenduduk->datak = $row[20];
+        $datapenduduk->save();
 
         // Update date format if necessary (depends on the format in your CSV)
         // $datapenduduk->tanggal_lahir = Date::excelToDateTimeObject($row[7]);
@@ -79,4 +98,3 @@ class Importdatapenduduk implements \PhpOffice\PhpSpreadsheet\Reader\IReadFilter
         return ($row >= 2);
     }
 }
-
