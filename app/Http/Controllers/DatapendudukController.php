@@ -330,38 +330,57 @@ class DatapendudukController extends Controller
      */
     public function show(datapenduduk $datapenduduk, $nik)
     {
-        $datapenduduk = datapenduduk::where('nik', $nik)->first();
-        $agama = Agama::all();
+        $datapenduduk = datapenduduk::where('nik', $nik)->with(['detailkk.kk'])->firstOrFail();
+        $agama      = Agama::all();
         $pendidikan = Pendidikan::all();
-        $pekerjaan = Pekerjaan::all();
-        $goldar = Goldar::all();
-        $status = Status::all();
+        $pekerjaan  = Pekerjaan::all();
+        $goldar     = Goldar::all();
+        $status     = Status::all();
 
-        return view('datapenduduk.formedit', compact('datapenduduk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status'))->with([
-            'valKK' => $datapenduduk->detailkk->kk->nokk,
-            'valNIK' => $nik,
-            'valGelara' => $datapenduduk->gelarawal,
-            'valNama' => $datapenduduk->nama,
-            'valGelart' => $datapenduduk->gelarakhir,
-            'valJeniskelamin' => $datapenduduk->jenis_kelamin,
-            'valTempatlahir' => $datapenduduk->tempat_lahir,
-            'valTanggallahir' => $datapenduduk->tanggal_lahir,
-            'valAgama' => $datapenduduk->agama_id,
-            'valPendidikan' => $datapenduduk->pendidikan_id,
-            'valPekerjaan' => $datapenduduk->pekerjaan_id,
-            'valGoldar' => $datapenduduk->goldar_id,
-            'valStatus' => $datapenduduk->status_id,
-            'valTanggalperkawinan' => $datapenduduk->tanggal_perkawinan,
-            'valHubungan' => $datapenduduk->hubungan,
-            'valAyah' => $datapenduduk->ayah,
-            'valIbu' => $datapenduduk->ibu,
-            'valAlamat' => $datapenduduk->alamat,
-            'valRT' => $datapenduduk->rt,
-            'valRW' => $datapenduduk->rw,
-            'valDatak' => $datapenduduk->datak
+        // Cari ID status "Kawin" (fallback ke '1' jika tidak ditemukan)
+        $statusKawinId = Status::whereRaw('LOWER(nama) = ?', ['kawin'])->value('id') ?? '1';
 
+        // Format tanggal untuk <input type="date">
+        $tglLahir = $datapenduduk->tanggal_lahir
+            ? \Carbon\Carbon::parse($datapenduduk->tanggal_lahir)->format('Y-m-d')
+            : '';
+        $tglNikah = $datapenduduk->tanggal_perkawinan
+            ? \Carbon\Carbon::parse($datapenduduk->tanggal_perkawinan)->format('Y-m-d')
+            : '';
+
+        return view('datapenduduk.formedit', compact(
+            'datapenduduk',
+            'agama',
+            'pendidikan',
+            'pekerjaan',
+            'goldar',
+            'status',
+            'statusKawinId'
+        ))->with([
+            'valKK'                 => optional(optional($datapenduduk->detailkk)->kk)->nokk,
+            'valNIK'                => $nik,
+            'valGelara'             => $datapenduduk->gelarawal,
+            'valNama'               => $datapenduduk->nama,
+            'valGelart'             => $datapenduduk->gelarakhir,
+            'valJeniskelamin'       => (string)$datapenduduk->jenis_kelamin, // pastikan string
+            'valTempatlahir'        => $datapenduduk->tempat_lahir,
+            'valTanggallahir'       => $tglLahir,
+            'valAgama'              => $datapenduduk->agama_id,
+            'valPendidikan'         => $datapenduduk->pendidikan_id,
+            'valPekerjaan'          => $datapenduduk->pekerjaan_id,
+            'valGoldar'             => $datapenduduk->goldar_id,
+            'valStatus'             => $datapenduduk->status_id,
+            'valTanggalperkawinan'  => $tglNikah,
+            'valHubungan'           => $datapenduduk->hubungan,
+            'valAyah'               => $datapenduduk->ayah,
+            'valIbu'                => $datapenduduk->ibu,
+            'valAlamat'             => $datapenduduk->alamat,
+            'valRT'                 => $datapenduduk->rt,
+            'valRW'                 => $datapenduduk->rw,
+            'valDatak'              => $datapenduduk->datak,
         ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
