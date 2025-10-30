@@ -73,15 +73,15 @@
                 </td>
                 <td class="kop-header">
                     <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                        KECAMATAN Wates<br>
-                        KANTOR KEPALA DESA Wates</strong><br>
+                        KECAMATAN Kemirigede<br>
+                        KANTOR KEPALA DESA Kemirigede</strong><br>
                     <small>
                         Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: Watesberkelas@gmail.com | Website: Wates-blitarkab.desa.id
+                        Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
                     </small>
                 </td>
                 <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/Wates.png') }}" class="kop-logo" alt="Logo Wates">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kemirigede">
                 </td>
             </tr>
         </table>
@@ -98,7 +98,7 @@
 
     {{-- ISI --}}
     <div class="isi">
-        <p>Yang bertanda tangan di bawah ini Kepala Desa Wates, Kecamatan Wates, Kabupaten Blitar, menerangkan dengan sebenarnya bahwa:</p>
+        <p>Yang bertanda tangan di bawah ini Kepala Desa Kemirigede, Kecamatan Kemirigede, Kabupaten Blitar, menerangkan dengan sebenarnya bahwa:</p>
 
         <table class="data-diri">
             <tr>
@@ -149,14 +149,14 @@
                 <td class="colon">:</td>
                 <td class="value">
                     {{ $data->alamat }} RT {{ $data->rt }} / RW {{ $data->rw }}<br>
-                    Dusun/Desa Wates, Kec. Wates, Kab. Blitar
+                    Dusun/Desa Kemirigede, Kec. Kemirigede, Kab. Blitar
                 </td>
             </tr>
         </table>
 
         <p>
-            Berdasarkan data kependudukan yang ada pada Pemerintah Desa Wates, yang bersangkutan tersebut di atas
-            benar-benar penduduk Desa Wates dan <strong>benar pernah menikah</strong>.
+            Berdasarkan data kependudukan yang ada pada Pemerintah Desa Kemirigede, yang bersangkutan tersebut di atas
+            benar-benar penduduk Desa Kemirigede dan <strong>benar pernah menikah</strong>.
         </p>
 
         <p>
@@ -166,8 +166,8 @@
 
     {{-- TTD --}}
     <div class="ttd-container">
-        <p>Wates, {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
-        <p>Kepala Desa Wates</p>
+        <p>Kemirigede, {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+        <p>Kepala Desa Kemirigede</p>
         <br><br><br>
         <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
     </div>

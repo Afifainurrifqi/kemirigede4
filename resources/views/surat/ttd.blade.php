@@ -21,8 +21,8 @@
 
 <div class="ttd">
     <div class="jabatan">
-        Wates, ..................................<br>
-        Kepala Desa Wates
+        Kemirigede, ..................................<br>
+        Kepala Desa Kemirigede
     </div>
     <div class="nama-kades">MOH. HAMID ALMAULUDI S.Pd.I</div>
 </div>

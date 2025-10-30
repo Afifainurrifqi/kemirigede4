@@ -100,15 +100,15 @@
                 </td>
                 <td class="kop-header">
                     <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                        KECAMATAN Wates<br>
-                        KANTOR KEPALA DESA Wates</strong><br>
+                        KECAMATAN Kemirigede<br>
+                        KANTOR KEPALA DESA Kemirigede</strong><br>
                     <small>
                         Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: Watesberkelas@gmail.com | Website: Wates-blitarkab.desa.id
+                        Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
                     </small>
                 </td>
                 <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/Wates.png') }}" class="kop-logo" alt="Logo Wates">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kemirigede">
                 </td>
             </tr>
         </table>
@@ -140,7 +140,7 @@
 
     {{-- ISI SURAT --}}
     <div class="isi">
-        <p>Yang bertanda tangan di bawah ini Kepala Desa Wates, Kecamatan Wates, Kabupaten Blitar, menerangkan dengan
+        <p>Yang bertanda tangan di bawah ini Kepala Desa Kemirigede, Kecamatan Kemirigede, Kabupaten Blitar, menerangkan dengan
             sebenarnya bahwa :</p>
 
         <table class="data-diri">
@@ -183,7 +183,7 @@
         </table>
 
         <p>
-            Orang tersebut di atas benar-benar penduduk Desa Wates Kecamatan Wates Kabupaten Blitar dan yang
+            Orang tersebut di atas benar-benar penduduk Desa Kemirigede Kecamatan Kemirigede Kabupaten Blitar dan yang
             bersangkutan tergolong keluarga yang tidak mampu.
             Surat keterangan ini diberikan untuk kelengkapan <strong>{{ $data->keterangan_fungsi_surat }}</strong>.
         </p>
@@ -196,8 +196,8 @@
 
     {{-- TTD --}}
     <div class="ttd-container">
-        <p>Wates, {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
-        <p>Kepala Desa Wates</p>
+        <p>Kemirigede, {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+        <p>Kepala Desa Kemirigede</p>
         <br><br><br>
         <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
     </div>
