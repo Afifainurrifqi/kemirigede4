@@ -377,14 +377,16 @@ Route::middleware(['checkrole:admin,operator,dasawisma,akundemo'])->group(
         Route::post('datadasawisma/store', [DatadasawismaController::class, 'store'])->name('dasawisma.store');
         Route::get('datadasawisma/tambah', [DatadasawismaController::class, 'add'])->name('dasawisma.add');
         // JSON lookup penduduk by NIK (AJAX)
-       Route::post('datapenduduk/find-by-nik', [DatadasawismaController::class, 'findPendudukByNik'])
-    ->name('datapenduduk.findByNik');
+        Route::post('datapenduduk/find-by-nik', [DatadasawismaController::class, 'findPendudukByNik'])
+            ->name('datapenduduk.findByNik');
 
 
         // hapus per NIK
         Route::delete('datadasawisma/{nik}', [DatadasawismaController::class, 'destroy'])->name('dasawisma.destroy');
         Route::get('datapenduduk/add', [DatapendudukController::class, 'add']);
+        Route::get('datapenduduk/addadmin', [DatapendudukController::class, 'addadmin']);
         Route::post('datapenduduk/store', [DatapendudukController::class, 'store'])->name('datapenduduk.store');
+        Route::post('datapenduduk/adminstore', [DatapendudukController::class, 'adminstore'])->name('datapenduduk.adminstore');
 
         // JSON DATATABLES
         Route::post('datapenduduk/json', [DatapendudukController::class, 'json'])->name('datapenduduk.json');
