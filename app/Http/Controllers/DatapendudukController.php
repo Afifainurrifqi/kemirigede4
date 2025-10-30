@@ -418,7 +418,9 @@ class DatapendudukController extends Controller
         $datapenduduk->pekerjaan_id = $request->valPekerjaan;
         $datapenduduk->goldar_id = $request->valGoldar;
         $datapenduduk->status_id = $request->valStatus;
-        $datapenduduk->tanggal_perkawinan = $request->valTanggalperkawinan;
+        $datapenduduk->tanggal_perkawinan = !empty($request->valTanggalperkawinan)
+            ? $request->valTanggalperkawinan
+            : null;
         $datapenduduk->hubungan = $request->valHubungan;
         $datapenduduk->ayah = $request->valAyah;
         $datapenduduk->ibu = $request->valIbu;

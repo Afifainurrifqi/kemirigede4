@@ -571,7 +571,8 @@ Route::middleware(['checkrole:admin,dasawisma,akundemo'])->group(
 Route::middleware(['checkrole:admin,dasawisma'])->group(
     function () {
 
-        Route::post('datapenduduk/update/{nik}', [DatapendudukController::class, 'update'])->name('datapenduduk.update');
+        Route::put('datapenduduk/{nik}', [DatapendudukController::class, 'update'])->name('datapenduduk.update');
+
 
         Route::post('sdgs/individu/editdataindividu', [DataindividuController::class, 'store'])->name('individu.update');
 
