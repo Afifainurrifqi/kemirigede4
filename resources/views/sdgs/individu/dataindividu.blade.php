@@ -178,14 +178,6 @@
                         // (opsional) jika mau exclude kolom Action & No: columns: [2,3,4,...]
                     }
                 }],
-
-                columnDefs: [{
-                        targets: 0,
-                        visible: false,
-                        searchable: false
-                    }, // hide Action
-                ],
-
                 columns: [{
                         data: 'action',
                         name: 'action'
@@ -245,7 +237,7 @@
                             };
                             const label = map[String(data)] ?? (data ?? '');
                             if (type === 'export' || type === 'display' || type === 'filter')
-                                return label;
+                            return label;
                             return data;
                         }
                     },
