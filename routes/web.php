@@ -302,7 +302,10 @@ Route::middleware(['checkrole:admin,operator,dasawisma,akundemo'])->group(
     function () {
 
 
-
+        Route::get('/sdgs/lokasipemukiman/export', [LokasipemukimanController::class, 'export'])
+            ->name('lokasipemukiman.export');
+        Route::get('/sdgs/individu/export/all', [\App\Http\Controllers\DataindividuController::class, 'exportAll'])
+            ->name('individu.export.all');
         Route::get('sdgs/individu/dataindividu/{show}', [DataindividuController::class, 'show'])->name('individu.show');
         Route::get('sdgs/individu/datakesehatan', [DatakesehatanController::class, 'index'])->name('datakesehatan.index');
         Route::get('sdgs/individu/admindatakesehatan', [DatakesehatanController::class, 'admin_index'])->name('datakesehatan.admin_index');
@@ -384,9 +387,7 @@ Route::middleware(['checkrole:admin,operator,dasawisma,akundemo'])->group(
         // hapus per NIK
         Route::delete('datadasawisma/{nik}', [DatadasawismaController::class, 'destroy'])->name('dasawisma.destroy');
         Route::get('datapenduduk/add', [DatapendudukController::class, 'add']);
-        Route::get('datapenduduk/addadmin', [DatapendudukController::class, 'addadmin']);
         Route::post('datapenduduk/store', [DatapendudukController::class, 'store'])->name('datapenduduk.store');
-        Route::post('datapenduduk/adminstore', [DatapendudukController::class, 'adminstore'])->name('datapenduduk.adminstore');
 
         // JSON DATATABLES
         Route::post('datapenduduk/json', [DatapendudukController::class, 'json'])->name('datapenduduk.json');
@@ -571,8 +572,7 @@ Route::middleware(['checkrole:admin,dasawisma,akundemo'])->group(
 Route::middleware(['checkrole:admin,dasawisma'])->group(
     function () {
 
-        Route::put('datapenduduk/{nik}', [DatapendudukController::class, 'update'])->name('datapenduduk.update');
-
+        Route::post('datapenduduk/update/{nik}', [DatapendudukController::class, 'update'])->name('datapenduduk.update');
 
         Route::post('sdgs/individu/editdataindividu', [DataindividuController::class, 'store'])->name('individu.update');
 
