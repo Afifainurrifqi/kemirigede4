@@ -473,16 +473,35 @@ class DataindividuController extends Controller
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        if ($request->has('nokk')) {
-            $nokk = $request->input('nokk');
-            $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-                ->whereHas('detailkk.kk', function ($query) use ($nokk) {
-                    $query->where('nokk', $nokk);
-                })
-                ->whereIn('Datak', $allowedDatakValues);
+        // Cek apakah ada pencarian global dari DataTables atau filter nokk khusus
+        $hasGlobalSearch = filled(data_get($request->all(), 'search.value')); // DataTables global search
+        $hasNokkFilter   = $request->filled('nokk');
+
+        if (! $hasGlobalSearch && ! $hasNokkFilter) {
+            // Tidak ada search & tidak ada filter spesifik → sembunyikan data
+            $query = Datapenduduk::query()->whereRaw('1=0');
         } else {
-            // Jika tidak ada parameter noKK, kembalikan data kosong
-            $query = Datapenduduk::whereNull('id'); // Tidak mengembalikan data
+            // Ada search atau ada filter nokk → tampilkan data dengan relasi
+            $query = Datapenduduk::with([
+                'kk',
+                'agama',
+                'pendidikan',
+                'pekerjaan',
+                'goldar',
+                'status',
+                'detailkk.kk',
+                'updatedByUser'
+            ])->whereIn('Datak', $allowedDatakValues);
+
+            // Filter opsional by NoKK dari parameter khusus
+            if ($hasNokkFilter) {
+                $nokk = $request->input('nokk');
+                $query->whereHas('detailkk.kk', function ($qq) use ($nokk) {
+                    $qq->where('nokk', 'like', "%{$nokk}%");
+                });
+            }
+            // Catatan: global search akan ditangani otomatis oleh Yajra pada kolom sederhana.
+            // Untuk kolom relasi (nokk) kita sediakan filterColumn di bawah.
         }
 
         return DataTables::of($query)
@@ -924,8 +943,19 @@ class DataindividuController extends Controller
         $dataindividu->instagram = $request->valInstagram;
         $dataindividu->save();
 
-        return redirect()->route('individu.show', ['show' => $request->valNIK]);
+
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            return redirect()
+                ->route('individu.admin')
+                ->with('msg', 'Berhasil ditambahkan (Admin)');
+        }
+
+        // Default untuk user biasa
+        return redirect()
+            ->route('individu.index')
+            ->with('msg', 'Berhasil ditambahkan');
     }
+
 
     /**
      * Display the specified resource.
@@ -957,13 +987,29 @@ class DataindividuController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:10240'
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
-        Excel::import(new IndividuImport, $request->file('file'));
+        try {
+            Excel::import(new IndividuImport, $request->file('file'));
+        } catch (\Throwable $e) {
+            // Kalau APP_DEBUG=true, tampilkan error detail
+            if (config('app.debug')) {
+                dd($e->getMessage(), $e->getFile(), $e->getLine());
+            }
 
-        return redirect()->back()->with('msg', 'Data individu berhasil diimport ke MongoDB!');
+            // Kalau production, jangan bocorin detail
+            return redirect()
+                ->back()
+                ->with('msg', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+        }
+
+        return redirect()
+            ->back()
+            ->with('msg', 'Data individu berhasil diimport!');
     }
+
+
     public function edit(dataindividu $request, $nik)
     {
 
@@ -1021,9 +1067,17 @@ class DataindividuController extends Controller
         $dataindividu->save();
 
 
-        return redirect('datapenduduk')->with('msg', 'Data dengan nama data penduduk ' . $dataindividu->nama . ' Berhasil diupdate');
-    }
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            return redirect()
+                ->route('individu.admin')
+                ->with('msg', 'Berhasil ditambahkan (Admin)');
+        }
 
+        // Default untuk user biasa
+        return redirect()
+            ->route('individu.index')
+            ->with('msg', 'Berhasil ditambahkan');
+    }
     /**
      * Remove the specified resource from storage.
      *
