@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use App\Models\lokasipemukiman;
 use App\Models\akses_pendidikan;
 
-class LokasidanPemukimanImportKKUP implements ToCollection, WithChunkReading
+class LokasidanPemukimanImport implements ToCollection, WithChunkReading
 {
     protected $idx = [
         // lokasipemukiman (sesuai file KK UP)
