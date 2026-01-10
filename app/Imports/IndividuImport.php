@@ -30,74 +30,76 @@ class IndividuImport implements ToCollection, WithChunkReading
     // ❗JANGAN pakai "private array $idx" kalau PHP di hosting masih < 7.4
     protected $idx = [
         // dataindividu
-        'usia_saat_pertama_kali_menikah' => 12,
-        'suku_bangsa'                    => 14,
-        'warga_negarawarga_negara'      => 15,
-        'nohp'                           => 16,
-        'nowa'                           => 17,
-        'email'                          => 18,
-        'facebook'                       => 19,
-        'twitter'                        => 20,
-        'instagram'                      => 21,
+        'usia_saat_pertama_kali_menikah' => 10,
+        'agama'                         => 11,
+        'suku_bangsa'                    => 12,
+        'warga_negarawarga_negara'       => 13,
+        'nohp'                           => 14,
+        'nowa'                           => 15,
+        'email'                          => 16,
+        'facebook'                       => 17,
+        'twitter'                        => 18,
+        'instagram'                      => 19,
 
         // datapekerjaansdgs
-        'kondisi_pekerjaan'              => 22,
-        'pekerjaan_utama'                => 23,
-        'jaminan_sosial_ketenagakerjaan' => 24,
-        'penghasilan_setahun_terakhir'   => 25,
+        'kondisi_pekerjaan'              => 20,
+        'pekerjaan_utama'                => 21,
+        'jaminan_sosial_ketenagakerjaan' => 22,
+        'penghasilan_setahun_terakhir'   => 23,
 
         // penghasilan
-        'sumber_penghasilan'             => 26,
-        'jumlah_asset_darip'             => 27,
-        'satuan'                         => 28,
-        'penghasilan_setahun'            => 29,
-        'expor'                          => 30,
+        'sumber_penghasilan'             => 24,
+        'jumlah_asset_darip'             => 25,
+        'satuan'                         => 26,
+        'penghasilan_setahun'            => 27,
+        'expor'                          => 28,
 
         // datakesehatan
-        'penyakitsetahun'                => 31,
-        'rumah_sakit'                    => 32,
-        'rumah_sakitb'                   => 33,
-        'puskesmas_denganri'             => 34,
-        'puskesmas_tanpari'              => 35,
-        'puskemas_pembantu'              => 36,
-        'poliklinik'                     => 37,
-        'tempat_praktekdr'               => 38,
-        'rumah_bersalin'                 => 39,
-        'tempat_praktek'                 => 40,
-        'poskesdes'                      => 41,
-        'polindes'                       => 42,
-        'apotik'                         => 43,
-        'toko_obat'                      => 44,
-        'posyandu'                       => 45,
-        'posbindu'                       => 46,
-        'tempat_praktikdb'               => 47,
-        'jamkes'                         => 48,
-        'bayiu16'                        => 49,
+        'penyakitsetahun'                => 29,
+        'rumah_sakit'                    => 30,
+        'rumah_sakitb'                   => 31,
+        'puskesmas_denganri'             => 32,
+        'puskesmas_tanpari'              => 33,
+        'puskemas_pembantu'              => 34,
+        'poliklinik'                     => 35,
+        'tempat_praktekdr'               => 36,
+        'rumah_bersalin'                 => 37,
+        'tempat_praktek'                 => 38,
+        'poskesdes'                      => 39,
+        'polindes'                       => 40,
+        'apotik'                         => 41,
+        'toko_obat'                      => 42,
+        'posyandu'                       => 43,
+        'posbindu'                       => 44,
+        'tempat_praktikdb'               => 45,
+        'jamkes'                         => 46,
+        'bayiu16'                        => 47,
 
         // jenisdisabilitas
-        'jenis_disabilitas'              => 50,
+        'jenis_disabilitas'              => 48,
 
         // sdgspendidikan
-        'pendidikan_tertinggi'           => 51,
-        'berapa_tahunp'                  => 52,
-        'pendidikan_diikuti'             => 53,
-        'bahasa_Rumah'                   => 54,
-        'bahasa_Formal'                  => 55,
-        'jumlah_kerja1'                  => 56,
-        'skamling1'                      => 57,
-        'pesta_rakyat1'                  => 58,
-        'frekuensiml'                    => 59,
-        'frekuensib'                     => 60,
-        'frekuensimn'                    => 61,
-        'mendapatp1'                     => 62,
-        'bagaiamanap'                    => 63,
-        'pernahmasukan'                  => 64,
-        'keterbukaands'                  => 65,
-        'bencana1'                       => 66,
-        'apakahb'                        => 67,
-        'apakahd'                        => 68,
-        'apakahp'                        => 69,
+        'pendidikan_tertinggi'           => 49,
+        'berapa_tahunp'                  => 50,
+        'pendidikan_diikuti'             => 51,
+        'bahasa_Rumah'                   => 52,
+        'bahasa_Formal'                  => 53,
+        'jumlah_kerja1'                  => 54,
+        'skamling1'                      => 55,
+        'pesta_rakyat1'                  => 56,
+        'frekuensiml'                    => 57,
+        'frekuensib'                     => 58,
+        'frekuensimn'                    => 59,
+        'mendapatp1'                     => 60,
+        'bagaiamanap'                    => 61,
+        'pernahmasukan'                  => 62,
+        'keterbukaands'                  => 63,
+        'bencana1'                       => 64,
+        'apakahb'                        => 65,
+        'apakahd'                        => 66,
+        'apakahp'                        => 67,
     ];
+
 
     /**
      * Flag untuk skip header hanya di chunk pertama
@@ -204,12 +206,29 @@ class IndividuImport implements ToCollection, WithChunkReading
             $mKs->Jeniskelamin = $jenisKelamin;
             $mKs->tempatlahir  = $tempatLahir;
 
-            foreach ([
-                'penyakitsetahun','rumah_sakit','rumah_sakitb','puskesmas_denganri','puskesmas_tanpari',
-                'puskemas_pembantu','poliklinik','tempat_praktekdr','rumah_bersalin','tempat_praktek',
-                'poskesdes','polindes','apotik','toko_obat','posyandu','posbindu','tempat_praktikdb',
-                'jamkes','bayiu16'
-            ] as $k) {
+            foreach (
+                [
+                    'penyakitsetahun',
+                    'rumah_sakit',
+                    'rumah_sakitb',
+                    'puskesmas_denganri',
+                    'puskesmas_tanpari',
+                    'puskemas_pembantu',
+                    'poliklinik',
+                    'tempat_praktekdr',
+                    'rumah_bersalin',
+                    'tempat_praktek',
+                    'poskesdes',
+                    'polindes',
+                    'apotik',
+                    'toko_obat',
+                    'posyandu',
+                    'posbindu',
+                    'tempat_praktikdb',
+                    'jamkes',
+                    'bayiu16'
+                ] as $k
+            ) {
                 $mKs->{$k} = $this->colString($row, $k);
             }
             $mKs->save();
@@ -241,11 +260,29 @@ class IndividuImport implements ToCollection, WithChunkReading
             $mPd->Jeniskelamin = $jenisKelamin;
             $mPd->tempatlahir  = $tempatLahir;
 
-            foreach ([
-                'pendidikan_tertinggi','berapa_tahunp','pendidikan_diikuti','bahasa_Rumah','bahasa_Formal',
-                'jumlah_kerja1','skamling1','pesta_rakyat1','frekuensiml','frekuensib','frekuensimn',
-                'mendapatp1','bagaiamanap','pernahmasukan','keterbukaands','bencana1','apakahb','apakahd','apakahp'
-            ] as $k) {
+            foreach (
+                [
+                    'pendidikan_tertinggi',
+                    'berapa_tahunp',
+                    'pendidikan_diikuti',
+                    'bahasa_Rumah',
+                    'bahasa_Formal',
+                    'jumlah_kerja1',
+                    'skamling1',
+                    'pesta_rakyat1',
+                    'frekuensiml',
+                    'frekuensib',
+                    'frekuensimn',
+                    'mendapatp1',
+                    'bagaiamanap',
+                    'pernahmasukan',
+                    'keterbukaands',
+                    'bencana1',
+                    'apakahb',
+                    'apakahd',
+                    'apakahp'
+                ] as $k
+            ) {
                 $mPd->{$k} = $this->colString($row, $k);
             }
             $mPd->save();
