@@ -58,39 +58,21 @@ class DataindividuController extends Controller
         return Excel::download(new IndividuAllExport, $filename);
     }
     public function index_admin(Request $request)
-{
-    $allowedDatakValues = ['tetap', 'tidaktetap'];
+    {
+        $totalPenduduk = datapenduduk::count();
 
-    // ambil nama tabel asli dari model (aman walau nama tabel beda)
-    $tPenduduk = (new Datapenduduk)->getTable();
-    $tIndividu = (new Dataindividu)->getTable();
+        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
+        $dataTerisi = dataindividu::count();
 
-    // total penduduk yg relevan (distinct nik)
-    $totalPenduduk = Datapenduduk::whereIn('Datak', $allowedDatakValues)
-        ->distinct()
-        ->count('nik');
+        // Hitung presentase penyelesaian data
+        $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
 
-    // data terisi = penduduk yg punya dataindividu (join by nik)
-    $dataTerisi = Datapenduduk::whereIn("$tPenduduk.Datak", $allowedDatakValues)
-        ->join($tIndividu, "$tIndividu.nik", "=", "$tPenduduk.nik")
-        ->distinct()
-        ->count("$tPenduduk.nik");
-
-    $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
-    $presentase = min(100, $presentase);
-
-    $dataindividu = dataindividu::all();
-    $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
-    $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
-
-    return view('sdgs.individu.admin_data_individu', compact(
-        'dataindividu',
-        'individuLabels',
-        'individuCounts',
-        'presentase'
-    ));
-}
-
+        // Ambil data lainnya untuk ditampilkan di view
+        $dataindividu = dataindividu::all();
+        $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
+        $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
+        return view('sdgs.individu.admin_data_individu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
+    }
 
     public function jsonadmin(Request $request)
     {
