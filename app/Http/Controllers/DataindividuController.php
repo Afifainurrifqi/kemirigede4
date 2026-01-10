@@ -59,19 +59,32 @@ class DataindividuController extends Controller
     }
     public function index_admin(Request $request)
     {
-        $totalPenduduk = datapenduduk::count();
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
-        $dataTerisi = dataindividu::count();
+        // total penduduk yg relevan (sesuai yg tampil di datatable)
+        $totalPenduduk = Datapenduduk::whereIn('Datak', $allowedDatakValues)
+            ->distinct('nik')
+            ->count('nik');
 
-        // Hitung presentase penyelesaian data
+        // data individu yang sudah terisi dan nik-nya memang ada di datapenduduk
+        $dataTerisi = Dataindividu::whereIn('nik', function ($q) use ($allowedDatakValues) {
+            $q->select('nik')
+                ->from('datapenduduks')
+                ->whereIn('Datak', $allowedDatakValues);
+        })
+            ->distinct('nik')
+            ->count('nik');
+
+        // hitung presentase + batas max 100
         $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
+        $presentase = min(100, $presentase);
 
-        // Ambil data lainnya untuk ditampilkan di view
+        // view
         $dataindividu = dataindividu::all();
         $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
         $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
-        return view('sdgs.individu.admin_data_individu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
+
+        return view('sdgs.individu.dataindividu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
     }
 
     public function jsonadmin(Request $request)
