@@ -83,8 +83,7 @@ class DataindividuController extends Controller
         $dataindividu = dataindividu::all();
         $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
         $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
-
-        return view('sdgs.individu.dataindividu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
+        return view('sdgs.individu.admin_data_individu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
     }
 
     public function jsonadmin(Request $request)
