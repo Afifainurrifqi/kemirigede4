@@ -37,19 +37,29 @@ class DataindividuController extends Controller
     {
         $totalPenduduk = datapenduduk::count();
 
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
+        // jumlah data yang terisi
         $dataTerisi = dataindividu::count();
 
-        // Hitung presentase penyelesaian data
+        // hitung presentase
         $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
 
-        // Ambil data lainnya untuk ditampilkan di view
+        // paksa maksimal 100%
+        $presentase = min(100, $presentase);
+
+        // (opsional) bulatkan 2 angka desimal
+        $presentase = round($presentase, 2);
+
+        // data untuk view
         $dataindividu = dataindividu::all();
         $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
         $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
 
-
-        return view('sdgs.individu.dataindividu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
+        return view('sdgs.individu.dataindividu', compact(
+            'dataindividu',
+            'individuLabels',
+            'individuCounts',
+            'presentase'
+        ));
     }
 
     public function exportAll()
