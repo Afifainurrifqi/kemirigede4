@@ -58,33 +58,39 @@ class DataindividuController extends Controller
         return Excel::download(new IndividuAllExport, $filename);
     }
     public function index_admin(Request $request)
-    {
-        $allowedDatakValues = ['tetap', 'tidaktetap'];
+{
+    $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        // total penduduk yg relevan (sesuai yg tampil di datatable)
-        $totalPenduduk = Datapenduduk::whereIn('Datak', $allowedDatakValues)
-            ->distinct('nik')
-            ->count('nik');
+    // ambil nama tabel asli dari model (aman walau nama tabel beda)
+    $tPenduduk = (new Datapenduduk)->getTable();
+    $tIndividu = (new Dataindividu)->getTable();
 
-        // data individu yang sudah terisi dan nik-nya memang ada di datapenduduk
-        $dataTerisi = Dataindividu::whereIn('nik', function ($q) use ($allowedDatakValues) {
-            $q->select('nik')
-                ->from('datapenduduks')
-                ->whereIn('Datak', $allowedDatakValues);
-        })
-            ->distinct('nik')
-            ->count('nik');
+    // total penduduk yg relevan (distinct nik)
+    $totalPenduduk = Datapenduduk::whereIn('Datak', $allowedDatakValues)
+        ->distinct()
+        ->count('nik');
 
-        // hitung presentase + batas max 100
-        $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
-        $presentase = min(100, $presentase);
+    // data terisi = penduduk yg punya dataindividu (join by nik)
+    $dataTerisi = Datapenduduk::whereIn("$tPenduduk.Datak", $allowedDatakValues)
+        ->join($tIndividu, "$tIndividu.nik", "=", "$tPenduduk.nik")
+        ->distinct()
+        ->count("$tPenduduk.nik");
 
-        // view
-        $dataindividu = dataindividu::all();
-        $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
-        $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
-        return view('sdgs.individu.admin_data_individu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
-    }
+    $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
+    $presentase = min(100, $presentase);
+
+    $dataindividu = dataindividu::all();
+    $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
+    $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
+
+    return view('sdgs.individu.admin_data_individu', compact(
+        'dataindividu',
+        'individuLabels',
+        'individuCounts',
+        'presentase'
+    ));
+}
+
 
     public function jsonadmin(Request $request)
     {
