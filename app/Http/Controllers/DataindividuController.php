@@ -57,22 +57,8 @@ class DataindividuController extends Controller
         $filename = 'sdgs_data_individu_' . now()->format('Ymd_His') . '.xlsx';
         return Excel::download(new IndividuAllExport, $filename);
     }
-    public function index_admin(Request $request)
-    {
-        $totalPenduduk = datapenduduk::count();
 
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
-        $dataTerisi = dataindividu::count();
 
-        // Hitung presentase penyelesaian data
-        $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
-
-        // Ambil data lainnya untuk ditampilkan di view
-        $dataindividu = dataindividu::all();
-        $individuLabels = $dataindividu->pluck('dataindividu_utama')->toArray();
-        $individuCounts = $dataindividu->countBy('dataindividu_utama')->values()->toArray();
-        return view('sdgs.individu.admin_data_individu', compact('dataindividu', 'individuLabels', 'individuCounts', 'presentase'));
-    }
 
     public function jsonadmin(Request $request)
     {
