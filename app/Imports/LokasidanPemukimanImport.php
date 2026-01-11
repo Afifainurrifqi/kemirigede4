@@ -4,421 +4,299 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-use App\Models\lokasipemukiman;
-use App\Models\akses_pendidikan;
-use App\Models\akseskesehatan;
-use App\Models\aksestenagakerja;
-use App\Models\aksessarpras;
-use App\Models\laink;
+use App\Models\Lokasipemukiman;
+use App\Models\Akses_pendidikan;
+use App\Models\Akseskesehatan;
+use App\Models\Aksestenagakerja;
+use App\Models\Aksessarpras;
+use App\Models\Laink;
 
-class LokasidanPemukimanImport implements ToCollection, WithChunkReading
+class LokasidanPemukimanImport implements ToCollection, WithHeadingRow, WithChunkReading
 {
-    /**
-     * SUSUNAN KOLOM (index mulai 0)
-     *  0: KK
-     *  1: NIK
-     *  2: Gelar Awal
-     *  3: Nama
-     *  4: Gelar Akhir
-     *  5: Jenis Kelamin   (Jeniskelamin)
-     *  6: Tempat Lahir    (tempatlahir)
-     *
-     *  Mulai index 7 ke atas = kolom Lokasi & Pemukiman + Akses.
-     */
-
-    // Kalau server < PHP 7.4, ganti "private array" jadi "protected $idx = [...]"
-    private array $idx = [
-        // ---------- lokasipemukiman ----------
-        'alamat'                   => 7,
-        'nohp'                     => 8,
-        'nowa'                     => 9,
-        'nik_kepala'               => 10,
-        'tempat_tinggal'           => 11,
-        'status_lahan'             => 12,
-        'luas_lantai_tinggal'      => 13,
-        'luas_tanah_tinggal'       => 14,
-        'jenis_lantai_tinggal'     => 15,
-        'dinding_sebagian'         => 16,
-        'jendela'                  => 17,
-        'atap'                     => 18,
-        'penerangan'               => 19,
-        'energi_masak'             => 20,
-        'jika_kayu_jenis'          => 21,
-        'tempat_sampah'            => 22,
-        'mck'                      => 23,
-        'sumber_air_mandi'         => 24,
-        'sumber_air_mck'           => 25,
-        'sumber_air_minum'         => 26,
-        'tempat_pembuangan_limbah' => 27,
-        'rumah_sungai'             => 28,
-        'rumah_sutet'              => 29,
-        'rumah_lereng_gunung'      => 30,
-        'kondi_rumah_kumuh'        => 31,
-
-        // ---------- akses_pendidikan ----------
-        'paud_jarak'               => 32,
-        'paud_waktu' => 33,
-        'paud_kemudahan' => 34,
-        'tk_jarak'                 => 35,
-        'tk_waktu'   => 36,
-        'tk_kemudahan'   => 37,
-        'sd_jarak'                 => 38,
-        'sd_waktu'   => 39,
-        'sd_kemudahan'   => 40,
-        'smp_jarak'                => 41,
-        'smp_waktu'  => 42,
-        'smp_kemudahan'  => 43,
-        'sma_jarak'                => 44,
-        'sma_waktu'  => 45,
-        'sma_kemudahan'  => 46,
-        'pt_jarak'                 => 47,
-        'pt_waktu'   => 48,
-        'pt_kemudahan'   => 49,
-        'ps_jarak'                 => 50,
-        'ps_waktu'   => 51,
-        'ps_kemudahan'   => 52,
-        'seminari_jarak'           => 53,
-        'seminari_waktu' => 54,
-        'seminari_kemudahan' => 55,
-        'pagamalain_jarak'         => 56,
-        'pagamalain_waktu' => 57,
-        'pagamalain_kemudahan' => 58,
-
-        // ---------- akseskesehatan ----------
-        'rs_jarak'                 => 59,
-        'rs_waktu'      => 60,
-        'rs_kemudahan'      => 61,
-        'rsb_jarak'                => 62,
-        'rsb_waktu'     => 63,
-        'rsb_kemudahan'     => 64,
-        'poliklinik_jarak'         => 65,
-        'poliklinik_waktu' => 66,
-        'poliklinik_kemudahan' => 67,
-        'puskesmas_jarak'          => 68,
-        'puskesmas_waktu' => 69,
-        'puskesmas_kemudahan' => 70,
-        'poskedes_jarak'           => 71,
-        'poskedes_waktu' => 72,
-        'poskedes_kemudahan' => 73,
-        'posyandu_jarak'           => 74,
-        'posyandu_waktu' => 75,
-        'posyandu_kemudahan' => 76,
-        'apotik_jarak'             => 77,
-        'apotik_waktu'  => 78,
-        'apotik_kemudahan'  => 79,
-        'toko_obat_jarak'          => 80,
-        'toko_obat_waktu' => 81,
-        'toko_obat_kemudahan' => 82,
-
-        // ---------- aksestenagakerja ----------
-        'drsp_jarak'               => 83,
-        'drsp_waktu'   => 84,
-        'drsp_kemudahan'   => 85,
-        'drumum_jarak'             => 86,
-        'drumum_waktu' => 87,
-        'drumum_kemudahan' => 88,
-        'bidan_jarak'              => 89,
-        'bidan_waktu'  => 90,
-        'bidan_kemudahan'  => 91,
-        'tenagakes_jarak'          => 92,
-        'tenagakes_waktu' => 93,
-        'tenagakes_kemudahan' => 94,
-        'dukun_jarak'              => 95,
-        'dukun_waktu'  => 96,
-        'dukun_kemudahan'  => 97,
-
-        // ---------- aksessarpras ----------
-        'lokasipu_jenis'           => 98,
-        'lokasipu_angkutan' => 99,
-        'lokasipu_waktu' => 100,
-        'lokasipu_biaya' => 101,
-        'lokasipu_kemudahan' => 102,
-        'lahan_jenis'              => 103,
-        'lahan_angkutan'    => 104,
-        'lahan_waktu'    => 105,
-        'lahan_biaya'    => 106,
-        'lahan_kemudahan'    => 107,
-        'sekolah_jenis'            => 108,
-        'sekolah_angkutan'  => 109,
-        'sekolah_waktu'  => 110,
-        'sekolah_biaya'  => 111,
-        'sekolah_kemudahan'  => 112,
-        'berobat_jenis'            => 113,
-        'berobat_angkutan'  => 114,
-        'berobat_waktu'  => 115,
-        'berobat_biaya'  => 116,
-        'berobat_kemudahan'  => 117,
-        'beribadah_jenis'          => 118,
-        'beribadah_angkutan' => 119,
-        'beribadah_waktu' => 120,
-        'beribadah_biaya' => 121,
-        'beribadah_kemudahan' => 122,
-        'rekreasi_jenis'           => 123,
-        'rekreasi_angkutan' => 124,
-        'rekreasi_waktu' => 125,
-        'rekreasi_biaya' => 126,
-        'rekreasi_kemudahan' => 127,
-
-        // ---------- laink ----------
-        'pengtransportsebelum'     => 128,
-        'pengtransportsesudah'     => 129,
-        'blt'                      => 130,
-        'pkh'                      => 131,
-        'bst'                      => 132,
-        'bantuan_presiden'         => 133,
-        'bantuan_umkm'             => 134,
-        'bantuan_pekerja'          => 135,
-        'bantuan_anak'             => 136,
-        'lainnya'                  => 137,
-        'rata_rata'                => 138,
-    ];
-
-    protected bool $skipHeader = true;
+    public function headingRow(): int
+    {
+        return 1;
+    }
 
     public function chunkSize(): int
     {
-        return 500;
+        return 300;
     }
 
     public function collection(Collection $rows)
     {
-        if ($this->skipHeader) {
-            $rows = $rows->skip(1);
-            $this->skipHeader = false;
-        }
+        foreach ($rows as $row) {
+            // $row = array header->value
+            // Header akan diubah oleh Laravel Excel jadi snake_case
+            // contoh: "NO. HP" => "no_hp"
 
-        $rows->each(function ($row) {
-            $kk           = $this->asString($row[0] ?? null);
-            $nik          = $this->asString($row[1] ?? null);
-            $gelarAwal    = $this->asString($row[2] ?? null);
-            $nama         = $this->asString($row[3] ?? null);
-            $gelarAkhir   = $this->asString($row[4] ?? null);
-            $jenisKelamin = $this->asString($row[5] ?? null);
-            $tempatLahir  = $this->asString($row[6] ?? null);
+            $kk   = $this->H($row, ['no_kk', 'no_kk_kk', 'kk']);
+            $nik  = $this->H($row, ['nik']);
+            $nama = $this->H($row, ['nama']);
 
-            if (!$nik) return;
+            if (!$nik) continue;
 
-            $namaFull = trim(implode(' ', array_filter([$gelarAwal, $nama, $gelarAkhir])));
+            try {
+                DB::transaction(function () use ($row, $kk, $nik, $nama) {
 
-            // Biar konsisten: set kolom umum ke semua model
-            $common = [
-                'kk' => $kk,
-                'nik' => $nik,
-                'gelarawal' => $gelarAwal,
-                'nama' => $nama ?: $namaFull,
-                'gelarakhir' => $gelarAkhir,
-                'Jeniskelamin' => $jenisKelamin,
-                'tempatlahir' => $tempatLahir,
-            ];
+                    // =========================
+                    // COMMON untuk semua model (kalau tabel kamu memang punya kolom ini)
+                    // Kalau tabel kamu tidak punya gelar/jk/tempatlahir, hapus saja.
+                    // =========================
+                    $common = [
+                        'kk' => $kk,
+                        'nik' => $nik,
+                        'nama' => $nama,
+                    ];
 
-            DB::transaction(function () use ($row, $nik, $common) {
+                    // =========================
+                    // 1) Lokasi Pemukiman
+                    // =========================
+                    $mL = Lokasipemukiman::firstOrNew(['nik' => $nik]);
+                    $this->setCommon($mL, $common);
 
-                // =========================
-                // 1) Lokasi Pemukiman (FULL FIELD)
-                // =========================
-                $mL = lokasipemukiman::firstOrNew(['nik' => $nik]);
-                foreach ($common as $k => $v) $mL->{$k} = $v;
+                    $mL->alamat = $this->H($row, ['alamat']);
+                    $mL->nohp   = $this->H($row, ['no_hp', 'nohp']);
+                    // Nomor telpon rumah (di excel biasanya "no_telpon_rumah")
+                    $telpRumah = $this->H($row, ['no_telpon_rumah', 'no_telepon_rumah', 'no_telp_rumah']);
+                    if ($this->hasAttr($mL, 'no_telpon_rumah')) $mL->no_telpon_rumah = $telpRumah;
+                    else $mL->nowa = $telpRumah;
 
-                $lokasiFields = [
-                    'alamat',
-                    'nohp',
-                    'nowa',
-                    'nik_kepala',
-                    'tempat_tinggal',
-                    'status_lahan',
-                    'luas_lantai_tinggal',
-                    'luas_tanah_tinggal',
-                    'jenis_lantai_tinggal',
-                    'dinding_sebagian',
-                    'jendela',
-                    'atap',
-                    'penerangan',
-                    'energi_masak',
-                    'jika_kayu_jenis',
-                    'tempat_sampah',
-                    'mck',
-                    'sumber_air_mandi',
-                    'sumber_air_mck',
-                    'sumber_air_minum',
-                    'tempat_pembuangan_limbah',
-                    'rumah_sungai',
-                    'rumah_sutet',
-                    'rumah_lereng_gunung',
-                    'kondi_rumah_kumuh'
-                ];
-                foreach ($lokasiFields as $f) $mL->{$f} = $this->colS($row, $f);
-                $mL->save();
+                    $mL->nik_kepala = $this->H($row, ['nik_kepala_keluarga', 'nik_kepala']);
+                    $mL->tempat_tinggal = $this->H($row, ['tempat_tinggal_yang_ditempati', 'tempat_tinggal']);
+                    $mL->status_lahan = $this->H($row, ['status_lahan']);
 
-                // =========================
-                // 2) Akses Pendidikan (FULL FIELD)
-                // =========================
-                $mAP = akses_pendidikan::firstOrNew(['nik' => $nik]);
-                foreach ($common as $k => $v) $mAP->{$k} = $v;
+                    $mL->luas_lantai_tinggal  = $this->H($row, ['luas_lantai_tempat_tinggal_m2', 'luas_lantai', 'luas_lantai_tinggal']);
+                    $mL->luas_tanah_tinggal   = $this->H($row, ['luas_tanah_tempat_tinggal_m2', 'luas_tanah', 'luas_tanah_tinggal']);
+                    $mL->jenis_lantai_tinggal = $this->H($row, ['jenis_lantai_tempat_tinggal_terluas', 'jenis_lantai', 'jenis_lantai_tinggal']);
 
-                $mapPendidikan = [
-                    'paud' => ['jaraktempuh_paud', 'waktutempuh_paud', 'kemudahan_paud'],
-                    'tk'   => ['jaraktempuh_tk', 'waktutempuh_tk', 'kemudahan_tk'],
-                    'sd'   => ['jaraktempuh_sd', 'waktutempuh_sd', 'kemudahan_sd'],
-                    'smp'  => ['jaraktempuh_smp', 'waktutempuh_smp', 'kemudahan_smp'],
-                    'sma'  => ['jaraktempuh_sma', 'waktutempuh_sma', 'kemudahan_sma'],
-                    'pt'   => ['jaraktempuh_pt', 'waktutempuh_pt', 'kemudahan_pt'],
-                    'ps'   => ['jaraktempuh_ps', 'waktutempuh_ps', 'kemudahan_ps'],
-                    'seminari'   => ['jaraktempuh_seminari', 'waktutempuh_seminari', 'kemudahan_seminari'],
-                    'pagamalain' => ['jaraktempuh_pagamalain', 'waktutempuh_pagamalain', 'kemudahan_pagamalain'],
-                ];
+                    $mL->dinding_sebagian = $this->H($row, ['dinding_sebagian_besar_rumah', 'dinding_sebagian', 'dinding']);
+                    $mL->jendela          = $this->H($row, ['jendela']);
+                    $mL->atap             = $this->H($row, ['atap']);
+                    $mL->penerangan       = $this->H($row, ['penerangan_rumah', 'penerangan']);
+                    $mL->energi_masak     = $this->H($row, ['energi_untuk_memasak', 'energi_masak']);
 
-                foreach ($mapPendidikan as $prefix => [$fJarak, $fWaktu, $fKem]) {
-                    $mAP->{$fJarak} = $this->colS($row, "{$prefix}_jarak");
-                    $mAP->{$fWaktu} = $this->colS($row, "{$prefix}_waktu");
-                    $mAP->{$fKem}   = $this->colS($row, "{$prefix}_kemudahan");
-                }
-                $mAP->save();
+                    $mL->jika_kayu_jenis  = $this->H($row, ['jika_menggunakan_kayu_bakar_sumber_kayu_bakar', 'jika_kayu_jenis']);
+                    $mL->tempat_sampah    = $this->H($row, ['tempat_pembuangan_sampah', 'tempat_sampah']);
+                    $mL->mck              = $this->H($row, ['fasilitas_mck', 'mck']);
+                    $mL->sumber_air_mandi = $this->H($row, ['sumber_air_mandi_cuci', 'sumber_air_mandi']);
+                    // fasilitas BAB
+                    $bab = $this->H($row, ['fasilitas_buang_air_besar', 'fasilitas_bab']);
+                    if ($this->hasAttr($mL, 'fasilitas_bab')) $mL->fasilitas_bab = $bab;
 
-                // =========================
-                // 3) Akses Kesehatan (FULL FIELD)
-                // =========================
-                $mAK = akseskesehatan::firstOrNew(['nik' => $nik]);
-                foreach ($common as $k => $v) $mAK->{$k} = $v;
+                    $mL->sumber_air_minum         = $this->H($row, ['sumber_air_minum', 'sumber_air_minum_minum']);
+                    $mL->tempat_pembuangan_limbah = $this->H($row, ['tempat_pembuangan_air_limbah', 'tempat_pembuangan_limbah']);
 
-                $mapKesehatan = [
-                    'rs'         => ['jaraktempuh_rumahs', 'waktutempuh_rumahs', 'kemudahan_rumahs'],
-                    'rsb'        => ['jaraktempuh_rumahb', 'waktutempuh_rumahb', 'kemudahan_rumahb'],
-                    'poliklinik' => ['jaraktempuh_poliklinik', 'waktutempuh_poliklinik', 'kemudahan_poliklinik'],
-                    'puskesmas'  => ['jaraktempuh_puskesmas', 'waktutempuh_puskesmas', 'kemudahan_puskesmas'],
-                    'poskedes'   => ['jaraktempuh_poskedes', 'waktutempuh_poskedes', 'kemudahan_poskedes'],
-                    'posyandu'   => ['jaraktempuh_posyandu', 'waktutempuh_posyandu', 'kemudahan_posyandu'],
-                    'apotik'     => ['jaraktempuh_apotik', 'waktutempuh_apotik', 'kemudahan_apotik'],
-                    'toko_obat'  => ['jaraktempuh_toko_obat', 'waktutempuh_toko_obat', 'kemudahan_toko_obat'],
-                ];
+                    // catatan: beberapa excel kamu urutannya beda, tapi ini aman karena pakai header
+                    $mL->rumah_sutet         = $this->H($row, ['rumah_dilewati_sutet', 'rumah_sutet']);
+                    $mL->rumah_sungai        = $this->H($row, ['rumah_di_pinggiran_sungai', 'rumah_sungai']);
+                    $mL->rumah_lereng_gunung = $this->H($row, ['rumah_di_lereng_gunung', 'rumah_lereng_gunung']);
+                    $mL->kondi_rumah_kumuh   = $this->H($row, ['kondisi_rumah_kumuh', 'kondi_rumah_kumuh']);
 
-                foreach ($mapKesehatan as $prefix => [$fJarak, $fWaktu, $fKem]) {
-                    $mAK->{$fJarak} = $this->colS($row, "{$prefix}_jarak");
-                    $mAK->{$fWaktu} = $this->colS($row, "{$prefix}_waktu");
-                    $mAK->{$fKem}   = $this->colS($row, "{$prefix}_kemudahan");
-                }
-                $mAK->save();
+                    $mL->save();
 
-                // =========================
-                // 4) Akses Tenaga Kerja (FULL FIELD)
-                // =========================
-                $mAT = aksestenagakerja::firstOrNew(['nik' => $nik]);
-                foreach ($common as $k => $v) $mAT->{$k} = $v;
+                    // =========================
+                    // 2) Akses Pendidikan (PAUD/TK/SD/SMP/SMA/PT/PS/SEMINARI/PAGAMALAIN)
+                    // =========================
+                    $mAP = Akses_pendidikan::firstOrNew(['nik' => $nik]);
+                    $this->setCommon($mAP, $common);
 
-                $mapTenaga = [
-                    'drsp'     => ['jaraktempuh_dr_spesialis', 'waktutempuh_dr_spesialis', 'kemudahan_dr_spesialis'],
-                    'drumum'   => ['jaraktempuh_dr_umum', 'waktutempuh_dr_umum', 'kemudahan_dr_umum'],
-                    'bidan'    => ['jaraktempuh_bidan', 'waktutempuh_bidan', 'kemudahan_bidan'],
-                    'tenagakes' => ['jaraktempuh_tenagakes', 'waktutempuh_tenagakes', 'kemudahan_tenagakes'],
-                    'dukun'    => ['jaraktempuh_dukun', 'waktutempuh_dukun', 'kemudahan_dukun'],
-                ];
+                    $this->set3($mAP, $row, 'paud', 'jaraktempuh_paud', 'waktutempuh_paud', 'kemudahan_paud');
+                    $this->set3($mAP, $row, 'tk',   'jaraktempuh_tk',   'waktutempuh_tk',   'kemudahan_tk');
+                    $this->set3($mAP, $row, 'sd',   'jaraktempuh_sd',   'waktutempuh_sd',   'kemudahan_sd');
+                    $this->set3($mAP, $row, 'smp',  'jaraktempuh_smp',  'waktutempuh_smp',  'kemudahan_smp');
+                    $this->set3($mAP, $row, 'sma',  'jaraktempuh_sma',  'waktutempuh_sma',  'kemudahan_sma');
+                    $this->set3($mAP, $row, 'pt',   'jaraktempuh_pt',   'waktutempuh_pt',   'kemudahan_pt');
+                    $this->set3($mAP, $row, 'ps',   'jaraktempuh_ps',   'waktutempuh_ps',   'kemudahan_ps');
+                    $this->set3($mAP, $row, 'seminari',  'jaraktempuh_seminari',  'waktutempuh_seminari',  'kemudahan_seminari');
+                    $this->set3($mAP, $row, 'pagamalain', 'jaraktempuh_pagamalain', 'waktutempuh_pagamalain', 'kemudahan_pagamalain');
 
-                foreach ($mapTenaga as $prefix => [$fJarak, $fWaktu, $fKem]) {
-                    $mAT->{$fJarak} = $this->colS($row, "{$prefix}_jarak");
-                    $mAT->{$fWaktu} = $this->colS($row, "{$prefix}_waktu");
-                    $mAT->{$fKem}   = $this->colS($row, "{$prefix}_kemudahan");
-                }
-                $mAT->save();
+                    $mAP->save();
 
-                // =========================
-                // 5) Akses Sarpras (FULL FIELD)
-                // =========================
-                $mSP = aksessarpras::firstOrNew(['nik' => $nik]);
-                foreach ($common as $k => $v) $mSP->{$k} = $v;
+                    // =========================
+                    // 3) Akses Kesehatan
+                    // =========================
+                    $mAK = Akseskesehatan::firstOrNew(['nik' => $nik]);
+                    $this->setCommon($mAK, $common);
 
-                $mapSarpras = [
-                    'lokasipu' => [
+                    $this->set3($mAK, $row, 'rs',         'jaraktempuh_rumahs',     'waktutempuh_rumahs',     'kemudahan_rumahs');
+                    $this->set3($mAK, $row, 'rsb',        'jaraktempuh_rumahb',     'waktutempuh_rumahb',     'kemudahan_rumahb');
+                    $this->set3($mAK, $row, 'poliklinik', 'jaraktempuh_poliklinik', 'waktutempuh_poliklinik', 'kemudahan_poliklinik');
+                    $this->set3($mAK, $row, 'puskesmas',  'jaraktempuh_puskesmas',  'waktutempuh_puskesmas',  'kemudahan_puskesmas');
+                    $this->set3($mAK, $row, 'poskedes',   'jaraktempuh_poskedes',   'waktutempuh_poskedes',   'kemudahan_poskedes');
+                    $this->set3($mAK, $row, 'posyandu',   'jaraktempuh_posyandu',   'waktutempuh_posyandu',   'kemudahan_posyandu');
+                    $this->set3($mAK, $row, 'apotik',     'jaraktempuh_apotik',     'waktutempuh_apotik',     'kemudahan_apotik');
+                    $this->set3($mAK, $row, 'toko_obat',  'jaraktempuh_toko_obat',  'waktutempuh_toko_obat',  'kemudahan_toko_obat');
+
+                    $mAK->save();
+
+                    // =========================
+                    // 4) Akses Tenaga Kerja / Tenaga Kesehatan
+                    // =========================
+                    $mAT = Aksestenagakerja::firstOrNew(['nik' => $nik]);
+                    $this->setCommon($mAT, $common);
+
+                    $this->set3($mAT, $row, 'drsp',     'jaraktempuh_dr_spesialis', 'waktutempuh_dr_spesialis', 'kemudahan_dr_spesialis');
+                    $this->set3($mAT, $row, 'drumum',   'jaraktempuh_dr_umum',      'waktutempuh_dr_umum',      'kemudahan_dr_umum');
+                    $this->set3($mAT, $row, 'bidan',    'jaraktempuh_bidan',        'waktutempuh_bidan',        'kemudahan_bidan');
+                    $this->set3($mAT, $row, 'tenagakes', 'jaraktempuh_tenagakes',    'waktutempuh_tenagakes',    'kemudahan_tenagakes');
+                    $this->set3($mAT, $row, 'dukun',    'jaraktempuh_dukun',        'waktutempuh_dukun',        'kemudahan_dukun');
+
+                    $mAT->save();
+
+                    // =========================
+                    // 5) Akses Sarpras (jenis/angkutan/waktu/biaya/kemudahan)
+                    // =========================
+                    $mSP = Aksessarpras::firstOrNew(['nik' => $nik]);
+                    $this->setCommon($mSP, $common);
+
+                    $this->set5(
+                        $mSP,
+                        $row,
+                        'lokasipu',
                         'jenistrasport_lokasipu',
                         'pengtransportumum_lokasipu',
                         'waktutempuh_lokasipu',
                         'biaya_lokasipu',
                         'kemudahan_lokasipu'
-                    ],
-                    'lahan' => [
+                    );
+
+                    $this->set5(
+                        $mSP,
+                        $row,
+                        'lahan',
                         'jenistrasport_lahanpertanian',
                         'pengtransportumum_lahanpertanian',
                         'waktutempuh_lahanpertanian',
                         'biaya_lahanpertanian',
                         'kemudahan_lahanpertanian'
-                    ],
-                    'sekolah' => [
+                    );
+
+                    $this->set5(
+                        $mSP,
+                        $row,
+                        'sekolah',
                         'jenistrasport_sekolah',
                         'pengtransportumum_sekolah',
                         'waktutempuh_sekolah',
                         'biaya_sekolah',
                         'kemudahan_sekolah'
-                    ],
-                    'berobat' => [
+                    );
+
+                    $this->set5(
+                        $mSP,
+                        $row,
+                        'berobat',
                         'jenistrasport_berobat',
                         'pengtransportumum_berobat',
                         'waktutempuh_berobat',
                         'biaya_berobat',
                         'kemudahan_berobat'
-                    ],
-                    'beribadah' => [
+                    );
+
+                    $this->set5(
+                        $mSP,
+                        $row,
+                        'beribadah',
                         'jenistrasport_beribadah',
                         'pengtransportumum_beribadah',
                         'waktutempuh_beribadah',
                         'biaya_beribadah',
                         'kemudahan_beribadah'
-                    ],
-                    'rekreasi' => [
+                    );
+
+                    $this->set5(
+                        $mSP,
+                        $row,
+                        'rekreasi',
                         'jenistrasport_rekreasi',
                         'pengtransportumum_rekreasi',
                         'waktutempuh_rekreasi',
                         'biaya_rekreasi',
                         'kemudahan_rekreasi'
-                    ],
-                ];
+                    );
 
-                foreach ($mapSarpras as $prefix => $targets) {
-                    // urutan idx: jenis, angkutan, waktu, biaya, kemudahan
-                    $mSP->{$targets[0]} = $this->colS($row, "{$prefix}_jenis");
-                    $mSP->{$targets[1]} = $this->colS($row, "{$prefix}_angkutan");
-                    $mSP->{$targets[2]} = $this->colS($row, "{$prefix}_waktu");
-                    $mSP->{$targets[3]} = $this->colS($row, "{$prefix}_biaya");
-                    $mSP->{$targets[4]} = $this->colS($row, "{$prefix}_kemudahan");
-                }
-                $mSP->save();
+                    $mSP->save();
 
-                // =========================
-                // 6) Laink (FULL FIELD)
-                // =========================
-                $mLN = laink::firstOrNew(['nik' => $nik]);
-                foreach ($common as $k => $v) $mLN->{$k} = $v;
+                    // =========================
+                    // 6) Laink
+                    // =========================
+                    $mLN = Laink::firstOrNew(['nik' => $nik]);
+                    $this->setCommon($mLN, $common);
 
-                $lainFields = [
-                    'pengtransportsebelum',
-                    'pengtransportsesudah',
-                    'blt',
-                    'pkh',
-                    'bst',
-                    'bantuan_presiden',
-                    'bantuan_umkm',
-                    'bantuan_pekerja',
-                    'bantuan_anak',
-                    'lainnya',
-                    'rata_rata'
-                ];
-                foreach ($lainFields as $f) $mLN->{$f} = $this->colS($row, $f);
-                $mLN->save();
-            });
-        });
+                    $mLN->pengtransportsebelum = $this->H($row, ['pengtransportsebelum', 'peng_transport_sebelum']);
+                    $mLN->pengtransportsesudah = $this->H($row, ['pengtransportsesudah', 'peng_transport_sesudah']);
+                    $mLN->blt                  = $this->H($row, ['blt']);
+                    $mLN->pkh                  = $this->H($row, ['pkh']);
+                    $mLN->bst                  = $this->H($row, ['bst']);
+                    $mLN->bantuan_presiden     = $this->H($row, ['bantuan_presiden']);
+                    $mLN->bantuan_umkm         = $this->H($row, ['bantuan_umkm']);
+                    $mLN->bantuan_pekerja      = $this->H($row, ['bantuan_pekerja']);
+                    $mLN->bantuan_anak         = $this->H($row, ['bantuan_anak']);
+                    $mLN->lainnya              = $this->H($row, ['lainnya']);
+                    $mLN->rata_rata            = $this->H($row, ['rata_rata']);
+
+                    $mLN->save();
+                });
+            } catch (\Throwable $e) {
+                Log::error('Import Lokasi (OPSI B) gagal', [
+                    'nik' => $nik,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
-    // ---------------- Helpers ----------------
-    private function asString($val): ?string
+    // ========= Helpers =========
+
+    /**
+     * Ambil value dari beberapa kemungkinan key header.
+     * Laravel-Excel biasanya mengubah header jadi snake_case.
+     */
+    private function H($row, array $keys): ?string
     {
-        if ($val === null) return null;
-        return trim((string) $val);
+        foreach ($keys as $k) {
+            if (isset($row[$k]) && $row[$k] !== null && $row[$k] !== '') {
+                return trim((string)$row[$k]);
+            }
+        }
+        return null;
     }
 
-    private function colS($row, string $key): ?string
+    private function setCommon($model, array $common): void
     {
-        $i = $this->idx[$key] ?? null;
-        if ($i === null) return null;
-        return $this->asString($row[$i] ?? null);
+        foreach ($common as $k => $v) {
+            if ($this->hasAttr($model, $k)) {
+                $model->{$k} = $v;
+            }
+        }
+    }
+
+    private function hasAttr($model, string $attr): bool
+    {
+        return array_key_exists($attr, $model->getAttributes()) || $model->isFillable($attr);
+    }
+
+    // set 3 kolom: jarak/waktu/kemudahan
+    private function set3($model, $row, string $prefix, string $fJarak, string $fWaktu, string $fKem): void
+    {
+        $model->{$fJarak} = $this->H($row, ["{$prefix}_jarak", "{$prefix}_jarak_km", "{$prefix}_jarak_tempuh"]);
+        $model->{$fWaktu} = $this->H($row, ["{$prefix}_waktu", "{$prefix}_waktu_jam", "{$prefix}_waktu_tempuh"]);
+        $model->{$fKem}   = $this->H($row, ["{$prefix}_kemudahan", "{$prefix}_kemudahan_akses"]);
+    }
+
+    // set 5 kolom: jenis/angkutan/waktu/biaya/kemudahan
+    private function set5($model, $row, string $prefix, string $fJenis, string $fAngkutan, string $fWaktu, string $fBiaya, string $fKem): void
+    {
+        $model->{$fJenis}    = $this->H($row, ["{$prefix}_jenis"]);
+        $model->{$fAngkutan} = $this->H($row, ["{$prefix}_angkutan"]);
+        $model->{$fWaktu}    = $this->H($row, ["{$prefix}_waktu"]);
+        $model->{$fBiaya}    = $this->H($row, ["{$prefix}_biaya"]);
+        $model->{$fKem}      = $this->H($row, ["{$prefix}_kemudahan"]);
     }
 }
