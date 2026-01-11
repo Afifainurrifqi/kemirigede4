@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-use App\Models\Lokasipemukiman;
-use App\Models\Akses_pendidikan;
-use App\Models\Akseskesehatan;
-use App\Models\Aksestenagakerja;
-use App\Models\Aksessarpras;
-use App\Models\Laink;
+use App\Models\lokasipemukiman;
+use App\Models\akses_pendidikan;
+use App\Models\akseskesehatan;
+use App\Models\aksestenagakerja;
+use App\Models\aksessarpras;
+use App\Models\laink;
 
 class LokasidanPemukimanImport implements ToCollection, WithChunkReading
 {
@@ -219,7 +219,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                 // =========================
                 // 1) Lokasi Pemukiman (FULL FIELD)
                 // =========================
-                $mL = Lokasipemukiman::firstOrNew(['nik' => $nik]);
+                $mL = lokasipemukiman::firstOrNew(['nik' => $nik]);
                 foreach ($common as $k => $v) $mL->{$k} = $v;
 
                 $lokasiFields = [
@@ -255,7 +255,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                 // =========================
                 // 2) Akses Pendidikan (FULL FIELD)
                 // =========================
-                $mAP = Akses_pendidikan::firstOrNew(['nik' => $nik]);
+                $mAP = akses_pendidikan::firstOrNew(['nik' => $nik]);
                 foreach ($common as $k => $v) $mAP->{$k} = $v;
 
                 $mapPendidikan = [
@@ -280,7 +280,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                 // =========================
                 // 3) Akses Kesehatan (FULL FIELD)
                 // =========================
-                $mAK = Akseskesehatan::firstOrNew(['nik' => $nik]);
+                $mAK = akseskesehatan::firstOrNew(['nik' => $nik]);
                 foreach ($common as $k => $v) $mAK->{$k} = $v;
 
                 $mapKesehatan = [
@@ -304,7 +304,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                 // =========================
                 // 4) Akses Tenaga Kerja (FULL FIELD)
                 // =========================
-                $mAT = Aksestenagakerja::firstOrNew(['nik' => $nik]);
+                $mAT = aksestenagakerja::firstOrNew(['nik' => $nik]);
                 foreach ($common as $k => $v) $mAT->{$k} = $v;
 
                 $mapTenaga = [
@@ -325,7 +325,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                 // =========================
                 // 5) Akses Sarpras (FULL FIELD)
                 // =========================
-                $mSP = Aksessarpras::firstOrNew(['nik' => $nik]);
+                $mSP = aksessarpras::firstOrNew(['nik' => $nik]);
                 foreach ($common as $k => $v) $mSP->{$k} = $v;
 
                 $mapSarpras = [
@@ -386,7 +386,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                 // =========================
                 // 6) Laink (FULL FIELD)
                 // =========================
-                $mLN = Laink::firstOrNew(['nik' => $nik]);
+                $mLN = laink::firstOrNew(['nik' => $nik]);
                 foreach ($common as $k => $v) $mLN->{$k} = $v;
 
                 $lainFields = [
