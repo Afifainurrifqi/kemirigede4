@@ -87,30 +87,30 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
         'pagamalain_kemudahan' => 58,
 
         // ---------- akseskesehatan ----------
-        'rs_jarak'  => 59,
-        'rs_waktu'  => 60,
-        'rs_kemudahan'  => 61,
+        'rs_jarak' => 59,
+        'rs_waktu' => 60,
+        'rs_kemudahan' => 61,
         'rsb_jarak' => 62,
         'rsb_waktu' => 63,
         'rsb_kemudahan' => 64,
         'poliklinik_jarak' => 65,
         'poliklinik_waktu' => 66,
         'poliklinik_kemudahan' => 67,
-        'puskesmas_jarak'  => 68,
-        'puskesmas_waktu'  => 69,
-        'puskesmas_kemudahan'  => 70,
-        'poskedes_jarak'   => 71,
-        'poskedes_waktu'   => 72,
-        'poskedes_kemudahan'   => 73,
-        'posyandu_jarak'   => 74,
-        'posyandu_waktu'   => 75,
-        'posyandu_kemudahan'   => 76,
-        'apotik_jarak'     => 77,
-        'apotik_waktu'     => 78,
-        'apotik_kemudahan'     => 79,
-        'toko_obat_jarak'  => 80,
-        'toko_obat_waktu'  => 81,
-        'toko_obat_kemudahan'  => 82,
+        'puskesmas_jarak' => 68,
+        'puskesmas_waktu' => 69,
+        'puskesmas_kemudahan' => 70,
+        'poskedes_jarak' => 71,
+        'poskedes_waktu' => 72,
+        'poskedes_kemudahan' => 73,
+        'posyandu_jarak' => 74,
+        'posyandu_waktu' => 75,
+        'posyandu_kemudahan' => 76,
+        'apotik_jarak' => 77,
+        'apotik_waktu' => 78,
+        'apotik_kemudahan' => 79,
+        'toko_obat_jarak' => 80,
+        'toko_obat_waktu' => 81,
+        'toko_obat_kemudahan' => 82,
 
         // ---------- aksestenagakerja ----------
         'drsp_jarak' => 83,
@@ -164,15 +164,15 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
         // ---------- laink ----------
         'pengtransportsebelum' => 128,
         'pengtransportsesudah' => 129,
-        'blt'                  => 130,
-        'pkh'                  => 131,
-        'bst'                  => 132,
-        'bantuan_presiden'     => 133,
-        'bantuan_umkm'         => 134,
-        'bantuan_pekerja'      => 135,
-        'bantuan_anak'         => 136,
-        'lainnya'              => 137,
-        'rata_rata'            => 138,
+        'blt' => 130,
+        'pkh' => 131,
+        'bst' => 132,
+        'bantuan_presiden' => 133,
+        'bantuan_umkm' => 134,
+        'bantuan_pekerja' => 135,
+        'bantuan_anak' => 136,
+        'lainnya' => 137,
+        'rata_rata' => 138,
     ];
 
     /**
@@ -209,22 +209,11 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
 
             $namaFull = trim(implode(' ', array_filter([$gelarAwal, $nama, $gelarAkhir])));
 
-            // helper kecil biar format sama & nggak ulang-ulang
-            $fillCommon = function ($m) use ($kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir) {
-                $m->kk           = $kk;
-                $m->nik          = $nik;
-                $m->gelarawal    = $gelarAwal;
-                $m->nama         = $nama ?: $namaFull;
-                $m->gelarakhir   = $gelarAkhir;
-                $m->Jeniskelamin = $jenisKelamin;
-                $m->tempatlahir  = $tempatLahir;
-            };
-
             // =========================
             // 1) lokasipemukiman
             // =========================
             $mL = lokasipemukiman::firstOrNew(['nik' => $nik]);
-            $fillCommon($mL);
+            $this->fillCommon($mL, $kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir);
 
             foreach (
                 [
@@ -263,119 +252,97 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
             // 2) akses_pendidikan
             // =========================
             $mAP = akses_pendidikan::firstOrNew(['nik' => $nik]);
-            $fillCommon($mAP);
+            $this->fillCommon($mAP, $kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir);
 
-            $mAP->jaraktempuh_paud        = $this->colString($row, 'paud_jarak');
-            $mAP->waktutempuh_paud        = $this->colString($row, 'paud_waktu');
-            $mAP->kemudahan_paud          = $this->colString($row, 'paud_kemudahan');
-
-            $mAP->jaraktempuh_tk          = $this->colString($row, 'tk_jarak');
-            $mAP->waktutempuh_tk          = $this->colString($row, 'tk_waktu');
-            $mAP->kemudahan_tk            = $this->colString($row, 'tk_kemudahan');
-
-            $mAP->jaraktempuh_sd          = $this->colString($row, 'sd_jarak');
-            $mAP->waktutempuh_sd          = $this->colString($row, 'sd_waktu');
-            $mAP->kemudahan_sd            = $this->colString($row, 'sd_kemudahan');
-
-            $mAP->jaraktempuh_smp         = $this->colString($row, 'smp_jarak');
-            $mAP->waktutempuh_smp         = $this->colString($row, 'smp_waktu');
-            $mAP->kemudahan_smp           = $this->colString($row, 'smp_kemudahan');
-
-            $mAP->jaraktempuh_sma         = $this->colString($row, 'sma_jarak');
-            $mAP->waktutempuh_sma         = $this->colString($row, 'sma_waktu');
-            $mAP->kemudahan_sma           = $this->colString($row, 'sma_kemudahan');
-
-            $mAP->jaraktempuh_pt          = $this->colString($row, 'pt_jarak');
-            $mAP->waktutempuh_pt          = $this->colString($row, 'pt_waktu');
-            $mAP->kemudahan_pt            = $this->colString($row, 'pt_kemudahan');
-
-            $mAP->jaraktempuh_ps          = $this->colString($row, 'ps_jarak');
-            $mAP->waktutempuh_ps          = $this->colString($row, 'ps_waktu');
-            $mAP->kemudahan_ps            = $this->colString($row, 'ps_kemudahan');
-
-            $mAP->jaraktempuh_seminari    = $this->colString($row, 'seminari_jarak');
-            $mAP->waktutempuh_seminari    = $this->colString($row, 'seminari_waktu');
-            $mAP->kemudahan_seminari      = $this->colString($row, 'seminari_kemudahan');
-
-            $mAP->jaraktempuh_pagamalain  = $this->colString($row, 'pagamalain_jarak');
-            $mAP->waktutempuh_pagamalain  = $this->colString($row, 'pagamalain_waktu');
-            $mAP->kemudahan_pagamalain    = $this->colString($row, 'pagamalain_kemudahan');
-
+            $mAP->jaraktempuh_paud       = $this->colString($row, 'paud_jarak');
+            $mAP->waktutempuh_paud       = $this->colString($row, 'paud_waktu');
+            $mAP->kemudahan_paud         = $this->colString($row, 'paud_kemudahan');
+            $mAP->jaraktempuh_tk         = $this->colString($row, 'tk_jarak');
+            $mAP->waktutempuh_tk         = $this->colString($row, 'tk_waktu');
+            $mAP->kemudahan_tk           = $this->colString($row, 'tk_kemudahan');
+            $mAP->jaraktempuh_sd         = $this->colString($row, 'sd_jarak');
+            $mAP->waktutempuh_sd         = $this->colString($row, 'sd_waktu');
+            $mAP->kemudahan_sd           = $this->colString($row, 'sd_kemudahan');
+            $mAP->jaraktempuh_smp        = $this->colString($row, 'smp_jarak');
+            $mAP->waktutempuh_smp        = $this->colString($row, 'smp_waktu');
+            $mAP->kemudahan_smp          = $this->colString($row, 'smp_kemudahan');
+            $mAP->jaraktempuh_sma        = $this->colString($row, 'sma_jarak');
+            $mAP->waktutempuh_sma        = $this->colString($row, 'sma_waktu');
+            $mAP->kemudahan_sma          = $this->colString($row, 'sma_kemudahan');
+            $mAP->jaraktempuh_pt         = $this->colString($row, 'pt_jarak');
+            $mAP->waktutempuh_pt         = $this->colString($row, 'pt_waktu');
+            $mAP->kemudahan_pt           = $this->colString($row, 'pt_kemudahan');
+            $mAP->jaraktempuh_ps         = $this->colString($row, 'ps_jarak');
+            $mAP->waktutempuh_ps         = $this->colString($row, 'ps_waktu');
+            $mAP->kemudahan_ps           = $this->colString($row, 'ps_kemudahan');
+            $mAP->jaraktempuh_seminari   = $this->colString($row, 'seminari_jarak');
+            $mAP->waktutempuh_seminari   = $this->colString($row, 'seminari_waktu');
+            $mAP->kemudahan_seminari     = $this->colString($row, 'seminari_kemudahan');
+            $mAP->jaraktempuh_pagamalain = $this->colString($row, 'pagamalain_jarak');
+            $mAP->waktutempuh_pagamalain = $this->colString($row, 'pagamalain_waktu');
+            $mAP->kemudahan_pagamalain   = $this->colString($row, 'pagamalain_kemudahan');
             $mAP->save();
 
             // =========================
             // 3) akseskesehatan
             // =========================
             $mAK = akseskesehatan::firstOrNew(['nik' => $nik]);
-            $fillCommon($mAK);
+            $this->fillCommon($mAK, $kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir);
 
-            $mAK->jaraktempuh_rumahs       = $this->colString($row, 'rs_jarak');
-            $mAK->waktutempuh_rumahs       = $this->colString($row, 'rs_waktu');
-            $mAK->kemudahan_rumahs         = $this->colString($row, 'rs_kemudahan');
-
-            $mAK->jaraktempuh_rumahb       = $this->colString($row, 'rsb_jarak');
-            $mAK->waktutempuh_rumahb       = $this->colString($row, 'rsb_waktu');
-            $mAK->kemudahan_rumahb         = $this->colString($row, 'rsb_kemudahan');
-
-            $mAK->jaraktempuh_poliklinik   = $this->colString($row, 'poliklinik_jarak');
-            $mAK->waktutempuh_poliklinik   = $this->colString($row, 'poliklinik_waktu');
-            $mAK->kemudahan_poliklinik     = $this->colString($row, 'poliklinik_kemudahan');
-
-            $mAK->jaraktempuh_puskesmas    = $this->colString($row, 'puskesmas_jarak');
-            $mAK->waktutempuh_puskesmas    = $this->colString($row, 'puskesmas_waktu');
-            $mAK->kemudahan_puskesmas      = $this->colString($row, 'puskesmas_kemudahan');
-
-            $mAK->jaraktempuh_poskedes     = $this->colString($row, 'poskedes_jarak');
-            $mAK->waktutempuh_poskedes     = $this->colString($row, 'poskedes_waktu');
-            $mAK->kemudahan_poskedes       = $this->colString($row, 'poskedes_kemudahan');
-
-            $mAK->jaraktempuh_posyandu     = $this->colString($row, 'posyandu_jarak');
-            $mAK->waktutempuh_posyandu     = $this->colString($row, 'posyandu_waktu');
-            $mAK->kemudahan_posyandu       = $this->colString($row, 'posyandu_kemudahan');
-
-            $mAK->jaraktempuh_apotik       = $this->colString($row, 'apotik_jarak');
-            $mAK->waktutempuh_apotik       = $this->colString($row, 'apotik_waktu');
-            $mAK->kemudahan_apotik         = $this->colString($row, 'apotik_kemudahan');
-
-            $mAK->jaraktempuh_toko_obat    = $this->colString($row, 'toko_obat_jarak');
-            $mAK->waktutempuh_toko_obat    = $this->colString($row, 'toko_obat_waktu');
-            $mAK->kemudahan_toko_obat      = $this->colString($row, 'toko_obat_kemudahan');
-
+            $mAK->jaraktempuh_rumahs        = $this->colString($row, 'rs_jarak');
+            $mAK->waktutempuh_rumahs        = $this->colString($row, 'rs_waktu');
+            $mAK->kemudahan_rumahs          = $this->colString($row, 'rs_kemudahan');
+            $mAK->jaraktempuh_rumahb        = $this->colString($row, 'rsb_jarak');
+            $mAK->waktutempuh_rumahb        = $this->colString($row, 'rsb_waktu');
+            $mAK->kemudahan_rumahb          = $this->colString($row, 'rsb_kemudahan');
+            $mAK->jaraktempuh_poliklinik    = $this->colString($row, 'poliklinik_jarak');
+            $mAK->waktutempuh_poliklinik    = $this->colString($row, 'poliklinik_waktu');
+            $mAK->kemudahan_poliklinik      = $this->colString($row, 'poliklinik_kemudahan');
+            $mAK->jaraktempuh_puskesmas     = $this->colString($row, 'puskesmas_jarak');
+            $mAK->waktutempuh_puskesmas     = $this->colString($row, 'puskesmas_waktu');
+            $mAK->kemudahan_puskesmas       = $this->colString($row, 'puskesmas_kemudahan');
+            $mAK->jaraktempuh_poskedes      = $this->colString($row, 'poskedes_jarak');
+            $mAK->waktutempuh_poskedes      = $this->colString($row, 'poskedes_waktu');
+            $mAK->kemudahan_poskedes        = $this->colString($row, 'poskedes_kemudahan');
+            $mAK->jaraktempuh_posyandu      = $this->colString($row, 'posyandu_jarak');
+            $mAK->waktutempuh_posyandu      = $this->colString($row, 'posyandu_waktu');
+            $mAK->kemudahan_posyandu        = $this->colString($row, 'posyandu_kemudahan');
+            $mAK->jaraktempuh_apotik        = $this->colString($row, 'apotik_jarak');
+            $mAK->waktutempuh_apotik        = $this->colString($row, 'apotik_waktu');
+            $mAK->kemudahan_apotik          = $this->colString($row, 'apotik_kemudahan');
+            $mAK->jaraktempuh_toko_obat     = $this->colString($row, 'toko_obat_jarak');
+            $mAK->waktutempuh_toko_obat     = $this->colString($row, 'toko_obat_waktu');
+            $mAK->kemudahan_toko_obat       = $this->colString($row, 'toko_obat_kemudahan');
             $mAK->save();
 
             // =========================
             // 4) aksestenagakerja
             // =========================
             $mAT = aksestenagakerja::firstOrNew(['nik' => $nik]);
-            $fillCommon($mAT);
+            $this->fillCommon($mAT, $kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir);
 
             $mAT->jaraktempuh_dr_spesialis = $this->colString($row, 'drsp_jarak');
             $mAT->waktutempuh_dr_spesialis = $this->colString($row, 'drsp_waktu');
             $mAT->kemudahan_dr_spesialis   = $this->colString($row, 'drsp_kemudahan');
-
             $mAT->jaraktempuh_dr_umum      = $this->colString($row, 'drumum_jarak');
             $mAT->waktutempuh_dr_umum      = $this->colString($row, 'drumum_waktu');
             $mAT->kemudahan_dr_umum        = $this->colString($row, 'drumum_kemudahan');
-
             $mAT->jaraktempuh_bidan        = $this->colString($row, 'bidan_jarak');
             $mAT->waktutempuh_bidan        = $this->colString($row, 'bidan_waktu');
             $mAT->kemudahan_bidan          = $this->colString($row, 'bidan_kemudahan');
-
             $mAT->jaraktempuh_tenagakes    = $this->colString($row, 'tenagakes_jarak');
             $mAT->waktutempuh_tenagakes    = $this->colString($row, 'tenagakes_waktu');
             $mAT->kemudahan_tenagakes      = $this->colString($row, 'tenagakes_kemudahan');
-
             $mAT->jaraktempuh_dukun        = $this->colString($row, 'dukun_jarak');
             $mAT->waktutempuh_dukun        = $this->colString($row, 'dukun_waktu');
             $mAT->kemudahan_dukun          = $this->colString($row, 'dukun_kemudahan');
-
             $mAT->save();
 
             // =========================
             // 5) aksessarpras
             // =========================
             $mSP = aksessarpras::firstOrNew(['nik' => $nik]);
-            $fillCommon($mSP);
+            $this->fillCommon($mSP, $kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir);
 
             // Lokasi pelayanan umum
             $mSP->jenistrasport_lokasipu     = $this->colString($row, 'lokasipu_jenis');
@@ -418,14 +385,13 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
             $mSP->waktutempuh_rekreasi       = $this->colString($row, 'rekreasi_waktu');
             $mSP->biaya_rekreasi             = $this->colString($row, 'rekreasi_biaya');
             $mSP->kemudahan_rekreasi         = $this->colString($row, 'rekreasi_kemudahan');
-
             $mSP->save();
 
             // =========================
             // 6) laink
             // =========================
             $mLN = laink::firstOrNew(['nik' => $nik]);
-            $fillCommon($mLN);
+            $this->fillCommon($mLN, $kk, $nik, $gelarAwal, $nama, $namaFull, $gelarAkhir, $jenisKelamin, $tempatLahir);
 
             foreach (
                 [
@@ -450,7 +416,6 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
 
     /**
      * Ukuran chunk (berapa baris diproses sekali jalan).
-     * Silakan sesuaikan: 200 / 500 / 1000
      */
     public function chunkSize(): int
     {
@@ -474,5 +439,17 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
             return null;
         }
         return $this->asString($row[$i] ?? null);
+    }
+
+    private function fillCommon($model, ?string $kk, string $nik, ?string $gelarAwal, ?string $nama, ?string $namaFull, ?string $gelarAkhir, ?string $jenisKelamin, ?string $tempatLahir): void
+    {
+        // disamakan dengan IndividuImport
+        $model->kk           = $kk;
+        $model->nik          = $nik;
+        $model->gelarawal    = $gelarAwal;
+        $model->nama         = $nama ?: $namaFull;
+        $model->gelarakhir   = $gelarAkhir;
+        $model->Jeniskelamin = $jenisKelamin;
+        $model->tempatlahir  = $tempatLahir;
     }
 }
