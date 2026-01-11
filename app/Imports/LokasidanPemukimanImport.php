@@ -6,33 +6,17 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-use App\Models\lokasipemukiman;
-use App\Models\akses_pendidikan;
+use App\Models\Lokasipemukiman;
+use App\Models\Akses_pendidikan;
 
 class LokasidanPemukimanImport implements ToCollection, WithChunkReading
 {
-    /**
-     * SUSUNAN KOLOM (sesuai File Import.xlsx, index mulai 0)
-     *  0: NO KK
-     *  1: NIK
-     *  2: NAMA
-     *  3: ALAMAT
-     *  4: NO. HP
-     *  5: NO. Telpon Rumah
-     *  6: NIK Kepala Keluarga
-     *  7: TEMPAT TINGGAL YANG DITEMPATI
-     *  8: STATUS LAHAN
-     *  ...
-     *  28: PAUD - JARAK (KM)
-     *  29: PAUD - WAKTU (JAM)
-     *  30: PAUD - KEMUDAHAN
-     */
-
+    // index sesuai Lokasi.xlsx
     protected $idx = [
-        // ---------- lokasipemukiman ----------
+        // lokasipemukiman
         'alamat'                   => 3,
-        'nohp'                     => 4,  // NO. HP
-        'nowa'                     => 5,  // NO. Telpon Rumah (kalau sebenarnya WA, tinggal tukar)
+        'nohp'                     => 4,
+        'nowa'                     => 5,  // di file kamu: NO. Telpon Rumah (kalau ini bukan WA, ganti fieldnya)
         'nik_kepala'               => 6,
         'tempat_tinggal'           => 7,
         'status_lahan'             => 8,
@@ -48,7 +32,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
         'tempat_sampah'            => 18,
         'mck'                      => 19,
         'sumber_air_mandi'         => 20,
-        'sumber_air_mck'           => 21, // di file: "FASILITAS BUANG AIR BESAR"
+        'fasilitas_bab'            => 21, // di file kamu: "FASILITAS BUANG AIR BESAR"
         'sumber_air_minum'         => 22,
         'tempat_pembuangan_limbah' => 23,
         'rumah_sutet'              => 24,
@@ -56,15 +40,12 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
         'rumah_lereng_gunung'      => 26,
         'kondi_rumah_kumuh'        => 27,
 
-        // ---------- akses_pendidikan (hanya PAUD di file ini) ----------
+        // akses_pendidikan (di file kamu cuma PAUD)
         'paud_jarak'               => 28,
         'paud_waktu'               => 29,
         'paud_kemudahan'           => 30,
     ];
 
-    /**
-     * Flag untuk skip header hanya di chunk pertama
-     */
     protected $skipHeader = true;
 
     public function collection(Collection $rows)
@@ -79,21 +60,15 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
             $nik  = $this->asString($row[1] ?? null);
             $nama = $this->asString($row[2] ?? null);
 
-            if (!$nik) {
-                return;
-            }
+            if (!$nik) return;
 
             // =========================
             // 1) lokasipemukiman
             // =========================
-            $mL = lokasipemukiman::firstOrNew(['nik' => $nik]);
-
-            // Common minimal (sesuai file)
-            $mL->kk   = $kk;
-            $mL->nik  = $nik;
-            if ($nama !== null && $nama !== '') {
-                $mL->nama = $nama;
-            }
+            $mL = Lokasipemukiman::firstOrNew(['nik' => $nik]);
+            $mL->kk  = $kk;
+            $mL->nik = $nik;
+            $mL->nama = $nama;
 
             foreach (
                 [
@@ -115,36 +90,37 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
                     'tempat_sampah',
                     'mck',
                     'sumber_air_mandi',
-                    'sumber_air_mck',
-                    'sumber_air_minum',
                     'tempat_pembuangan_limbah',
                     'rumah_sutet',
                     'rumah_sungai',
                     'rumah_lereng_gunung',
-                    'kondi_rumah_kumuh'
+                    'kondi_rumah_kumuh',
+                    'sumber_air_minum'
                 ] as $k
             ) {
-                $mL->{$k} = $this->colString($row, $k);
+                $mL->{$k} = $this->colS($row, $k);
             }
+
+            // kalau field di tabel kamu namanya "fasilitas_bab" beda, sesuaikan:
+            if (property_exists($mL, 'fasilitas_bab')) {
+                $mL->fasilitas_bab = $this->colS($row, 'fasilitas_bab');
+            }
+
             $mL->save();
 
             // =========================
-            // 2) akses_pendidikan (PAUD saja)
+            // 2) akses_pendidikan (cuma PAUD)
             // =========================
-            $hasPaud = $this->hasAny($row, ['paud_jarak', 'paud_waktu', 'paud_kemudahan']);
-            if ($hasPaud) {
-                $mAP = akses_pendidikan::firstOrNew(['nik' => $nik]);
-                $mAP->kk  = $kk;
-                $mAP->nik = $nik;
-                if ($nama !== null && $nama !== '') {
-                    $mAP->nama = $nama;
-                }
+            $mAP = Akses_pendidikan::firstOrNew(['nik' => $nik]);
+            $mAP->kk  = $kk;
+            $mAP->nik = $nik;
+            $mAP->nama = $nama;
 
-                $mAP->jaraktempuh_paud = $this->colString($row, 'paud_jarak');
-                $mAP->waktutempuh_paud = $this->colString($row, 'paud_waktu');
-                $mAP->kemudahan_paud   = $this->colString($row, 'paud_kemudahan');
-                $mAP->save();
-            }
+            $mAP->jaraktempuh_paud = $this->colS($row, 'paud_jarak');
+            $mAP->waktutempuh_paud = $this->colS($row, 'paud_waktu');
+            $mAP->kemudahan_paud   = $this->colS($row, 'paud_kemudahan');
+
+            $mAP->save();
         });
     }
 
@@ -153,34 +129,16 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
         return 500;
     }
 
-    // ---------------- Helpers ----------------
-
     private function asString($val): ?string
     {
-        if ($val === null) {
-            return null;
-        }
-        $s = trim((string) $val);
-        return $s === '' ? null : $s;
+        if ($val === null) return null;
+        return trim((string) $val);
     }
 
-    private function colString($row, string $key): ?string
+    private function colS($row, string $key): ?string
     {
         $i = $this->idx[$key] ?? null;
-        if ($i === null) {
-            return null;
-        }
+        if ($i === null) return null;
         return $this->asString($row[$i] ?? null);
-    }
-
-    private function hasAny($row, array $keys): bool
-    {
-        foreach ($keys as $k) {
-            $v = $this->colString($row, $k);
-            if ($v !== null && $v !== '') {
-                return true;
-            }
-        }
-        return false;
     }
 }
