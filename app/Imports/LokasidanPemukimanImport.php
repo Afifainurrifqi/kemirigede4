@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 use App\Models\lokasipemukiman;
-use App\Models\Akses_pendidikan;
+use App\Models\akses_pendidikan;
 
 class LokasidanPemukimanImport implements ToCollection, WithChunkReading
 {
@@ -111,7 +111,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
             // =========================
             // 2) akses_pendidikan (cuma PAUD)
             // =========================
-            $mAP = Akses_pendidikan::firstOrNew(['nik' => $nik]);
+            $mAP = akses_pendidikan::firstOrNew(['nik' => $nik]);
             $mAP->kk  = $kk;
             $mAP->nik = $nik;
             $mAP->nama = $nama;
