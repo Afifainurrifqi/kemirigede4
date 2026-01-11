@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-use App\Models\Lokasipemukiman;
+use App\Models\lokasipemukiman;
 use App\Models\Akses_pendidikan;
 
 class LokasidanPemukimanImport implements ToCollection, WithChunkReading
@@ -65,7 +65,7 @@ class LokasidanPemukimanImport implements ToCollection, WithChunkReading
             // =========================
             // 1) lokasipemukiman
             // =========================
-            $mL = Lokasipemukiman::firstOrNew(['nik' => $nik]);
+            $mL = lokasipemukiman::firstOrNew(['nik' => $nik]);
             $mL->kk  = $kk;
             $mL->nik = $nik;
             $mL->nama = $nama;
