@@ -3,13 +3,12 @@
 namespace App\Exports;
 
 use App\Models\datapenduduk;
-use App\Models\lokasipemukiman;
+use App\Models\lokasipemukiman; // Mongo
 use App\Models\dataindividu;
 use App\Models\akses_pendidikan;
 use App\Models\akseskesehatan;
-use App\Models\aksessarpras;
-use App\Models\aksestenagakerja;
-use App\Models\laink;
+
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -17,117 +16,207 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\DefaultValueBinder;
+
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class LokasidanPemukimanExport extends DefaultValueBinder implements
-    FromQuery, WithHeadings, WithMapping, ShouldAutoSize,
-    WithColumnFormatting, WithCustomValueBinder
+    FromQuery,
+    WithHeadings,
+    WithMapping,
+    ShouldAutoSize,
+    WithColumnFormatting,
+    WithCustomValueBinder
 {
-    public function __construct(protected ?string $filterNik = null) {}
+    protected array $allowedDatak = ['tetap', 'tidaktetap'];
+    protected array $nikList = [];
 
-    public function query()
+    protected bool $cacheReady = false;
+
+    protected Collection $lokasiMap;
+    protected Collection $individuMap;
+    protected Collection $pendMap;
+    protected Collection $kesMap;
+
+    /**
+     * @param string|null $filterNik
+     */
+    public function __construct(protected ?string $filterNik = null)
     {
-        $allowed = ['tetap','tidaktetap'];
+        /**
+         * 1️⃣ Ambil SEMUA NIK dari Mongo yang nik_kepala TERISI
+         */
+        $this->nikList = lokasipemukiman::whereNotNull('nik_kepala')
+            ->where('nik_kepala', '!=', '')
+            ->pluck('nik')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
 
-        $q = datapenduduk::query()
-            ->with(['detailkk.kk'])
-            ->whereIn('Datak',$allowed);
-
+        /**
+         * 2️⃣ Jika export difilter per NIK
+         */
         if ($this->filterNik) {
-            $q->where('nik',$this->filterNik);
+            $this->nikList = in_array($this->filterNik, $this->nikList, true)
+                ? [$this->filterNik]
+                : [];
         }
-
-        return $q;
     }
 
+    /**
+     * Query utama MySQL
+     */
+    public function query()
+    {
+        if (empty($this->nikList)) {
+            return datapenduduk::query()->whereRaw('1=0');
+        }
+
+        return datapenduduk::query()
+            ->with(['detailkk.kk'])
+            ->whereIn('Datak', $this->allowedDatak)
+            ->whereIn('nik', $this->nikList);
+    }
+
+    /**
+     * Header Excel
+     */
     public function headings(): array
     {
         return [
-            'NO KK','NIK','NAMA','ALAMAT','NO. HP','NO. Telpon Rumah',
-            'NIK Kepala Keluarga','TEMPAT TINGGAL YANG DITEMPATI','STATUS LAHAN',
-            'LUAS LANTAI TEMPAT TINGGAL (m2)','LUAS TANAH TEMPAT TINGGAL (m2)',
-            'JENIS LANTAI TEMPAT TINGGAL TERLUAS','DINDING SEBAGIAN BESAR RUMAH',
-            'JENDELA','ATAP','PENERANGAN RUMAH','ENERGI UNTUK MEMASAK',
-            'JIKA MENGGUNAKAN KAYU BAKAR, SUMBER KAYU BAKAR','TEMPAT PEMBUANGAN SAMPAH',
-            'FASILITAS MCK','SUMBER AIR MANDI TERBANYAK DARI','FASILITAS BUANG AIR BESAR',
-            'SUMBER AIR MINUM TERBANYAK','TEMPAT PEMBUANGAN AIR LIMBAH',
-            'RUMAH DILEWATI SUTET','RUMAH DIPANTARAN SUNGAI','RUMAH DI LERENG GUNUNG / BUKIT',
-            'KONDISI RUMAH KUMUH / TIDAK',
-            // Contoh blok akses PAUD (sisanya tinggal ikuti pola ini bila diperlukan):
-            'PAUD - JARAK (KM)','PAUD - WAKTU (JAM)','PAUD - KEMUDAHAN',
+            'NO KK',
+            'NIK',
+            'NAMA',
+            'ALAMAT',
+            'NO. HP',
+            'NO. TELPON RUMAH',
+
+            'NIK KEPALA KELUARGA',
+            'TEMPAT TINGGAL',
+            'STATUS LAHAN',
+            'LUAS LANTAI (M2)',
+            'LUAS TANAH (M2)',
+            'JENIS LANTAI',
+            'DINDING',
+            'JENDELA',
+            'ATAP',
+            'PENERANGAN',
+            'ENERGI MASAK',
+            'SUMBER KAYU',
+            'TEMPAT SAMPAH',
+            'MCK',
+            'SUMBER AIR MANDI',
+            'SUMBER AIR MCK',
+            'SUMBER AIR MINUM',
+            'PEMBUANGAN LIMBAH',
+            'RUMAH SUTET',
+            'RUMAH SUNGAI',
+            'RUMAH LERENG',
+            'RUMAH KUMUH',
+
+            'PAUD JARAK',
+            'PAUD WAKTU',
+            'PAUD KEMUDAHAN',
         ];
     }
 
+    /**
+     * Format kolom angka panjang
+     */
     public function columnFormats(): array
     {
-        // A & B dipaksa TEXT (NO KK & NIK). Nomor telp juga sering panjang → TEXT.
         return [
             'A' => NumberFormat::FORMAT_TEXT,
             'B' => NumberFormat::FORMAT_TEXT,
-            'E' => NumberFormat::FORMAT_TEXT, // NO. HP
-            'F' => NumberFormat::FORMAT_TEXT, // NO. Telpon Rumah
-            'G' => NumberFormat::FORMAT_TEXT, // NIK Kepala Keluarga
+            'E' => NumberFormat::FORMAT_TEXT,
+            'F' => NumberFormat::FORMAT_TEXT,
+            'G' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
-    // Pastikan kolom tertentu & angka panjang jadi teks
+    /**
+     * Paksa TEXT untuk NIK, KK, No HP
+     */
     public function bindValue(Cell $cell, $value)
     {
-        if (in_array($cell->getColumn(), ['A','B','E','F','G'])) {
-            $cell->setValueExplicit((string)$value, DataType::TYPE_STRING);
+        if (in_array($cell->getColumn(), ['A', 'B', 'E', 'F', 'G'], true)) {
+            $cell->setValueExplicit((string) $value, DataType::TYPE_STRING);
             return true;
         }
+
         if (is_numeric($value) && strlen((string)$value) >= 12) {
-            $cell->setValueExplicit((string)$value, DataType::TYPE_STRING);
+            $cell->setValueExplicit((string) $value, DataType::TYPE_STRING);
             return true;
         }
+
         return parent::bindValue($cell, $value);
     }
 
+    /**
+     * Build cache sekali saja (ANTI N+1)
+     */
+    protected function buildCache(): void
+    {
+        if ($this->cacheReady) return;
+
+        $niks = $this->nikList;
+
+        $this->lokasiMap   = lokasipemukiman::whereIn('nik', $niks)->get()->keyBy('nik');
+        $this->individuMap = dataindividu::whereIn('nik', $niks)->get()->keyBy('nik');
+        $this->pendMap     = akses_pendidikan::whereIn('nik', $niks)->get()->keyBy('nik');
+        $this->kesMap      = akseskesehatan::whereIn('nik', $niks)->get()->keyBy('nik');
+
+        $this->cacheReady = true;
+    }
+
+    /**
+     * Mapping per baris
+     */
     public function map($row): array
     {
-        $kk = optional(optional($row->detailkk)->kk)->nokk ?? '';
+        $this->buildCache();
 
-        $lok   = lokasipemukiman::where('nik',$row->nik)->first();
-        $ind   = dataindividu::where('nik',$row->nik)->first();
-        $pend  = akses_pendidikan::where('nik',$row->nik)->first();
-        $kes   = akseskesehatan::where('nik',$row->nik)->first();
+        $kk   = optional(optional($row->detailkk)->kk)->nokk ?? '';
+        $lok  = $this->lokasiMap->get($row->nik);
+        $ind  = $this->individuMap->get($row->nik);
+        $pend = $this->pendMap->get($row->nik);
 
         return [
-            (string)$kk,
-            (string)$row->nik,
-            $row->nama ?? ($lok->nama ?? ''),
-            $lok->alamat ?? '',
-            (string)($lok->nohp ?? $ind->nohp ?? ''),
-            (string)($lok->nowa ?? ''),
-            (string)($lok->nik_kepala ?? ''),
-            $lok->tempat_tinggal ?? '',
-            $lok->status_lahan ?? '',
-            $lok->luas_lantai_tinggal ?? '',
-            $lok->luas_tanah_tinggal ?? '',
-            $lok->jenis_lantai_tinggal ?? '',
-            $lok->dinding_sebagian ?? '',
-            $lok->jendela ?? '',
-            $lok->atap ?? '',
-            $lok->penerangan ?? '',
-            $lok->energi_masak ?? '',
-            $lok->jika_kayu_jenis ?? '',
-            $lok->tempat_sampah ?? '',
-            $lok->mck ?? '',
-            $lok->sumber_air_mandi ?? '',
-            $lok->sumber_air_mck ?? '',
-            $lok->sumber_air_minum ?? '',
-            $lok->tempat_pembuangan_limbah ?? '',
-            $lok->rumah_sutet ?? '',
-            $lok->rumah_sungai ?? '',
-            $lok->rumah_lereng_gunung ?? '',
-            $lok->kondi_rumah_kumuh ?? '',
-            // PAUD (contoh 3 kolom awal akses pendidikan)
-            $pend->jaraktempuh_paud ?? '',
-            $pend->waktutempuh_paud ?? '',
-            $pend->kemudahan_paud ?? '',
+            (string) $kk,
+            (string) $row->nik,
+            $row->nama ?? '',
+            $row->alamat ?? '',
+            (string) data_get($ind, 'nohp', ''),
+            (string) data_get($ind, 'nowa', ''),
+
+            (string) data_get($lok, 'nik_kepala', ''),
+            data_get($lok, 'tempat_tinggal', ''),
+            data_get($lok, 'status_lahan', ''),
+            data_get($lok, 'luas_lantai_tinggal', ''),
+            data_get($lok, 'luas_tanah_tinggal', ''),
+            data_get($lok, 'jenis_lantai_tinggal', ''),
+            data_get($lok, 'dinding_sebagian', ''),
+            data_get($lok, 'jendela', ''),
+            data_get($lok, 'atap', ''),
+            data_get($lok, 'penerangan', ''),
+            data_get($lok, 'energi_masak', ''),
+            data_get($lok, 'jika_kayu_jenis', ''),
+            data_get($lok, 'tempat_sampah', ''),
+            data_get($lok, 'mck', ''),
+            data_get($lok, 'sumber_air_mandi', ''),
+            data_get($lok, 'sumber_air_mck', ''),
+            data_get($lok, 'sumber_air_minum', ''),
+            data_get($lok, 'tempat_pembuangan_limbah', ''),
+            data_get($lok, 'rumah_sutet', ''),
+            data_get($lok, 'rumah_sungai', ''),
+            data_get($lok, 'rumah_lereng_gunung', ''),
+            data_get($lok, 'kondi_rumah_kumuh', ''),
+
+            data_get($pend, 'jaraktempuh_paud', ''),
+            data_get($pend, 'waktutempuh_paud', ''),
+            data_get($pend, 'kemudahan_paud', ''),
         ];
     }
 }
