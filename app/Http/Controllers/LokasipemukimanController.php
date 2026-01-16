@@ -80,12 +80,10 @@ class LokasipemukimanController extends Controller
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues)
-            ->whereHas('lokasipemukiman', function ($q) {
-                $q->whereNotNull('nik_kepala')
-                    ->where('nik_kepala', '!=', '');
-            });
+        $query = Datapenduduk::query()
+            ->whereIn('Datak', ['tetap', 'tidaktetap'])
+            ->whereNotNull('nik_kepala')
+            ->where('nik_kepala', '!=', '');
 
 
         return DataTables::of($query)
