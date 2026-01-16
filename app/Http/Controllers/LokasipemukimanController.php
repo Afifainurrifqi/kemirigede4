@@ -80,22 +80,8 @@ class LokasipemukimanController extends Controller
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        $nikTerisi = lokasipemukiman::whereNotNull('nik_kepala')
-            ->where('nik_kepala', '!=', '')
-            ->pluck('nik')          // <-- pastikan field ini memang ada di collection Mongo
-            ->filter()
-            ->unique()
-            ->values()
-            ->toArray();
-
-        // Kalau tidak ada data, langsung return kosong biar ga error whereIn([])
-        if (empty($nikTerisi)) {
-            return DataTables::of(Datapenduduk::query()->whereRaw('1=0'))->toJson();
-        }
-
         $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues)
-            ->whereIn('nik', $nikTerisi);
+            ->whereIn('Datak', $allowedDatakValues);
 
         return DataTables::of($query)
 
@@ -874,7 +860,7 @@ class LokasipemukimanController extends Controller
 
     public function json(Request $request)
     {
-        $allowedDatakValues = ['tetap', 'tidaktetap'];
+         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
         // Cek apakah ada pencarian global dari DataTables atau filter nokk khusus
         $hasGlobalSearch = filled(data_get($request->all(), 'search.value')); // DataTables global search
@@ -1744,7 +1730,7 @@ class LokasipemukimanController extends Controller
 
         $lokasi->save();
 
-        if (auth()->check() && auth()->user()->role === 'admin') {
+         if (auth()->check() && auth()->user()->role === 'admin') {
             return redirect()
                 ->route('lokasipemukiman.admin_index')
                 ->with('msg', 'Berhasil ditambahkan (Admin)');
