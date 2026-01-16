@@ -81,7 +81,12 @@ class LokasipemukimanController extends Controller
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
         $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues);
+            ->whereIn('Datak', $allowedDatakValues)
+            ->whereHas('lokasipemukiman', function ($q) {
+                $q->whereNotNull('nik_kepala')
+                    ->where('nik_kepala', '!=', '');
+            });
+
 
         return DataTables::of($query)
 
@@ -860,7 +865,7 @@ class LokasipemukimanController extends Controller
 
     public function json(Request $request)
     {
-         $allowedDatakValues = ['tetap', 'tidaktetap'];
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
 
         // Cek apakah ada pencarian global dari DataTables atau filter nokk khusus
         $hasGlobalSearch = filled(data_get($request->all(), 'search.value')); // DataTables global search
@@ -1730,7 +1735,7 @@ class LokasipemukimanController extends Controller
 
         $lokasi->save();
 
-         if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && auth()->user()->role === 'admin') {
             return redirect()
                 ->route('lokasipemukiman.admin_index')
                 ->with('msg', 'Berhasil ditambahkan (Admin)');
