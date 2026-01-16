@@ -80,8 +80,29 @@ class LokasipemukimanController extends Controller
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
+        // 1) Ambil semua NIK (penghubung) yang nik_kepala-nya terisi di Mongo
+        $nikList = lokasipemukiman::whereNotNull('nik_kepala')
+            ->where('nik_kepala', '!=', '')
+            ->pluck('nik')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Kalau kosong, return datatable kosong
+        if (empty($nikList)) {
+            return DataTables::of(Datapenduduk::query()->whereRaw('1=0'))->toJson();
+        }
+
+        // 2) Ambil semua dokumen Mongo untuk NIK tersebut, buat map biar cepat saat render kolom
+        $lokasiMap = lokasipemukiman::whereIn('nik', $nikList)
+            ->get()
+            ->keyBy('nik');
+
+        // 3) Query MySQL: tampilkan semua datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
         $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues);
+            ->whereIn('Datak', $allowedDatakValues)
+            ->whereIn('nik', $nikList);
 
         return DataTables::of($query)
 
@@ -860,7 +881,7 @@ class LokasipemukimanController extends Controller
 
     public function json(Request $request)
     {
-         $allowedDatakValues = ['tetap', 'tidaktetap'];
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
 
         // Cek apakah ada pencarian global dari DataTables atau filter nokk khusus
         $hasGlobalSearch = filled(data_get($request->all(), 'search.value')); // DataTables global search
@@ -1730,7 +1751,7 @@ class LokasipemukimanController extends Controller
 
         $lokasi->save();
 
-         if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && auth()->user()->role === 'admin') {
             return redirect()
                 ->route('lokasipemukiman.admin_index')
                 ->with('msg', 'Berhasil ditambahkan (Admin)');
