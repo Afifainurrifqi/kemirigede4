@@ -339,10 +339,9 @@
         <div class="title">
           <div class="badge" aria-hidden="true"></div>
           <div>
-            <h1>Maintenance Mode: Fix The Web</h1>
+            <h1>Web lagi di perbaiki, Main Game dulu </h1>
             <p class="sub">
-              Klik <b>🐞 bug</b> yang muncul untuk “memperbaiki web”.
-              Semakin banyak bug kamu beresin, semakin tinggi progres “repair”-nya.
+              Klik <b>🐞 Kumbang</b>
             </p>
           </div>
         </div>
@@ -357,16 +356,16 @@
 
       <div class="game" id="game" aria-label="Game area">
         <div class="hint" aria-hidden="true">
-          <div class="mini">QUEST: <b>Stabilize Server</b></div>
-          <div class="mini">SERVER HP
+          <div class="mini">Perbaikan <b>Data</b></div>
+          <div class="mini">Seng sabar nggeh
             <span class="progress"><div id="hp"></div></span>
           </div>
         </div>
 
         <div class="center" id="center">
           <div>
-            <h2>Siap jadi “web mechanic”?</h2>
-            <p>Klik <b>Start</b>, lalu buru 🐞 bug yang muncul. Game ini ringan dan cocok buat halaman maintenance.</p>
+            <h2>Seng sabar nggeh pak, Dolan Game sek</h2>
+            <p>Klik <b>Start</b>, lalu tangkap kumbang yang muncul.</p>
           </div>
         </div>
 
