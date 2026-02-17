@@ -339,11 +339,11 @@
         <div class="title">
           <div class="badge" aria-hidden="true"></div>
           <div>
-            <h1>Maintenance Mode: Fix The Web</h1>
-            <p class="sub">
+            <h1>Web e sek dibenakno yo</h1>
+            {{-- <p class="sub">
               Klik <b>🐞 bug</b> yang muncul untuk “memperbaiki web”.
               Semakin banyak bug kamu beresin, semakin tinggi progres “repair”-nya.
-            </p>
+            </p> --}}
           </div>
         </div>
 
@@ -357,7 +357,7 @@
 
       <div class="game" id="game" aria-label="Game area">
         <div class="hint" aria-hidden="true">
-          <div class="mini">QUEST: <b>Stabilize Server</b></div>
+          <div class="mini">OPO AE SEH SENG DI BENAKNO: <b>DATA TOK KOK PAK</b></div>
           <div class="mini">SERVER HP
             <span class="progress"><div id="hp"></div></span>
           </div>
@@ -365,8 +365,7 @@
 
         <div class="center" id="center">
           <div>
-            <h2>Siap jadi “web mechanic”?</h2>
-            <p>Klik <b>Start</b>, lalu buru 🐞 bug yang muncul. Game ini ringan dan cocok buat halaman maintenance.</p>
+            <h2>SENG SABAR NGGEH MARINE MARI KOK</h2>
           </div>
         </div>
 
