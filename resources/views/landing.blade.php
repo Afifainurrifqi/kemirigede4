@@ -365,7 +365,7 @@
 
         <div class="center" id="center">
           <div>
-            <h2>SENG SABAR NGGEH MARINE MARI KOK</h2>
+            <h2>SENG SABAR NGGEH MARINE MARI KOK, DOLAN GAME SEK AE KLIK "START" DI POJOK ATAS</h2>
           </div>
         </div>
 
