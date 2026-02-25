@@ -94,12 +94,7 @@ class LokasipemukimanController extends Controller
             return DataTables::of(Datapenduduk::query()->whereRaw('1=0'))->toJson();
         }
 
-        // 2) Ambil semua dokumen Mongo untuk NIK tersebut, buat map biar cepat saat render kolom
-        $lokasiMap = lokasipemukiman::whereIn('nik', $nikList)
-            ->get()
-            ->keyBy('nik');
-
-        // 3) Query MySQL: tampilkan semua datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
+        // 2) Query MySQL: tampilkan semua datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
         $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
             ->whereIn('Datak', $allowedDatakValues)
             ->whereIn('nik', $nikList);
@@ -109,28 +104,26 @@ class LokasipemukimanController extends Controller
             ->addColumn('nokk', function ($row) {
                 return optional($row->detailkk->kk)->nokk;
             })
-            // ⬇️ Izinkan pencarian global di kolom NO KK (relasi)
             ->filterColumn('nokk', function ($q, $keyword) {
                 $q->whereHas('detailkk.kk', function ($qq) use ($keyword) {
                     $qq->where('nokk', 'like', "%{$keyword}%");
                 });
             })
-            // (opsional) izinkan sorting kolom NO KK
             ->orderColumn('nokk', function ($q, $order) {
                 $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
                     ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
                     ->orderBy('kks.nokk', $order)
-                    ->select('datapenduduks.*'); // hindari duplikasi kolom
+                    ->select('datapenduduks.*');
             })
             ->addColumn('action', function ($row) {
                 return '<td>
-                            <a href="' . route('lokasipemukiman.show', ['show' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Lihat Data">
-                                <i class="fas fa-book"></i>
-                            </a>
-                            <a href="' . route('lokasipemukiman.edit', ['nik' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Edit Data">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>';
+                        <a href="' . route('lokasipemukiman.show', ['show' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Lihat Data">
+                            <i class="fas fa-book"></i>
+                        </a>
+                        <a href="' . route('lokasipemukiman.edit', ['nik' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Edit Data">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>';
             })
 
             ->addColumn('nowa', function ($row) {

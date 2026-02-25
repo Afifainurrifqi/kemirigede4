@@ -115,7 +115,9 @@
                 serverSide: true,
                 scrollX: true,
                 searching: true,
-                // dom: 'Bfrtip',
+                order: [
+                    [3, 'asc']
+                ],
                 ajax: {
                     url: '{!! route('lokasidanpemukiman.jsonadmin') !!}',
                     type: 'POST',
@@ -134,9 +136,7 @@
                 }],
                 columns: [{
                         data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
+                        name: 'action'
                     },
                     {
                         data: null,
