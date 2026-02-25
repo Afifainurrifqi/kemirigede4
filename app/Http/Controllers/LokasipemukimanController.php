@@ -8,7 +8,7 @@ use App\Models\pendidikan;
 use App\Models\pekerjaan;
 use App\Models\status;
 use App\Models\goldar;
-use App\Models\Datapenduduk;
+use App\Models\datapenduduk;
 use Illuminate\Http\Request;
 use App\Models\lokasipemukiman;
 use App\Http\Requests\StorelokasipemukimanRequest;
@@ -32,7 +32,7 @@ class LokasipemukimanController extends Controller
      */
     public function index(Request $request)
     {
-        $totalPenduduk = Datapenduduk::count();
+        $totalPenduduk = datapenduduk::count();
 
         // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
         $dataTerisi = lokasipemukiman::count();
@@ -45,7 +45,7 @@ class LokasipemukimanController extends Controller
 
     public function admin_index(Request $request)
     {
-        $totalPenduduk = Datapenduduk::count();
+        $totalPenduduk = datapenduduk::count();
 
         // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
         $dataTerisi = lokasipemukiman::count();
@@ -91,7 +91,7 @@ class LokasipemukimanController extends Controller
 
         // Kalau kosong, return datatable kosong
         if (empty($nikList)) {
-            return DataTables::of(Datapenduduk::query()->whereRaw('1=0'))->toJson();
+            return DataTables::of(datapenduduk::query()->whereRaw('1=0'))->toJson();
         }
 
         // 2) Ambil semua dokumen Mongo untuk NIK tersebut, buat map biar cepat saat render kolom
@@ -99,8 +99,8 @@ class LokasipemukimanController extends Controller
             ->get()
             ->keyBy('nik');
 
-        // 3) Query MySQL: tampilkan semua Datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
-        $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
+        // 3) Query MySQL: tampilkan semua datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
+        $query = datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
             ->whereIn('Datak', $allowedDatakValues)
             ->whereIn('nik', $nikList);
 
@@ -117,10 +117,10 @@ class LokasipemukimanController extends Controller
             })
             // (opsional) izinkan sorting kolom NO KK
             ->orderColumn('nokk', function ($q, $order) {
-                $q->join('detailkks', 'detailkks.nik', '=', 'Datapenduduks.nik')
+                $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
                     ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
                     ->orderBy('kks.nokk', $order)
-                    ->select('Datapenduduks.*'); // hindari duplikasi kolom
+                    ->select('datapenduduks.*'); // hindari duplikasi kolom
             })
             ->addColumn('action', function ($row) {
                 return '<td>
@@ -889,10 +889,10 @@ class LokasipemukimanController extends Controller
 
         if (! $hasGlobalSearch && ! $hasNokkFilter) {
             // Tidak ada search & tidak ada filter spesifik → sembunyikan data
-            $query = Datapenduduk::query()->whereRaw('1=0');
+            $query = datapenduduk::query()->whereRaw('1=0');
         } else {
             // Ada search atau ada filter nokk → tampilkan data dengan relasi
-            $query = Datapenduduk::with([
+            $query = datapenduduk::with([
                 'kk',
                 'agama',
                 'pendidikan',
@@ -927,10 +927,10 @@ class LokasipemukimanController extends Controller
             })
             // (opsional) izinkan sorting kolom NO KK
             ->orderColumn('nokk', function ($q, $order) {
-                $q->join('detailkks', 'detailkks.nik', '=', 'Datapenduduks.nik')
+                $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
                     ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
                     ->orderBy('kks.nokk', $order)
-                    ->select('Datapenduduks.*'); // hindari duplikasi kolom
+                    ->select('datapenduduks.*'); // hindari duplikasi kolom
             })
             ->addColumn('action', function ($row) {
                 return '<td>
@@ -1696,7 +1696,7 @@ class LokasipemukimanController extends Controller
      */
     public function create($nik)
     {
-        $datap = Datapenduduk::where('nik', $nik)->first();
+        $datap = datapenduduk::where('nik', $nik)->first();
         $lokasi = lokasipemukiman::where('nik', $nik)->first();
         $datai = dataindividu::where('nik', $nik)->first();
         $agama = Agama::all();
@@ -1771,7 +1771,7 @@ class LokasipemukimanController extends Controller
      */
     public function show(lokasipemukiman $lokasipemukiman, $nik)
     {
-        $datap = Datapenduduk::where('nik', $nik)->first();
+        $datap = datapenduduk::where('nik', $nik)->first();
         $lokasi = lokasipemukiman::where('nik', $nik)->first();
         $datai = dataindividu::where('nik', $nik)->first();
         $agama = Agama::all();
