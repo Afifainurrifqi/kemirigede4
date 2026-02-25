@@ -80,27 +80,35 @@ class LokasipemukimanController extends Controller
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        // 1) Ambil semua NIK (penghubung) yang nik_kepala-nya terisi di Mongo
-        $nikList = lokasipemukiman::whereNotNull('nik_kepala')
+        // 1) AMBIL NIK DARI MONGODB DIMANA NIK = NIK_KEPALA (HANYA KEPALA KELUARGA)
+        $kepalaKeluargaList = lokasipemukiman::whereRaw([
+            '$expr' => ['$eq' => ['$nik', '$nik_kepala']]  // NIK harus sama dengan NIK_KEPALA
+        ])
+            ->whereNotNull('nik_kepala')
             ->where('nik_kepala', '!=', '')
-            ->pluck('nik')
+            ->get();
+
+        // Ambil daftar NIK yang memenuhi syarat (NIK = NIK_KEPALA)
+        $nikList = $kepalaKeluargaList->pluck('nik')
             ->filter()
             ->unique()
             ->values()
             ->toArray();
+
+        // Buat map untuk akses cepat data MongoDB
+        $lokasiMap = $kepalaKeluargaList->keyBy('nik');
 
         // Kalau kosong, return datatable kosong
         if (empty($nikList)) {
             return DataTables::of(Datapenduduk::query()->whereRaw('1=0'))->toJson();
         }
 
-        // 2) Query MySQL: tampilkan semua datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
+        // 2) Query MySQL: tampilkan datapenduduk yang NIK-nya ada di list (hanya kepala keluarga)
         $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
             ->whereIn('Datak', $allowedDatakValues)
-            ->whereIn('nik', $nikList);
+            ->whereIn('nik', $nikList);  // Hanya NIK yang ada di list kepala keluarga
 
         return DataTables::of($query)
-
             ->addColumn('nokk', function ($row) {
                 return optional($row->detailkk->kk)->nokk;
             })
@@ -114,6 +122,16 @@ class LokasipemukimanController extends Controller
                     ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
                     ->orderBy('kks.nokk', $order)
                     ->select('datapenduduks.*');
+            })
+            ->addColumn('action', function ($row) {
+                return '<td>
+                        <a href="' . route('lokasipemukiman.show', ['show' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Lihat Data">
+                            <i class="fas fa-book"></i>
+                        </a>
+                        <a href="' . route('lokasipemukiman.edit', ['nik' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Edit Data">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>';
             })
             ->addColumn('action', function ($row) {
                 return '<td>
