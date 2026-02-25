@@ -91,7 +91,7 @@ class LokasipemukimanController extends Controller
 
         // Kalau kosong, return datatable kosong
         if (empty($nikList)) {
-            return DataTables::of(datapenduduk::query()->whereRaw('1=0'))->toJson();
+            return DataTables::of(Datapenduduk::query()->whereRaw('1=0'))->toJson();
         }
 
         // 2) Ambil semua dokumen Mongo untuk NIK tersebut, buat map biar cepat saat render kolom
@@ -100,7 +100,7 @@ class LokasipemukimanController extends Controller
             ->keyBy('nik');
 
         // 3) Query MySQL: tampilkan semua datapenduduk yang NIK-nya ada di list Mongo (nik_kepala terisi)
-        $query = datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
+        $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
             ->whereIn('Datak', $allowedDatakValues)
             ->whereIn('nik', $nikList);
 
@@ -889,10 +889,10 @@ class LokasipemukimanController extends Controller
 
         if (! $hasGlobalSearch && ! $hasNokkFilter) {
             // Tidak ada search & tidak ada filter spesifik → sembunyikan data
-            $query = datapenduduk::query()->whereRaw('1=0');
+            $query = Datapenduduk::query()->whereRaw('1=0');
         } else {
             // Ada search atau ada filter nokk → tampilkan data dengan relasi
-            $query = datapenduduk::with([
+            $query = Datapenduduk::with([
                 'kk',
                 'agama',
                 'pendidikan',
