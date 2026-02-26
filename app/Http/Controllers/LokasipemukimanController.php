@@ -42,7 +42,8 @@ class LokasipemukimanController extends Controller
 
         return view('sdgs.KK.lokasidanpemukiman', compact('presentase'));
     }
-      private function baseKkQuery(Request $request)
+
+    private function baseKkQuery(Request $request)
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 

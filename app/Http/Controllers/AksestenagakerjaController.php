@@ -35,15 +35,53 @@ class AksestenagakerjaController extends Controller
         return view('sdgs.KK.aksestenagakerja', compact('presentase'));
     }
 
+    private function baseKkQuery(Request $request)
+    {
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
+
+        $q = Datapenduduk::query()
+            ->whereIn('datapenduduks.Datak', $allowedDatakValues)
+            ->where('datapenduduks.hubungan', 'Kepala Keluarga') // ✅ sesuaikan value kalau beda
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->select([
+                'datapenduduks.*',
+                'kks.nokk as nokk',
+            ]);
+
+        /**
+         * ✅ OPTIONAL: kalau kamu punya filter noKK khusus (misal dari input)
+         */
+        if ($request->filled('nokk')) {
+            $nokk = $request->input('nokk');
+            $q->where('kks.nokk', 'like', "%{$nokk}%");
+        }
+
+        /**
+         * ✅ OPTIONAL: kalau kamu mau filter by nik kepala juga
+         */
+        if ($request->filled('nik')) {
+            $nik = $request->input('nik');
+            $q->where('datapenduduks.nik', 'like', "%{$nik}%");
+        }
+
+        return $q;
+    }
+
     public function admin_index(Request $request)
     {
-        $totalPenduduk = datapenduduk::count();
+        $totalKK = (clone $this->baseKkQuery(new Request()))
+            ->distinct('nokk')
+            ->count('nokk');
 
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
-        $dataTerisi = akseskesehatan::count();
+        $nikKepalaList = (clone $this->baseKkQuery(new Request()))
+            ->pluck('datapenduduks.nik')
+            ->unique()
+            ->values();
 
-        // Hitung presentase penyelesaian data
-        $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
+        $terisiKK = aksestenagakerja::whereIn('nik_kepala', $nikKepalaList)->count();
+
+        $presentase = $totalKK > 0 ? ($terisiKK / $totalKK) * 100 : 0;
 
         return view('sdgs.KK.admin_aksestenagakerja', compact('presentase'));
     }
