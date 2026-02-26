@@ -48,7 +48,7 @@ class AksessarprasController extends Controller
 
     public function json(Request $request)
     {
-         $allowedDatakValues = ['tetap', 'tidaktetap'];
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
 
         // Cek apakah ada pencarian global dari DataTables atau filter nokk khusus
         $hasGlobalSearch = filled(data_get($request->all(), 'search.value')); // DataTables global search
@@ -83,21 +83,21 @@ class AksessarprasController extends Controller
         return DataTables::of($query)
 
             ->addColumn('nokk', function ($row) {
-            return optional($row->detailkk->kk)->nokk;
-        })
-        // ⬇️ Izinkan pencarian global di kolom NO KK (relasi)
-        ->filterColumn('nokk', function ($q, $keyword) {
-            $q->whereHas('detailkk.kk', function ($qq) use ($keyword) {
-                $qq->where('nokk', 'like', "%{$keyword}%");
-            });
-        })
-        // (opsional) izinkan sorting kolom NO KK
-        ->orderColumn('nokk', function ($q, $order) {
-            $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
-              ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
-              ->orderBy('kks.nokk', $order)
-              ->select('datapenduduks.*'); // hindari duplikasi kolom
-        })
+                return optional($row->detailkk->kk)->nokk;
+            })
+            // ⬇️ Izinkan pencarian global di kolom NO KK (relasi)
+            ->filterColumn('nokk', function ($q, $keyword) {
+                $q->whereHas('detailkk.kk', function ($qq) use ($keyword) {
+                    $qq->where('nokk', 'like', "%{$keyword}%");
+                });
+            })
+            // (opsional) izinkan sorting kolom NO KK
+            ->orderColumn('nokk', function ($q, $order) {
+                $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
+                    ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
+                    ->orderBy('kks.nokk', $order)
+                    ->select('datapenduduks.*'); // hindari duplikasi kolom
+            })
             ->addColumn('action', function ($row) {
                 return '<td>
                             <a href="' . route('aksessarpras.show', ['show' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Lihat Data">
@@ -309,27 +309,37 @@ class AksessarprasController extends Controller
     {
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues);
+        $sub = Datapenduduk::query()
+            ->whereIn('datapenduduks.Datak', $allowedDatakValues)
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->selectRaw('MIN(datapenduduks.id) as id')   // ambil 1 anggota per NO KK
+            ->groupBy('kks.nokk');
+
+        $query = Datapenduduk::query()
+            ->joinSub($sub, 't', fn($join) => $join->on('datapenduduks.id', '=', 't.id'))
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->select('datapenduduks.*', 'kks.nokk as nokk');
 
         return DataTables::of($query)
 
             ->addColumn('nokk', function ($row) {
-            return optional($row->detailkk->kk)->nokk;
-        })
-        // ⬇️ Izinkan pencarian global di kolom NO KK (relasi)
-        ->filterColumn('nokk', function ($q, $keyword) {
-            $q->whereHas('detailkk.kk', function ($qq) use ($keyword) {
-                $qq->where('nokk', 'like', "%{$keyword}%");
-            });
-        })
-        // (opsional) izinkan sorting kolom NO KK
-        ->orderColumn('nokk', function ($q, $order) {
-            $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
-              ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
-              ->orderBy('kks.nokk', $order)
-              ->select('datapenduduks.*'); // hindari duplikasi kolom
-        })
+                return optional($row->detailkk->kk)->nokk;
+            })
+            // ⬇️ Izinkan pencarian global di kolom NO KK (relasi)
+            ->filterColumn('nokk', function ($q, $keyword) {
+                $q->whereHas('detailkk.kk', function ($qq) use ($keyword) {
+                    $qq->where('nokk', 'like', "%{$keyword}%");
+                });
+            })
+            // (opsional) izinkan sorting kolom NO KK
+            ->orderColumn('nokk', function ($q, $order) {
+                $q->join('detailkks', 'detailkks.nik', '=', 'datapenduduks.nik')
+                    ->join('kks', 'kks.id', '=', 'detailkks.kk_id')
+                    ->orderBy('kks.nokk', $order)
+                    ->select('datapenduduks.*'); // hindari duplikasi kolom
+            })
             ->addColumn('action', function ($row) {
                 return '<td>
                             <a href="' . route('aksessarpras.show', ['show' => $row->nik]) . '" class="btn mb-1 btn-info btn-sm" title="Lihat Data">
@@ -601,7 +611,7 @@ class AksessarprasController extends Controller
         $akses_sarpras->kemudahan_rekreasi = $request->valkemudahan_rekreasi;
 
         $akses_sarpras->save();
-       if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && auth()->user()->role === 'admin') {
             return redirect()
                 ->route('aksessarpras.admin_index')
                 ->with('msg', 'Berhasil ditambahkan (Admin)');

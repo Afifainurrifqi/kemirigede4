@@ -49,10 +49,20 @@ class LainkController extends Controller
 
     public function jsonadmin(Request $request)
     {
-        $allowedDatakValues = ['tetap', 'tidaktetap'];
+     $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-        $query = Datapenduduk::with(['kk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status', 'detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues);
+        $sub = Datapenduduk::query()
+            ->whereIn('datapenduduks.Datak', $allowedDatakValues)
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->selectRaw('MIN(datapenduduks.id) as id')   // ambil 1 anggota per NO KK
+            ->groupBy('kks.nokk');
+
+        $query = Datapenduduk::query()
+            ->joinSub($sub, 't', fn($join) => $join->on('datapenduduks.id', '=', 't.id'))
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->select('datapenduduks.*', 'kks.nokk as nokk');
 
         return DataTables::of($query)
 

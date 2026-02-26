@@ -42,16 +42,53 @@ class LokasipemukimanController extends Controller
 
         return view('sdgs.KK.lokasidanpemukiman', compact('presentase'));
     }
+      private function baseKkQuery(Request $request)
+    {
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
+
+        $q = Datapenduduk::query()
+            ->whereIn('datapenduduks.Datak', $allowedDatakValues)
+            ->where('datapenduduks.hubungan', 'Kepala Keluarga') // ✅ sesuaikan value kalau beda
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->select([
+                'datapenduduks.*',
+                'kks.nokk as nokk',
+            ]);
+
+        /**
+         * ✅ OPTIONAL: kalau kamu punya filter noKK khusus (misal dari input)
+         */
+        if ($request->filled('nokk')) {
+            $nokk = $request->input('nokk');
+            $q->where('kks.nokk', 'like', "%{$nokk}%");
+        }
+
+        /**
+         * ✅ OPTIONAL: kalau kamu mau filter by nik kepala juga
+         */
+        if ($request->filled('nik')) {
+            $nik = $request->input('nik');
+            $q->where('datapenduduks.nik', 'like', "%{$nik}%");
+        }
+
+        return $q;
+    }
 
     public function admin_index(Request $request)
     {
-        $totalPenduduk = datapenduduk::count();
+        $totalKK = (clone $this->baseKkQuery(new Request()))
+            ->distinct('nokk')
+            ->count('nokk');
 
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
-        $dataTerisi = lokasipemukiman::count();
+        $nikKepalaList = (clone $this->baseKkQuery(new Request()))
+            ->pluck('datapenduduks.nik')
+            ->unique()
+            ->values();
 
-        // Hitung presentase penyelesaian data
-        $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
+        $terisiKK = lokasipemukiman::whereIn('nik_kepala', $nikKepalaList)->count();
+
+        $presentase = $totalKK > 0 ? ($terisiKK / $totalKK) * 100 : 0;
 
         return view('sdgs.KK.admin_lokasidanpemukiman', compact('presentase'));
     }
@@ -78,22 +115,21 @@ class LokasipemukimanController extends Controller
 
     public function jsonadmin(Request $request)
     {
+
         $allowedDatakValues = ['tetap', 'tidaktetap'];
 
-           $allowedDatakValues = ['tetap', 'tidaktetap'];
+        $sub = Datapenduduk::query()
+            ->whereIn('datapenduduks.Datak', $allowedDatakValues)
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->selectRaw('MIN(datapenduduks.id) as id')   // ambil 1 anggota per NO KK
+            ->groupBy('kks.nokk');
 
-    $sub = Datapenduduk::query()
-        ->whereIn('datapenduduks.Datak', $allowedDatakValues)
-        ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
-        ->join('kks', 'kks.id', '=', 'detailkks.idkk')
-        ->selectRaw('MIN(datapenduduks.id) as id')   // ambil 1 anggota per NO KK
-        ->groupBy('kks.nokk');
-
-    $query = Datapenduduk::query()
-        ->joinSub($sub, 't', fn($join) => $join->on('datapenduduks.id', '=', 't.id'))
-        ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
-        ->join('kks', 'kks.id', '=', 'detailkks.idkk')
-        ->select('datapenduduks.*', 'kks.nokk as nokk');
+        $query = Datapenduduk::query()
+            ->joinSub($sub, 't', fn($join) => $join->on('datapenduduks.id', '=', 't.id'))
+            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
+            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+            ->select('datapenduduks.*', 'kks.nokk as nokk');
 
         return DataTables::of($query)
 
@@ -872,7 +908,7 @@ class LokasipemukimanController extends Controller
 
     public function json(Request $request)
     {
-         $allowedDatakValues = ['tetap', 'tidaktetap'];
+        $allowedDatakValues = ['tetap', 'tidaktetap'];
 
         // Cek apakah ada pencarian global dari DataTables atau filter nokk khusus
         $hasGlobalSearch = filled(data_get($request->all(), 'search.value')); // DataTables global search
@@ -1742,7 +1778,7 @@ class LokasipemukimanController extends Controller
 
         $lokasi->save();
 
-         if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && auth()->user()->role === 'admin') {
             return redirect()
                 ->route('lokasipemukiman.admin_index')
                 ->with('msg', 'Berhasil ditambahkan (Admin)');
