@@ -1,584 +1,334 @@
-<!doctype html>
-<html lang="id">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Maintenance Game</title>
-  <style>
-    :root{
-      --bg1:#0b1020;
-      --bg2:#121a33;
-      --panel:#0e1430cc;
-      --text:#e9f0ff;
-      --muted:#b9c7ff;
-      --accent:#7c5cff;
-      --accent2:#38e6b5;
-      --danger:#ff5c7a;
-      --shadow: 0 18px 55px rgba(0,0,0,.45);
-    }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
-      color:var(--text);
-      background: radial-gradient(1200px 900px at 70% 10%, #263a7a 0%, var(--bg1) 55%, #070a14 100%);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-    }
+    <!-- ========== Meta Tags ========== -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Gostart - Startup Landing Page Template">
 
-    /* subtle stars */
-    .stars{
-      position:fixed; inset:-25%;
-      background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.7) 30%, transparent 31%),
-        radial-gradient(1px 1px at 70% 10%, rgba(255,255,255,.6) 35%, transparent 36%),
-        radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.5) 35%, transparent 36%),
-        radial-gradient(2px 2px at 85% 65%, rgba(255,255,255,.65) 30%, transparent 31%),
-        radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,.5) 35%, transparent 36%),
-        radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,.4) 35%, transparent 36%);
-      opacity:.35;
-      animation: drift 45s linear infinite;
-      pointer-events:none;
-    }
-    @keyframes drift{
-      from{ transform: translate3d(0,0,0); }
-      to{ transform: translate3d(-6%, 4%, 0); }
-    }
+    <!-- ========== Page Title ========== -->
+    <title>SITAKRO</title>
 
-    .wrap{
-      width:min(980px, 94vw);
-      display:grid;
-      gap:14px;
-    }
+    <!-- ========== Favicon Icon ========== -->
+    <link rel="shortcut icon" href="assets2/img/logodesa.png" type="image/x-icon">
 
-    .panel{
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      overflow:hidden;
-    }
+    <!-- ========== Start Stylesheet ========== -->
+    <link href="assets2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets2/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="assets2/css/themify-icons.css" rel="stylesheet" />
+    <link href="assets2/css/flaticon-set.css" rel="stylesheet" />
+    <link href="assets2/css/magnific-popup.css" rel="stylesheet" />
+    <link href="assets2/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="assets2/css/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="assets2/css/animate.css" rel="stylesheet" />
+    <link href="assets2/css/bootsnav.css" rel="stylesheet" />
+    <link href="assets2/css/style.css" rel="stylesheet" />
+    <link href="assets2/css/responsive.css" rel="stylesheet" />
+    <!-- ========== End Stylesheet ========== -->
 
-    .top{
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      padding:18px 18px 12px;
-      align-items:flex-start;
-      flex-wrap:wrap;
-    }
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="assets2/js/html5/html5shiv.min.js"></script>
+      <script src="assets2/js/html5/respond.min.js"></script>
+    <![endif]-->
 
-    .title{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      min-width: 260px;
-    }
-    .badge{
-      width:44px; height:44px;
-      border-radius: 12px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
-        linear-gradient(135deg, rgba(124,92,255,.95), rgba(56,230,181,.85));
-      box-shadow: 0 12px 28px rgba(124,92,255,.20);
-      flex:0 0 auto;
-      position:relative;
-    }
-    .badge::after{
-      content:"";
-      position:absolute; inset:12px;
-      border-radius:9px;
-      border:2px dashed rgba(255,255,255,.55);
-    }
-    h1{
-      margin:0;
-      font-size: clamp(20px, 3vw, 32px);
-      line-height:1.1;
-      letter-spacing:-0.02em;
-    }
-    .sub{
-      margin:7px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      max-width: 520px;
-    }
+    <!-- ========== Google Fonts ========== -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800" rel="stylesheet">
 
-    .hud{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 9px 11px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      font-size: 13px;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .dot{
-      width: 9px; height: 9px;
-      border-radius:999px;
-      background: var(--accent2);
-      box-shadow: 0 0 0 4px rgba(56,230,181,.14);
-      animation: pulse 1.1s ease-in-out infinite;
-    }
-    @keyframes pulse{
-      0%,100%{ transform:scale(1); opacity:.85; }
-      50%{ transform:scale(1.25); opacity:1; }
-    }
-
-    .btn{
-      border: 0;
-      cursor:pointer;
-      color: var(--text);
-      font-weight: 700;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      transition: transform .12s ease, background .12s ease;
-      user-select:none;
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.11); }
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(56,230,181,.80));
-      border-color: rgba(255,255,255,.16);
-      box-shadow: 0 14px 35px rgba(124,92,255,.18);
-    }
-
-    .game{
-      position:relative;
-      height: 420px;
-      width:100%;
-      background:
-        radial-gradient(900px 260px at 60% 20%, rgba(124,92,255,.18), transparent 60%),
-        linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.40));
-      border-top: 1px solid rgba(255,255,255,.08);
-      overflow:hidden;
-    }
-    @media (max-width: 560px){
-      .game{ height: 460px; }
-    }
-
-    /* scanlines */
-    .game::before{
-      content:"";
-      position:absolute; inset:0;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.05) 0 1px,
-        rgba(0,0,0,0) 1px 3px
-      );
-      opacity:.20;
-      pointer-events:none;
-      mix-blend-mode: overlay;
-    }
-
-    .hint{
-      position:absolute;
-      left: 14px; right: 14px; top: 12px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      font-size: 13px;
-      color: rgba(233,240,255,.88);
-      opacity:.92;
-    }
-    .hint .mini{
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(6px);
-      display:flex;
-      gap:8px;
-      align-items:center;
-      white-space:nowrap;
-    }
-    .progress{
-      width: 170px;
-      height: 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.10);
-      overflow:hidden;
-      position:relative;
-    }
-    .progress > div{
-      height:100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--danger), #ffd86a);
-      transition: width .2s ease;
-    }
-
-    .center{
-      position:absolute;
-      inset:0;
-      display:grid;
-      place-items:center;
-      pointer-events:none;
-      text-align:center;
-      padding: 0 18px;
-    }
-    .center h2{
-      margin:0;
-      font-size: clamp(18px, 2.7vw, 26px);
-    }
-    .center p{
-      margin:8px 0 0;
-      color: var(--muted);
-      line-height:1.5;
-      max-width: 560px;
-    }
-
-    /* Bug (target) */
-    .bug{
-      position:absolute;
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background:
-        radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 45%),
-        linear-gradient(135deg, rgba(255,92,122,.95), rgba(124,92,255,.75));
-      box-shadow: 0 14px 35px rgba(255,92,122,.18);
-      border: 1px solid rgba(255,255,255,.14);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      user-select:none;
-      transform: translateZ(0);
-      animation: pop .12s ease-out;
-    }
-    @keyframes pop{
-      from{ transform: scale(.92); opacity:.7; }
-      to{ transform: scale(1); opacity:1; }
-    }
-    .bug::before{
-      content:"🐞";
-      font-size: 22px;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.35));
-    }
-    .bug.miss{
-      background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-      box-shadow: 0 14px 35px rgba(0,0,0,.10);
-    }
-    .bug.miss::before{ content:"💥"; }
-
-    /* little floating text */
-    .float{
-      position:absolute;
-      font-weight: 800;
-      font-size: 14px;
-      pointer-events:none;
-      text-shadow: 0 10px 24px rgba(0,0,0,.45);
-      animation: floatUp .6s ease-out forwards;
-    }
-    @keyframes floatUp{
-      from{ transform: translateY(0); opacity:1; }
-      to{ transform: translateY(-24px); opacity:0; }
-    }
-
-    /* overlay end */
-    .overlay{
-      position:absolute;
-      inset:0;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.35);
-      backdrop-filter: blur(6px);
-      padding: 18px;
-    }
-    .overlay .card{
-      width:min(520px, 94%);
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(14,20,48,.85);
-      box-shadow: var(--shadow);
-      padding: 16px;
-      text-align:center;
-    }
-    .overlay h3{ margin:0; font-size:22px; }
-    .overlay p{ margin:10px 0 0; color: var(--muted); line-height:1.5; }
-    .overlay .row{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top: 14px;
-    }
-
-    /* footer text */
-    .footerText{
-      text-align:center;
-      color: rgba(233,240,255,.92);
-      font-size: 14.5px;
-      padding: 10px 4px 0;
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none !important; transition:none !important; }
-    }
-  </style>
 </head>
+
 <body>
-  <div class="stars" aria-hidden="true"></div>
 
-  <div class="wrap">
-    <section class="panel">
-      <div class="top">
-        <div class="title">
-          <div class="badge" aria-hidden="true"></div>
-          <div>
-            <h1>Web e sek dibenakno yo</h1>
-            {{-- <p class="sub">
-              Klik <b>🐞 bug</b> yang muncul untuk “memperbaiki web”.
-              Semakin banyak bug kamu beresin, semakin tinggi progres “repair”-nya.
-            </p> --}}
-          </div>
-        </div>
+    <!-- Preloader Start -->
+    <div class="se-pre-con"></div>
+    <!-- Preloader Ends -->
 
-        <div class="hud">
-          <div class="chip"><span class="dot" aria-hidden="true"></span><span id="stateText">Ready</span></div>
-          <div class="chip">Score: <b id="score">0</b></div>
-          <div class="chip">Time: <b id="time">20</b>s</div>
-          <button class="btn primary" id="startBtn">Start</button>
-        </div>
-      </div>
+    <!-- Header
+    ============================================= -->
+    <!-- End Header -->
 
-      <div class="game" id="game" aria-label="Game area">
-        <div class="hint" aria-hidden="true">
-          <div class="mini">OPO AE SEH SENG DI BENAKNO: <b>DATA TOK KOK PAK</b></div>
-          <div class="mini">SERVER HP
-            <span class="progress"><div id="hp"></div></span>
-          </div>
-        </div>
-
-        <div class="center" id="center">
-          <div>
-            <h2>SENG SABAR NGGEH MARINE MARI KOK, DOLAN GAME SEK AE KLIK "START" DI POJOK ATAS</h2>
-          </div>
-        </div>
-
-        <div class="overlay" id="overlay">
-          <div class="card">
-            <h3 id="endTitle">Selesai!</h3>
-            <p id="endText">Score kamu: <b>0</b>. Web-nya makin stabil 😄</p>
+    <!-- Start Banner
+    ============================================= -->
+    <div class="banner-area bottom-shape bg-gradient-dark video-info">
+        <div class="container">
             <div class="row">
-              <button class="btn primary" id="restartBtn">Play Again</button>
-              <button class="btn" id="closeBtn">Close</button>
+                <div class="double-items text-light">
+                    <div class="info col-md-7">
+                        <img src="/assets3/img/logosi2.png" class="wow slideInLeft" style="width: 30%">
+                        <h2 class="wow slideInLeft">SITAKRO Kemirigede </h2>
+                        <p class="wow fadeInLeft">
+                            Sistem Informasi Data Mikro yang dimiliki oleh Desa Kemirigede Kecamatan Kemirigede Kabupaten
+                            Blitar
+                        </p>
+                        <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('login') }}">LOGIN
+                            SITAKRO</a>
+                        <a class="wow fadeInDown btn btn-light border btn-md popup-youtube"
+                            href="https://www.youtube.com/watch?v=l_nwLjT8Vzg">PROFILE SITAKRO</a>
+                        <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('farm.start') }}">Pertanian</a>
+                        <a class="wow fadeInDown btn btn-light border btn-md"
+                            href="{{ route('surat.usersurat') }}">Pelayanan Surat</a>
+                        {{-- <a href="https://www.youtube.com/watch?v=l_nwLjT8Vzg" class="popup-youtube light video-play-button video-inline">
+                            <i class="fa fa-play"></i>
+                        </a> --}}
+
+
+                    </div>
+                    <!-- Banner thumb -->
+                    <div class="thumb col-md-5">
+                        <img src="assets2/img/illustrations/3.png" alt="thumb">
+                    </div>
+                    <!-- End thumb -->
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </section>
-
-    <div class="footerText">
-      " Web Sedang Perbaiki, seng sabar nggeh bapak :") "
+        <!-- Shape -->
+        <div class="shape">
+            <img src="assets2/img/shape/3.svg" alt="thumb">
+        </div>
+        <!-- Shape -->
     </div>
-  </div>
+    <!-- End Banner -->
 
-  <script>
-    const game = document.getElementById("game");
-    const startBtn = document.getElementById("startBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const closeBtn = document.getElementById("closeBtn");
-    const overlay = document.getElementById("overlay");
-    const center = document.getElementById("center");
+    <!-- Start Our feature
+    ============================================= -->
+    <div id="features" class="features-area default-padding bottom-less">
+        <div class="container">
+            <div class="row">
+                <!-- Start Features Content -->
+                <div class="col-md-12 info">
+                    <div class="info-items one-line">
+                        <div class="features">
+                            <div class="row">
+                                <!-- Single item -->
+                                <div class="single-item col-md-3 col-sm-6">
+                                    <div class="item wow fadeInUp" data-wow-delay="400ms">
+                                        <i class="flaticon-question"></i>
+                                        <h4>Indeks Pembangunan Manusia (IPM) </h4>
+                                        <p>
+                                            Dengan menggunakan SITAKRO bisa membantu penguatan Indeks Pembangunan
+                                            Manusia
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- End Single item -->
+                                <!-- Single item -->
+                                <div class="single-item col-md-3 col-sm-6">
+                                    <div class="item wow fadeInUp" data-wow-delay="500ms">
+                                        <i class="flaticon-dashboard"></i>
+                                        <h4>Indeks Desa Memabangun (IDM)</h4>
+                                        <p>
+                                            Dengan menggunakan SITAKRO bisa membantu penguatan Indeks Desa Membangun
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- End Single item -->
 
-    const scoreEl = document.getElementById("score");
-    const timeEl = document.getElementById("time");
-    const stateText = document.getElementById("stateText");
-    const hpEl = document.getElementById("hp");
-    const endText = document.getElementById("endText");
-    const endTitle = document.getElementById("endTitle");
+                                <!-- Single item -->
+                                <div class="single-item col-md-3 col-sm-6">
+                                    <div class="item wow fadeInUp" data-wow-delay="600ms">
+                                        <i class="flaticon-analysis"></i>
+                                        <h4>Desa Cerdas</h4>
+                                        <p>
+                                            Dengan menggunakan SITAKRO bisa membantu dalam Perencanaan Pembangunan Desa
+                                            Cerdas
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- End Single item -->
 
-    let running = false;
-    let score = 0;
-    let timeLeft = 20;
-    let tickTimer = null;
-    let spawnTimer = null;
+                                <!-- Single item -->
+                                <div class="single-item col-md-3 col-sm-6">
+                                    <div class="item wow fadeInUp" data-wow-delay="700ms">
+                                        <i class="flaticon-rocket"></i>
+                                        <h4>Tata Niaga Pertanian dan UMKM</h4>
+                                        <p>
+                                            Dengan menggunakan SITAKRO bisa membantu memudahkan tata niaga Pertanian dan
+                                            UMKM
+                                    </div>
+                                </div>
+                                <!-- End Single item -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Features Content -->
 
-    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-    function rand(min, max){ return Math.random() * (max - min) + min; }
+            </div>
+        </div>
+    </div>
+    <!-- End Our Features -->
 
-    function setHpFromScore(){
-      // target score for "100% stabilized"
-      const target = 25;
-      const pct = clamp((score / target) * 100, 0, 100);
-      hpEl.style.width = pct + "%";
-    }
+    <!-- Start Our About
+    ============================================= -->
+    <div id="about" class="about-area bg-gray inc-thumb default-padding">
+        <div class="container">
+            <div class="row">
+                <!-- Start About Content -->
+                <div class="about-content">
+                    <div class="col-md-12 info">
+                        <div class="content-info">
+                            <div class="row">
+                                <div class="col-md-6 thumb-left wow slideInUp" data-wow-delay="400ms">
+                                    <img src="assets2/img/illustrations/5.svg" alt="Thumb">
+                                </div>
+                                <div class="col-md-6 left-info wow fadeInLeft">
+                                    <h4>Desa Kemirigede</h4>
+                                    <h2>Sistem Informasi Data Mikro Desa Kemirigede</h2>
+                                    <p>
+                                        Merupakan Aplikasi layanan data mikro dan SDG’s Desa yang berfungsi untuk
+                                        penguatan IPM & IDM, Perencanaan Pembangunan Desa Cerdas, serta Tata Niaga
+                                        Pertanian dan UMKM. Dapat membantu memonitoring :
+                                    </p>
+                                    <ul>
+                                        <li>Perkembangan Kuantitas Data Penduduk</li>
+                                        <li>Perkembangan kualitas Data penduduk</li>
+                                    </ul>
+                                    <div class="fun-facts">
+                                        <div class="fun-fact">
+                                            <div
+                                                style="font-size: 40px;
+                                            line-height: 1;
+                                            font-weight: 600;
+                                            margin-bottom: 15px;
+                                            color: #FF4452;
+                                            position: relative;
+                                            z-index: 1;
+                                            display: inline-block;">
+                                                {{ $datapenduduk_ada->count() }}</div>
+                                            <span class="medium">Jumlah Penduduk</span>
+                                        </div>
+                                    </div>
 
-    function clearBugs(){
-      game.querySelectorAll(".bug, .float").forEach(el => el.remove());
-    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End About -->
 
-    function spawnBug(){
-      if (!running) return;
+            </div>
+        </div>
+    </div>
+    <!-- End Our About -->
 
-      const rect = game.getBoundingClientRect();
-      const size = 52;
+    <!-- Start Work Process
+    ============================================= -->
+    <div id="overview" class="work-pro-area default-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="site-heading text-center">
+                        <h4>Fitur</h4>
+                        <h2>SITAKRO<strong> DESA Kemirigede</strong></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="work-pro-items">
+                        <!-- Single Iitem -->
+                        <div class="single-item wow fadeInUp">
+                            <div class="row">
+                                <div class="col-md-6 thumb">
+                                    <img src="assets2/img/illustrations/1.png" alt="Thumb">
+                                </div>
+                                <div class="col-md-6 info">
+                                    <ul>
+                                        <li>
+                                            <h5>FITUR PENDUDUK</h5>
+                                            Berisi beberapa fitur turunan yakni Import Data Penduduk, Export Data
+                                            Penduduk, Tambah Data Penduduk dan Ubah Data Penduduk
+                                        </li>
+                                        <li>
+                                            <h5>FITUR DATA MUTASI</h5>
+                                            Berisi beberapa fitur turunan yakni Data Mutasi, Export Data Kematian dan
+                                            Export Data Pindah
+                                        </li>
+                                        <li>
+                                            <h5>FITUR DATA SDG’S</h5>
+                                            Berisi beberapa fitur turunan yakni Data Pendidikan, Data Kesehatan, Data
+                                            Pekerjaan, dan Data Disabilitas
+                                        </li>
+                                        <li>
+                                            <h5>FITUR DASHBOARD</h5>
+                                            Digunakan untuk melihat statistik data seperti data mutasi, data tingkat
+                                            pendidikan yang ditempuh penduduk desa, data kesehatan dan data disabilitas.
+                                            Fitur ini memudahkan bagi operator desa untuk melakukan evaluasi dan
+                                            monitoring perkembangan penduduk desa berdasarkan data SDG’s
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Single Iitem -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Work Process -->
+    <!-- Start Google Maps
+    ============================================= -->
+    <div class="maps-area">
+        <div class="row">
+            <div class="google-maps">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26373.635146314475!2d112.2089291389598!3d-8.11435107478953!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78eb5100ed161f%3A0x391127009ed5ff3d!2sKemirigede%2C%20Kec.%20Kanigoro%2C%20Kabupaten%20Blitar%2C%20Jawa%20Timur!5e1!3m2!1sid!2sid!4v1764128204691!5m2!1sid!2sid"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- End Google Maps -->
 
-      // keep away from top HUD a bit
-      const paddingTop = 56;
-      const x = rand(14, rect.width - size - 14);
-      const y = rand(paddingTop, rect.height - size - 14);
+    <!-- Start Footer
+    ============================================= -->
+    <footer>
 
-      const bug = document.createElement("div");
-      bug.className = "bug";
-      bug.style.left = x + "px";
-      bug.style.top  = y + "px";
+        <div class="footer-bottom bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>&copy; Desa Kemirigede 2023</p>
+                    </div>
+                    <div class="col-md-6 text-right link">
+                        <ul>
+                            <li>
+                                <a>Tim Smart Village Nasional </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Footer Bottom -->
+    </footer>
+    <!-- End Footer -->
 
-      // lifetime: disappears if not clicked (counts as miss)
-      const life = rand(550, 950);
-      const born = performance.now();
+    <!-- jQuery Frameworks
+    ============================================= -->
+    <script src="assets2/js/jquery-1.12.4.min.js"></script>
+    <script src="assets2/js/bootstrap.min.js"></script>
+    <script src="assets2/js/equal-height.min.js"></script>
+    <script src="assets2/js/jquery.appear.js"></script>
+    <script src="assets2/js/jquery.easing.min.js"></script>
+    <script src="assets2/js/jquery.magnific-popup.min.js"></script>
+    <script src="assets2/js/modernizr.custom.13711.js"></script>
+    <script src="assets2/js/owl.carousel.min.js"></script>
+    <script src="assets2/js/wow.min.js"></script>
+    <script src="assets2/js/progress-bar.min.js"></script>
+    <script src="assets2/js/isotope.pkgd.min.js"></script>
+    <script src="assets2/js/imagesloaded.pkgd.min.js"></script>
+    <script src="assets2/js/count-to.js"></script>
+    <script src="assets2/js/YTPlayer.min.js"></script>
+    <script src="assets2/js/circle-progress.js"></script>
+    <script src="assets2/js/bootsnav.js"></script>
+    <script src="assets2/js/main.js"></script>
 
-      const onClick = (ev) => {
-        ev.stopPropagation();
-        if (!running) return;
-
-        score += 1;
-        scoreEl.textContent = String(score);
-        setHpFromScore();
-
-        floatText("+1", x + 18, y - 6, true);
-        bug.remove();
-      };
-
-      bug.addEventListener("click", onClick, { passive: true });
-      game.appendChild(bug);
-
-      // auto-miss if not clicked in time
-      setTimeout(() => {
-        if (!running) return;
-        if (!bug.isConnected) return;
-
-        // mark miss
-        bug.classList.add("miss");
-        floatText("miss", x + 10, y - 6, false);
-
-        // remove after a tiny moment
-        setTimeout(() => bug.remove(), 160);
-      }, life);
-
-      // small wobble for fun (no CSS animation needed per bug)
-      const wobble = () => {
-        if (!bug.isConnected || !running) return;
-        const t = (performance.now() - born) / 1000;
-        bug.style.transform = `translateY(${Math.sin(t * 10) * 2}px)`;
-        requestAnimationFrame(wobble);
-      };
-      requestAnimationFrame(wobble);
-    }
-
-    function floatText(txt, x, y, good){
-      const f = document.createElement("div");
-      f.className = "float";
-      f.textContent = txt;
-      f.style.left = x + "px";
-      f.style.top  = y + "px";
-      f.style.color = good ? "rgba(56,230,181,.95)" : "rgba(255,92,122,.95)";
-      game.appendChild(f);
-      setTimeout(() => f.remove(), 650);
-    }
-
-    function startGame(){
-      if (running) return;
-      running = true;
-
-      score = 0;
-      timeLeft = 20;
-
-      scoreEl.textContent = "0";
-      timeEl.textContent = String(timeLeft);
-      stateText.textContent = "Playing…";
-      hpEl.style.width = "0%";
-
-      overlay.style.display = "none";
-      center.style.display = "none";
-      clearBugs();
-
-      // timer tick
-      tickTimer = setInterval(() => {
-        timeLeft -= 1;
-        timeEl.textContent = String(timeLeft);
-
-        if (timeLeft <= 0){
-          endGame();
-        }
-      }, 1000);
-
-      // spawn loop (slightly ramps up)
-      let base = 520;
-      spawnTimer = setInterval(() => {
-        spawnBug();
-        // occasional extra spawn
-        if (Math.random() < 0.35) spawnBug();
-
-        base = Math.max(260, base - 6);
-      }, 420);
-
-      startBtn.textContent = "Restart";
-    }
-
-    function endGame(){
-      if (!running) return;
-      running = false;
-
-      clearInterval(tickTimer);
-      clearInterval(spawnTimer);
-      tickTimer = null;
-      spawnTimer = null;
-
-      clearBugs();
-
-      const stabilized = score >= 25;
-      endTitle.textContent = stabilized ? "Server Stabilized! ✨" : "Time’s Up!";
-      endText.innerHTML = `Score kamu: <b>${score}</b>. ${stabilized ? "Web-nya makin stabil 😄" : "Coba lagi biar makin stabil 💪"}`;
-
-      stateText.textContent = "Paused";
-      overlay.style.display = "grid";
-    }
-
-    // click on game area = small penalty (optional fun)
-    game.addEventListener("click", (e) => {
-      if (!running) return;
-      // prevent penalty if click was on bug (handled there)
-      if (e.target.classList.contains("bug")) return;
-
-      // tiny penalty to encourage aiming
-      if (score > 0 && Math.random() < 0.35){
-        score -= 1;
-        scoreEl.textContent = String(score);
-        setHpFromScore();
-        floatText("-1", e.offsetX, e.offsetY, false);
-      }
-    });
-
-    startBtn.addEventListener("click", () => startGame());
-    restartBtn.addEventListener("click", () => { overlay.style.display="none"; startGame(); });
-    closeBtn.addEventListener("click", () => { overlay.style.display="none"; stateText.textContent = "Ready"; center.style.display="grid"; });
-
-    // allow "Start" button to act as restart while running
-    startBtn.addEventListener("click", () => {
-      if (running){
-        // quick restart
-        running = false;
-        clearInterval(tickTimer);
-        clearInterval(spawnTimer);
-        clearBugs();
-        startGame();
-      }
-    }, { once:false });
-  </script>
 </body>
+
 </html>
