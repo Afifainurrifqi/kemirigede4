@@ -59,9 +59,9 @@
                 <div class="double-items text-light">
                     <div class="info col-md-7">
                         <img src="/assets3/img/logosi2.png" class="wow slideInLeft" style="width: 30%">
-                        <h2 class="wow slideInLeft">SITAKRO Wates </h2>
+                        <h2 class="wow slideInLeft">SITAKRO KEMIRIGEDE </h2>
                         <p class="wow fadeInLeft">
-                            Sistem Informasi Data Mikro yang dimiliki oleh Desa Wates Kecamatan Wates Kabupaten
+                            Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten
                             Blitar
                         </p>
                         <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('login') }}">LOGIN
@@ -176,8 +176,8 @@
                                     <img src="assets2/img/illustrations/5.svg" alt="Thumb">
                                 </div>
                                 <div class="col-md-6 left-info wow fadeInLeft">
-                                    <h4>Desa Wates</h4>
-                                    <h2>Sistem Informasi Data Mikro Desa Wates</h2>
+                                    <h4>Desa KEMIRIGEDE</h4>
+                                    <h2>Sistem Informasi Data Mikro Desa KEMIRIGEDE</h2>
                                     <p>
                                         Merupakan Aplikasi layanan data mikro dan SDG’s Desa yang berfungsi untuk
                                         penguatan IPM & IDM, Perencanaan Pembangunan Desa Cerdas, serta Tata Niaga
@@ -223,7 +223,7 @@
                 <div class="col-md-8 col-md-offset-2">
                     <div class="site-heading text-center">
                         <h4>Fitur</h4>
-                        <h2>SITAKRO<strong> DESA Wates</strong></h2>
+                        <h2>SITAKRO<strong> DESA KEMIRIGEDE</strong></h2>
                     </div>
                 </div>
             </div>
@@ -293,7 +293,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <p>&copy; Desa Wates 2023</p>
+                        <p>&copy; Desa KEMIRIGEDE 2023</p>
                     </div>
                     <div class="col-md-6 text-right link">
                         <ul>

@@ -297,14 +297,14 @@
 
                 <td class="kop-text">
                     <div class="line-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="line-2">KECAMATAN WATES</div>
-                    <div class="line-3">KANTOR KEPALA DESA WATES</div>
+                    <div class="line-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="line-3">KANTOR KEPALA DESA KEMIRIGEDE</div>
                     <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                    <div class="email">email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id</div>
+                    <div class="email">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
                 </td>
 
                 <td class="kop-logo-right">
-                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
                 </td>
             </tr>
         </table>
@@ -335,7 +335,7 @@
             <td class="colon">:</td>
             <td class="value">
                 Permohonan Pembukaan Rekening Tabungan<br>
-                a.n TP PKK Desa Wates
+                a.n TP PKK Desa KEMIRIGEDE
             </td>
         </tr>
     </table>
@@ -343,8 +343,8 @@
     <!-- TUJUAN SURAT -->
     <div class="tujuan">
         Kepada Yth.<br>
-        PT. Bank BRI Unit Wates<br>
-        KCP Unit Wates<br>
+        PT. Bank BRI Unit KEMIRIGEDE<br>
+        KCP Unit KEMIRIGEDE<br>
         Di<br>
         <span class="tempat">Tempat</span>
     </div>
@@ -361,19 +361,19 @@
         <tr>
             <td class="label">Jabatan</td>
             <td class="colon">:</td>
-            <td class="value">{{ $data->jabatan ?? 'Kepala Desa Wates' }}</td>
+            <td class="value">{{ $data->jabatan ?? 'Kepala Desa KEMIRIGEDE' }}</td>
         </tr>
         <tr>
             <td class="label">Alamat</td>
             <td class="colon">:</td>
             <td class="value">
-                {{ $data->alamat_kepala_desa ?? 'Dusun Sidomulyo RT 004 RW 001 Desa Wates Kecamatan Wates Kabupaten Blitar' }}
+                {{ $data->alamat_kepala_desa ?? 'Dusun Sidomulyo RT 004 RW 001 Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar' }}
             </td>
         </tr>
     </table>
 
     <p class="indent-paragraph">
-        Dengan ini kami memohon untuk membuka rekening tabungan pada PT Bank BRI Unit Wates dengan ketentuan sebagai
+        Dengan ini kami memohon untuk membuka rekening tabungan pada PT Bank BRI Unit KEMIRIGEDE dengan ketentuan sebagai
         berikut :
     </p>
 
@@ -383,14 +383,14 @@
             <td class="no">1.</td>
             <td class="label">Atas Nama Rekening</td>
             <td class="colon">:</td>
-            <td class="value">{{ $data->atas_nama_rekening ?? 'TP PKK Desa Wates' }}</td>
+            <td class="value">{{ $data->atas_nama_rekening ?? 'TP PKK Desa KEMIRIGEDE' }}</td>
         </tr>
         <tr>
             <td class="no">2.</td>
             <td class="label">Alamat</td>
             <td class="colon">:</td>
             <td class="value">
-                {{ $data->alamat_rekening ?? 'Desa Wates Kecamatan Wates Kabupaten Blitar' }}
+                {{ $data->alamat_rekening ?? 'Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar' }}
             </td>
         </tr>
         <tr>
@@ -413,7 +413,7 @@
                         <td></td>
                         <td class="label">Jabatan</td>
                         <td class="colon">:</td>
-                        <td>{{ $data->jabatan1 ?? 'Ketua TP PKK Desa Wates' }}</td>
+                        <td>{{ $data->jabatan1 ?? 'Ketua TP PKK Desa KEMIRIGEDE' }}</td>
                     </tr>
                     <tr>
                         <td class="huruf">b.</td>
@@ -435,18 +435,18 @@
     <!-- PENUTUP -->
     <p class="penutup-1">
         Selanjutnya kami menyatakan sanggup mengikuti ketentuan-ketentuan untuk membuka rekening yang berlaku pada PT
-        Bank BRI Unit Wates.
+        Bank BRI Unit KEMIRIGEDE.
     </p>
 
     <p class="penutup-2">
-        Demikian surat permohonan kami sampaikan atas bantuan kerjasama dan kepercayaan PT Bank BRI Unit Wates kami
+        Demikian surat permohonan kami sampaikan atas bantuan kerjasama dan kepercayaan PT Bank BRI Unit KEMIRIGEDE kami
         ucapkan banyak terimakasih.
     </p>
 
     <!-- TANDA TANGAN -->
     <div class="ttd">
-        <div>Wates, {{ $tanggalSurat }}</div>
-        <div class="jabatan">Kepala Desa Wates</div>
+        <div>KEMIRIGEDE, {{ $tanggalSurat }}</div>
+        <div class="jabatan">Kepala Desa KEMIRIGEDE</div>
         <div class="nama">{{ $namaKepalaDesa }}</div>
     </div>
 

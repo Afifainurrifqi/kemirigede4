@@ -180,16 +180,16 @@
 
         <td class="kop-text">
             <strong>PEMERINTAH KABUPATEN BLITAR</strong>
-            <strong>KECAMATAN WATES</strong>
-            <strong>KANTOR KEPALA DESA WATES</strong>
+            <strong>KECAMATAN KEMIRIGEDE</strong>
+            <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong>
             <small>
                 Jln. Merdeka No. 74 Telp. 082139324445<br>
-                Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id
+                Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
             </small>
         </td>
 
         <td class="kop-logo">
-            <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
+            <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
         </td>
     </tr>
 </table>
@@ -248,7 +248,7 @@
     </table>
 
     <p>
-        Orang tersebut diatas benar-benar penduduk Desa Wates Kecamatan Wates Kabupaten Blitar, benar-benar menyatakan bahwa suaminya yang Bernama <strong class="text-uppercase">{{ $data->nama_suami_istri ?? '................................' }}</strong> telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.
+        Orang tersebut diatas benar-benar penduduk Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar, benar-benar menyatakan bahwa suaminya yang Bernama <strong class="text-uppercase">{{ $data->nama_suami_istri ?? '................................' }}</strong> telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.
     </p>
 
     <p>
@@ -263,11 +263,11 @@
 <table class="ttd-table">
     <tr>
         <td></td>
-        <td>Wates, {{ $tanggalSurat }}</td>
+        <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
     </tr>
     <tr>
         <td><strong>Pemegang Surat</strong></td>
-        <td><strong>Kepala Desa Wates</strong></td>
+        <td><strong>Kepala Desa KEMIRIGEDE</strong></td>
     </tr>
     <tr>
         <td>
@@ -285,7 +285,7 @@
 
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode_surat.png') }}" alt="QR Code">
-                <br><small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <br><small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

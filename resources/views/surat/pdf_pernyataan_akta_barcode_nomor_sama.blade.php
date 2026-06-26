@@ -157,15 +157,15 @@
             </td>
             <td class="kop-text">
                 <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN WATES</div>
-                <div class="desa">KANTOR KEPALA DESA WATES</div>
+                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
+                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
                 <div class="kontak">
                     Jl. Merdeka No. 74 Telp. 082139324445<br>
-                    email: watesberkelas@gmail.com / website: wates-blitarkab.desa.id
+                    email: KEMIRIGEDEberkelas@gmail.com / website: KEMIRIGEDE-blitarkab.desa.id
                 </div>
             </td>
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa">
+                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
             </td>
         </tr>
     </table>
@@ -220,7 +220,7 @@
         </tr>
     </table>
 
-    <p class="indent">Orang tersebut diatas benar-benar penduduk Desa Wates Kecamatan Wates Kabupaten Blitar, benar-benar menyatakan bahwa suaminya yang Bernama <strong class="text-uppercase">{{ $data->nama_suami_istri ?? '................................' }}</strong> telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.</p>
+    <p class="indent">Orang tersebut diatas benar-benar penduduk Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar, benar-benar menyatakan bahwa suaminya yang Bernama <strong class="text-uppercase">{{ $data->nama_suami_istri ?? '................................' }}</strong> telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.</p>
 
     <p class="indent">Selanjutnya surat keterangan ini dipergunakan untuk melengkapi persyaratan <strong>{{ $data->keperluan ?? 'Pengajuan Perceraian' }}</strong>.</p>
 
@@ -230,7 +230,7 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Wates, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+                <p>KEMIRIGEDE, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
                 <p>Saya yang menyatakan,</p>
 
                 <div class="ttd-img-wrapper">
@@ -242,7 +242,7 @@
 
                 <div class="barcode">
                     <img src="{{ public_path('assets/images/barcode_surat.png') }}" alt="Barcode">
-                    <br><small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                    <br><small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
                 </div>
             </td>
         </tr>

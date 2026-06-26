@@ -30,15 +30,15 @@
             </td>
             <td class="kop-header">
                 <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                KECAMATAN Wates<br>
-                KANTOR KEPALA DESA Wates</strong><br>
+                KECAMATAN KEMIRIGEDE<br>
+                KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                 <small>
                     Jln. Merdeka No. 74 Telp. 082139324445<br>
-                    Email : watesberkelas@gmail.com Website : wates-blitarkab.desa.id| Website: Wates-blitarkab.desa.id
+                    Email : KEMIRIGEDEberkelas@gmail.com Website : KEMIRIGEDE-blitarkab.desa.id| Website: KEMIRIGEDE-blitarkab.desa.id
                 </small>
             </td>
             <td width="15%" align="center">
-                <img src="../Wates.png" class="kop-logo">
+                <img src="../KEMIRIGEDE.png" class="kop-logo">
             </td>
         </tr>
     </table>

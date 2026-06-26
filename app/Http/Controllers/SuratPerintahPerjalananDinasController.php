@@ -49,7 +49,7 @@ class SuratPerintahPerjalananDinasController extends Controller
         $lastNumber = SuratPerintahPerjalananDinas::whereYear('created_at', $tahun)->count() + 1;
         $validated['nomor_sppd'] = "B/010.02/{$lastNumber}/409.41.2/{$tahun}";
         $validated['tanggal_surat'] = now();
-        $validated['pejabat_pemberi_perintah'] = 'Kepala Desa Wates Kecamatan Wates Kabupaten Blitar';
+        $validated['pejabat_pemberi_perintah'] = 'Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar';
 
         $validated['status_surat'] = 'Pending';
         $validated['status_verif'] = 'Belum Verifikasi';
@@ -88,7 +88,7 @@ class SuratPerintahPerjalananDinasController extends Controller
         $lastNumber = SuratPerintahPerjalananDinas::whereYear('created_at', $tahun)->count() + 1;
         $validated['nomor_sppd'] = "B/010.02/{$lastNumber}/409.41.2/{$tahun}";
         $validated['tanggal_surat'] = now();
-        $validated['pejabat_pemberi_perintah'] = 'Kepala Desa Wates Kecamatan Wates Kabupaten Blitar';
+        $validated['pejabat_pemberi_perintah'] = 'Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar';
 
         SuratPerintahPerjalananDinas::create($validated);
 

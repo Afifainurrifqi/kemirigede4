@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Nota Angkutan Hasil Hutan Kayu - Desa Wates</title>
+    <title>Nota Angkutan Hasil Hutan Kayu - Desa KEMIRIGEDE</title>
 
     <style>
         @page {
@@ -350,8 +350,8 @@
         ? \Carbon\Carbon::parse($data->tanggal_peraturan)->locale('id')->translatedFormat('d F Y')
         : '';
 
-    $desa = $data->desa ?? 'Wates';
-    $kecamatan = $data->kecamatan ?? 'Wates';
+    $desa = $data->desa ?? 'KEMIRIGEDE';
+    $kecamatan = $data->kecamatan ?? 'KEMIRIGEDE';
     $kabupaten = $data->kabupaten ?? 'Blitar';
     $provinsi = $data->provinsi ?? 'Jawa Timur';
 
@@ -383,14 +383,14 @@
 
             <td class="kop-text">
                 <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN WATES</div>
-                <div class="desa">KANTOR KEPALA DESA WATES</div>
+                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
+                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
                 <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="email">email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id</div>
+                <div class="email">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
             </td>
 
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
             </td>
         </tr>
     </table>
@@ -588,7 +588,7 @@
             </td>
 
             <td class="ttd-cell">
-                <p>Wates, &nbsp;&nbsp;&nbsp; {{ $bulanTahunSurat }}</p>
+                <p>KEMIRIGEDE, &nbsp;&nbsp;&nbsp; {{ $bulanTahunSurat }}</p>
                 <p>Pemilik Hutan HAK</p>
 
                 <div class="ttd-space"></div>

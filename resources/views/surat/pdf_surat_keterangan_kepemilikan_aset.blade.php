@@ -72,13 +72,13 @@
         </td>
         <td class="kop-text">
             <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-            <strong>KECAMATAN WATES</strong><br>
-            <strong>KANTOR KEPALA DESA WATES</strong><br>
+            <strong>KECAMATAN KEMIRIGEDE</strong><br>
+            <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
             <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
-            Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
+            Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id</small>
         </td>
         <td class="kop-logo">
-            <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+            <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
         </td>
     </tr>
 </table>
@@ -88,7 +88,7 @@
 <div class="judul">DATA KEPEMILIKAN</div>
 <div class="nomor">Nomor : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now()->year }}</div>
 
-<p>Yang bertanda tangan di bawah ini Kepala Desa Wates menerangkan dengan sebenarnya bahwa :</p>
+<p>Yang bertanda tangan di bawah ini Kepala Desa KEMIRIGEDE menerangkan dengan sebenarnya bahwa :</p>
 
 <table class="data">
     <tr><td>Nama</td><td>:</td><td>{{ $data->nama ?? '-' }}</td></tr>
@@ -124,11 +124,11 @@
 <table class="ttd">
     <tr>
         <td></td>
-        <td>Wates, {{ $tanggalSurat }}</td>
+        <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
     </tr>
     <tr>
         <td></td>
-        <td><strong>KEPALA DESA WATES</strong></td>
+        <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
     </tr>
     <tr>
         <td></td>
@@ -139,7 +139,7 @@
             <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR">
-                <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

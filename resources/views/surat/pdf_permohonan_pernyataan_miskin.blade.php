@@ -236,7 +236,7 @@
     @php
         $sapaan = $data->sapaan_pasien ?? 'Tn.';
         $namaPasien = $data->nama_pasien ?? 'Cornelius Tri Utomo';
-        $alamatPasien = $data->alamat_pasien ?? 'Dusun Wates RT 02 RW 03 Desa Wates Kec. Wates Kab. Blitar';
+        $alamatPasien = $data->alamat_pasien ?? 'Dusun KEMIRIGEDE RT 02 RW 03 Desa KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar';
         $rumahSakit = $data->rumah_sakit_tujuan ?? 'Ngudi Waluyo';
         $lokasiRumahSakit = $data->lokasi_rumah_sakit ?? 'Wlingi';
 
@@ -244,9 +244,9 @@
             ? public_path('assets/images/blitar.jpg')
             : public_path('assets/images/logo-blitar.png');
 
-        $logoDesa = file_exists(public_path('assets/images/wates.png'))
-            ? public_path('assets/images/wates.png')
-            : public_path('assets/images/logo-desa-wates.png');
+        $logoDesa = file_exists(public_path('assets/images/KEMIRIGEDE.png'))
+            ? public_path('assets/images/KEMIRIGEDE.png')
+            : public_path('assets/images/logo-desa-KEMIRIGEDE.png');
 
         $ttdKades = public_path('assets/images/ttd.png');
         $barcodeSurat = public_path('assets/images/barcode_surat.png');
@@ -263,15 +263,15 @@
 
             <td class="kop-text">
                 <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN WATES</div>
-                <div class="desa">KANTOR KEPALA DESA WATES</div>
+                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
+                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
                 <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="kontak">email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id</div>
+                <div class="kontak">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
             </td>
 
             <td class="kop-logo">
                 @if (file_exists($logoDesa))
-                    <img src="{{ $logoDesa }}" alt="Logo Desa Wates">
+                    <img src="{{ $logoDesa }}" alt="Logo Desa KEMIRIGEDE">
                 @endif
             </td>
         </tr>
@@ -329,7 +329,7 @@
         </p>
 
         <p class="paragraf-tanpa-indent">
-            Sehubungan dengan kondisi tersebut, kami atas nama Kepala Desa Wates Kecamatan Wates
+            Sehubungan dengan kondisi tersebut, kami atas nama Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE
             Kabupaten Blitar, sangat berharap bantuan Bapak untuk bias memberikan keringanan berobat
         </p>
 
@@ -348,7 +348,7 @@
             <tr>
                 <td class="ttd-spacer"></td>
                 <td class="ttd-cell">
-                    <p>Kepala Desa Wates</p>
+                    <p>Kepala Desa KEMIRIGEDE</p>
 
                     <div class="ttd-img-wrapper">
                         @if (file_exists($ttdKades))
@@ -362,7 +362,7 @@
                         <div class="barcode">
                             <img src="{{ $barcodeSurat }}" alt="Barcode Surat">
                             <br>
-                            <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                            <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
                         </div>
                     @endif
                 </td>

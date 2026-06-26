@@ -223,16 +223,16 @@
 
             <td class="kop-text">
                 <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN WATES</div>
-                <div class="desa">KANTOR KEPALA DESA WATES</div>
+                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
+                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
                 <div class="kontak">
                     Jln. Merdeka No. 74 Telp. 082139324445<br>
-                    email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id
+                    email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id
                 </div>
             </td>
 
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
             </td>
         </tr>
     </table>
@@ -248,7 +248,7 @@
 
     <!-- PEMBUKA -->
     <p class="pembuka">
-        Yang bertanda tangan dibawah ini Kepala Desa wates Kec.Wates Kab.Blitar
+        Yang bertanda tangan dibawah ini Kepala Desa KEMIRIGEDE Kec.KEMIRIGEDE Kab.Blitar
     </p>
     <p class="pembuka">
         Menerangkan dengan sebenarnya bahwa :
@@ -361,7 +361,7 @@
     <div class="ttd-wrapper">
 
         <p class="tanggal">
-            Wates, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}
+            KEMIRIGEDE, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}
         </p>
 
         <table class="ttd-table">
@@ -380,7 +380,7 @@
 
         <div class="mengetahui">
             <p>Mengetahui</p>
-            <p>Kepala Desa Wates</p>
+            <p>Kepala Desa KEMIRIGEDE</p>
 
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
@@ -391,7 +391,7 @@
             <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                 <br>
-                <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </div>
 

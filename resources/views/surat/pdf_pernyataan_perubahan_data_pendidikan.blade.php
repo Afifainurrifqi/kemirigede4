@@ -54,13 +54,13 @@
                 </td>
                 <td class="kop-text">
                     <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                    <strong>KECAMATAN WATES</strong><br>
-                    <strong>KANTOR KEPALA DESA WATES</strong><br>
+                    <strong>KECAMATAN KEMIRIGEDE</strong><br>
+                    <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                     <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
-                    Email: watesberkelas@gmail.com</small>
+                    Email: KEMIRIGEDEberkelas@gmail.com</small>
                 </td>
                 <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
+                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
@@ -110,7 +110,7 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Wates, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+                <p>KEMIRIGEDE, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
                 <p>Saya yang menyatakan,</p>
 
                 <div class="ttd-img-wrapper">
@@ -122,7 +122,7 @@
 
                 <div class="barcode">
                     <img src="{{ public_path('assets/images/barcode_surat.png') }}" alt="Barcode">
-                    <br><small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                    <br><small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
                 </div>
             </td>
         </tr>

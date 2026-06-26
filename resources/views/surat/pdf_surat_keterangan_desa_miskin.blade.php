@@ -151,16 +151,16 @@
 
         <td class="kop-text">
             <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-            <strong>KECAMATAN WATES</strong><br>
-            <strong>KANTOR KEPALA DESA WATES</strong><br>
+            <strong>KECAMATAN KEMIRIGEDE</strong><br>
+            <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
             <small>
                 Jln. Merdeka No. 74 Telp. 082139324445<br>
-                Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id
+                Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
             </small>
         </td>
 
         <td class="kop-logo">
-            <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
+            <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
         </td>
     </tr>
 </table>
@@ -185,7 +185,7 @@
         <tr>
             <td>Jabatan</td>
             <td>:</td>
-            <td>Kepala Desa Wates, Kec. Wates, Kab. Blitar</td>
+            <td>Kepala Desa KEMIRIGEDE, Kec. KEMIRIGEDE, Kab. Blitar</td>
         </tr>
     </table>
 
@@ -220,11 +220,11 @@
     </table>
 
     <p>
-        Orang tersebut diatas adalah benar-benar penduduk Desa Wates Kec. Wates Kab. Blitar.
+        Orang tersebut diatas adalah benar-benar penduduk Desa KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar.
     </p>
 
     <p>
-        Orang tersebut diatas adalah benar-benar penduduk Desa Wates Kec. Wates Kab. Blitar,
+        Orang tersebut diatas adalah benar-benar penduduk Desa KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar,
         yang tergolong tidak mampu <strong>(MISKIN)</strong> yang belum masuk daftar usulan
         karena pada saat pendaftaran tertinggal.
     </p>
@@ -242,11 +242,11 @@
 <table class="ttd">
     <tr>
         <td></td>
-        <td>Wates, {{ $tanggalSurat }}</td>
+        <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
     </tr>
     <tr>
         <td><strong>Bidan Desa</strong></td>
-        <td><strong>Kepala Desa Wates</strong></td>
+        <td><strong>Kepala Desa KEMIRIGEDE</strong></td>
     </tr>
     <tr>
         <td>
@@ -262,7 +262,7 @@
 
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
-                <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

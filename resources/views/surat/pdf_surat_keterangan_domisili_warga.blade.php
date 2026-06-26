@@ -147,16 +147,16 @@
 
         <td class="kop-text">
             <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-            <strong>KECAMATAN WATES</strong><br>
-            <strong>KANTOR KEPALA DESA WATES</strong><br>
+            <strong>KECAMATAN KEMIRIGEDE</strong><br>
+            <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
             <small>
                 Jln. Merdeka No. 74 Telp. 082139324445<br>
-                Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id
+                Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
             </small>
         </td>
 
         <td class="kop-logo">
-            <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
+            <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
         </td>
     </tr>
 </table>
@@ -170,7 +170,7 @@
 </div>
 
 <div class="isi">
-    <p>Yang bertanda tangan dibawah ini Kepala Desa Wates Kecamatan Wates Kabupaten Blitar menerangkan dengan sebenarnya bahwa :</p>
+    <p>Yang bertanda tangan dibawah ini Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar menerangkan dengan sebenarnya bahwa :</p>
 
     <table class="data">
         <tr><td>Nama Lengkap</td><td>:</td><td>{{ $data->nama_lengkap ?? '...........................................' }}</td></tr>
@@ -182,7 +182,7 @@
         <tr><td>Alamat Asal</td><td>:</td><td>{{ $data->alamat_asal ?? '...........................................' }}</td></tr>
     </table>
 
-    <p>Orang tersebut di atas benar penduduk Desa Wates namun berdomisili di <strong>{{ $data->alamat_domisili ?? '...........................................' }}</strong>.</p>
+    <p>Orang tersebut di atas benar penduduk Desa KEMIRIGEDE namun berdomisili di <strong>{{ $data->alamat_domisili ?? '...........................................' }}</strong>.</p>
 
     <p>Demikian surat keterangan Domisili ini dibuat atas dasar yang sebenarnya untuk dijadikan periksa dan dapat dipergunakan sebagaimana perlunya.</p>
 </div>
@@ -191,11 +191,11 @@
 <table class="ttd">
     <tr>
         <td></td>
-        <td>Wates, {{ $tanggalSurat }}</td>
+        <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
     </tr>
     <tr>
         <td></td>
-        <td><strong>KEPALA DESA WATES</strong></td>
+        <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
     </tr>
     <tr>
         <td></td>
@@ -208,7 +208,7 @@
 
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
-                <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

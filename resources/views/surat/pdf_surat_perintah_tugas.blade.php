@@ -20,10 +20,10 @@
 
     <div class="kop">
         <h1>PEMERINTAH KABUPATEN BLITAR</h1>
-        <h1>KECAMATAN WATES</h1>
-        <h1>KANTOR KEPALA DESA WATES</h1>
+        <h1>KECAMATAN KEMIRIGEDE</h1>
+        <h1>KANTOR KEPALA DESA KEMIRIGEDE</h1>
         <p>Jl. Merdeka No. 74 Telp. 082139324445</p>
-        <p>email: watesberkelas@gmail.com | website: wates-blitarkab.desa.id</p>
+        <p>email: KEMIRIGEDEberkelas@gmail.com | website: KEMIRIGEDE-blitarkab.desa.id</p>
     </div>
 
     <div class="judul">SURAT PERINTAH TUGAS</div>
@@ -85,8 +85,8 @@
     <p>Demikian surat tugas ini dibuat untuk dilaksanakan sebaik-baiknya dan dapat dipergunakan sebagaimana perlunya.</p>
 
     <div class="ttd">
-        <p>Wates, {{ \Carbon\Carbon::parse($data->tanggal_surat)->format('d F Y') }}</p>
-        <p><strong>Kepala Desa Wates</strong></p>
+        <p>KEMIRIGEDE, {{ \Carbon\Carbon::parse($data->tanggal_surat)->format('d F Y') }}</p>
+        <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
         <br><br><br>
         <p><u>MOH. HAMID ALMAULUDI, S.Pd.I</u></p>
     </div>

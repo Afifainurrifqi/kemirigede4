@@ -48,12 +48,12 @@
             </td>
             <td class="kop-text">
                 <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                <strong>KECAMATAN WATES</strong><br>
-                <strong>KANTOR KEPALA DESA WATES</strong><br>
-                <small>Jln. Merdeka No. 74 Telp. 082139324445<br>Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
+                <strong>KECAMATAN KEMIRIGEDE</strong><br>
+                <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
+                <small>Jln. Merdeka No. 74 Telp. 082139324445<br>Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id</small>
             </td>
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
             </td>
         </tr>
     </table>
@@ -68,7 +68,7 @@
 <table class="data">
     <tr><td>Nama</td><td>:</td><td>{{ $data->nama_pengurus ?? 'MOH. HAMID ALMAULUDI' }}</td></tr>
     <tr><td>Jabatan</td><td>:</td><td>Kepala Desa</td></tr>
-    <tr><td>Alamat</td><td>:</td><td>Dsn. Sidomulyo RT 04 RW 01 Desa Wates, Kecamatan Wates</td></tr>
+    <tr><td>Alamat</td><td>:</td><td>Dsn. Sidomulyo RT 04 RW 01 Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE</td></tr>
 </table>
 
 <p class="tulisan">Dengan ini menerangkan dengan sebenarnya bahwa :</p>
@@ -88,7 +88,7 @@
 </table>
 
 <p class="tulisan">
-    Lembaga tersebut di atas adalah benar-benar berdomisili di Desa Wates Kecamatan Wates Kabupaten Blitar.
+    Lembaga tersebut di atas adalah benar-benar berdomisili di Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar.
     Dan sampai saat ini masih aktif. Surat keterangan ini dipergunakan untuk {{ $data->keterangan_tambahan ?? '....................' }}.
 </p>
 
@@ -100,15 +100,15 @@
     <tr>
         <td class="ttd-spacer"></td>
         <td class="ttd-cell">
-            <p>Wates, {{ $tanggalSurat }}</p>
-            <p><strong>Kepala Desa Wates</strong></p>
+            <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
+            <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">
             </div>
             <p class="nama"><u>MOH. HAMID ALMAULUDI, S.Pd.I</u></p>
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR">
-                <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

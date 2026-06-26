@@ -214,7 +214,7 @@
             $data->jenis_objek ??
             ($data->jenis_tanah_bangunan ?? ($data->tanah_dan ?? '...........................................'));
 
-        $dusun = $data->dusun ?? 'Wates';
+        $dusun = $data->dusun ?? 'KEMIRIGEDE';
         $rt = $data->rt ?? '...';
         $rw = $data->rw ?? '...';
 
@@ -237,7 +237,7 @@
             ($data->nama_pemilik ?? ($data->atas_nama_hak_milik ?? '...........................................'));
         $alamatPemilik =
             $data->alamat ??
-            ($data->alamat_pemilik ?? 'Dusun ........ RT ... RW ... Desa Wates Kecamatan Wates Kabupaten Blitar');
+            ($data->alamat_pemilik ?? 'Dusun ........ RT ... RW ... Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar');
         $pekerjaanPemilik =
             $data->pekerjaan ?? ($data->pekerjaan_pemilik ?? '...........................................');
 
@@ -279,16 +279,16 @@
 
                 <td class="kop-text">
                     <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                    <strong>KECAMATAN WATES</strong><br>
-                    <strong>KANTOR KEPALA DESA WATES</strong><br>
+                    <strong>KECAMATAN KEMIRIGEDE</strong><br>
+                    <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                     <small>
                         Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id
+                        Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
                     </small>
                 </td>
 
                 <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
+                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
@@ -306,7 +306,7 @@
     </div>
 
     <p class="tulisan">
-        Yang bertandatangan di bawah ini Kepala Desa Wates, Kecamatan Wates, Kabupaten Blitar,
+        Yang bertandatangan di bawah ini Kepala Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE, Kabupaten Blitar,
         menerangkan dengan sebenarnya bahwa :
     </p>
 
@@ -316,7 +316,7 @@
             <td class="nomor">1.</td>
             <td>
                 Sebidang tanah dan {{ $jenisObjek }} yang terletak di Dusun {{ $dusun }}
-                RT {{ $rt }} RW {{ $rw }} Desa Wates, No persil : {{ $noPersil }},
+                RT {{ $rt }} RW {{ $rw }} Desa KEMIRIGEDE, No persil : {{ $noPersil }},
                 No SPPT : {{ $noSppt }}, Seluas {{ $luasTanah }} M<sup>2</sup>,
                 Sertifikat no {{ $noSertifikat }}, Luas {{ $luasSertifikat }},
                 atas nama hak milik {{ $atasNamaHakMilik }} dengan batas-batas:
@@ -421,8 +421,8 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Wates, {{ $tanggalSurat }}</p>
-                <p><strong>Kepala Desa Wates</strong></p>
+                <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
+                <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
 
                 <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
@@ -432,7 +432,7 @@
 
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
-                    <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                    <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
                 </div>
             </td>
         </tr>

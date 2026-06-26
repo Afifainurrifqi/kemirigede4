@@ -39,13 +39,13 @@
             </td>
             <td class="kop-text">
                 <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                <strong>KECAMATAN WATES</strong><br>
-                <strong>KANTOR KEPALA DESA WATES</strong><br>
+                <strong>KECAMATAN KEMIRIGEDE</strong><br>
+                <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                 <small>Jl. Merdeka No. 74 Telp. 082139324445<br>
-                email: watesberkelas@gmail.com | website: wates-blitarkab.desa.id</small>
+                email: KEMIRIGEDEberkelas@gmail.com | website: KEMIRIGEDE-blitarkab.desa.id</small>
             </td>
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
             </td>
         </tr>
     </table>
@@ -82,14 +82,14 @@
 
     <p><strong>Simpanan:</strong><br>
     1. {{ $data->simpanan_jenis ?? '' }} (jenis simpanan), nomor rekening: <strong>{{ $data->simpanan_rekening ?? '' }}</strong><br>
-    Atas nama <strong>{{ $data->simpanan_nama ?? $data->nama_almarhum }}</strong> di BRI Unit Wates.</p>
+    Atas nama <strong>{{ $data->simpanan_nama ?? $data->nama_almarhum }}</strong> di BRI Unit KEMIRIGEDE.</p>
 
     <table class="ttd-table">
         <tr>
             <td></td>
             <td class="ttd-cell">
-                <p>Wates, {{ $tanggalSurat }}</p>
-                <p><strong>Kepala Desa Wates</strong></p>
+                <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
+                <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
                 <br><br>
                 <p class="nama"><u>MOH. HAMID ALMAULUDI, S.Pd.I</u></p>
             </td>

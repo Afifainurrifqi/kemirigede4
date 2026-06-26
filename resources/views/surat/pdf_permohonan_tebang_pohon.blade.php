@@ -243,7 +243,7 @@
 
         $namaPemohon = $data->nama ?? 'SUTAJI';
 
-        $jabatanPemohon = $data->jabatan ?? ($data->alamat ?? 'Dsn.Wates RT 01 RW 01 Ds. Wates Kec.Wates Kab.Blitar');
+        $jabatanPemohon = $data->jabatan ?? ($data->alamat ?? 'Dsn.KEMIRIGEDE RT 01 RW 01 Ds. KEMIRIGEDE Kec.KEMIRIGEDE Kab.Blitar');
 
         $alasanDefault = [
             'Pohon besar yang berada di pinggir jalan sudah terlalu besar sehingga jika terjadi hujan deras di sertai angina kencang di khawatirkan akan tumbang dan membahayakan bagi pengguna jalan, rumah sekitarnya dan fasilitas umum.',
@@ -267,9 +267,9 @@
             ? public_path('assets/images/blitar.jpg')
             : public_path('assets/images/logo-blitar.png');
 
-        $logoDesa = file_exists(public_path('assets/images/wates.png'))
-            ? public_path('assets/images/wates.png')
-            : public_path('assets/images/logo-desa-wates.png');
+        $logoDesa = file_exists(public_path('assets/images/KEMIRIGEDE.png'))
+            ? public_path('assets/images/KEMIRIGEDE.png')
+            : public_path('assets/images/logo-desa-KEMIRIGEDE.png');
 
         $ttdKades = public_path('assets/images/ttd.png');
         $barcodeSurat = public_path('assets/images/barcode_surat.png');
@@ -286,15 +286,15 @@
 
             <td class="kop-text">
                 <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN WATES</div>
-                <div class="desa">KANTOR KEPALA DESA WATES</div>
+                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
+                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
                 <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="kontak">email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id</div>
+                <div class="kontak">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
             </td>
 
             <td class="kop-logo">
                 @if (file_exists($logoDesa))
-                    <img src="{{ $logoDesa }}" alt="Logo Desa Wates">
+                    <img src="{{ $logoDesa }}" alt="Logo Desa KEMIRIGEDE">
                 @endif
             </td>
         </tr>
@@ -365,7 +365,7 @@
                     <p>Yang Membuat pernyataan</p>
                 </td>
                 <td class="ttd-kanan ttd-title">
-                    <p>KEPALA DESA WATES</p>
+                    <p>KEPALA DESA KEMIRIGEDE</p>
                 </td>
             </tr>
             <tr>
@@ -387,7 +387,7 @@
                         <div class="barcode">
                             <img src="{{ $barcodeSurat }}" alt="Barcode Surat">
                             <br>
-                            <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                            <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
                         </div>
                     @endif
                 </td>

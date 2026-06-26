@@ -34,7 +34,7 @@
                         </div>
                         <div class="mb-3">
                             <label>Jabatan</label>
-                            <input type="text" name="jabatan" value="Kepala Desa Wates" class="form-control" required>
+                            <input type="text" name="jabatan" value="Kepala Desa KEMIRIGEDE" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label>Alamat</label>

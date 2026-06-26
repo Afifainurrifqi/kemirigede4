@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Rekomendasi - Desa Wates</title>
+    <title>Surat Rekomendasi - Desa KEMIRIGEDE</title>
 
     <style>
         @page {
@@ -311,7 +311,7 @@
 
     $kegiatan = $data->kegiatan ?? 'Pasar Malam';
     $pukul = $data->pukul ?? $data->waktu ?? '17.00 - Selesai';
-    $tempat = $data->tempat ?? 'Lapangan Desa Wates Kab Blitar';
+    $tempat = $data->tempat ?? 'Lapangan Desa KEMIRIGEDE Kab Blitar';
     $keperluan = $data->keperluan ?? 'Pasar Malam';
 
     $namaKades = $data->nama_kepala_desa ?? 'MOH. HAMID ALMAULUDI, S.Pd.I';
@@ -327,14 +327,14 @@
 
             <td class="kop-text">
                 <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN WATES</div>
-                <div class="desa">KANTOR KEPALA DESA WATES</div>
+                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
+                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
                 <div class="kontak">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="email">email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id</div>
+                <div class="email">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
             </td>
 
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa">
+                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
             </td>
         </tr>
     </table>
@@ -360,7 +360,7 @@
             <td class="header-right">
                 <div class="tujuan">
                     Kepada :<br>
-                    Yth. Muspika Kecamatan Wates<br>
+                    Yth. Muspika Kecamatan KEMIRIGEDE<br>
                     Di<br>
                     <span class="tempat">TEMPAT</span>
                 </div>
@@ -370,7 +370,7 @@
 
     <!-- ISI SURAT -->
     <p class="paragraph indent">
-        Yang bertandatangan dibawah ini Kepala Desa Wates Kecamatan Wates Kabupaten Blitar menerangkan bahwa :
+        Yang bertandatangan dibawah ini Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar menerangkan bahwa :
     </p>
 
     <table class="data-table">
@@ -427,7 +427,7 @@
         <tr>
             <!-- KOLOM PEMOHON -->
             <td class="ttd-left">
-                <p style="visibility: hidden;">Wates, {{ $tanggalSurat }}</p>
+                <p style="visibility: hidden;">KEMIRIGEDE, {{ $tanggalSurat }}</p>
                 <p>Pemohon</p>
 
                 <div class="space-pemohon"></div>
@@ -437,9 +437,9 @@
 
             <!-- KOLOM KEPALA DESA -->
             <td class="ttd-right">
-                <p>Wates, {{ $tanggalSurat }}</p>
+                <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
                 <p>Mengetahui</p>
-                <p>Kepala Desa Wates</p>
+                <p>Kepala Desa KEMIRIGEDE</p>
 
                 <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">

@@ -111,7 +111,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label>Alamat Domisili di Desa Wates <span class="text-danger">*</span></label>
+                            <label>Alamat Domisili di Desa KEMIRIGEDE <span class="text-danger">*</span></label>
                             <textarea name="alamat_domisili" id="alamat_domisili" class="form-control" rows="2" required>{{ $surat->alamat_domisili ?? old('alamat_domisili') }}</textarea>
                         </div>
 

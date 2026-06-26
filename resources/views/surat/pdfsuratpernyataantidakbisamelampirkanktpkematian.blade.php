@@ -184,16 +184,16 @@
 
                 <td class="kop-text">
                     <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-baris-2">KECAMATAN WATES</div>
-                    <div class="kop-baris-3">PEMERINTAH DESA WATES</div>
+                    <div class="kop-baris-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-kontak">
-                        email :watesberkelas@gmail.com / website : wates-blitarkab.desa.id
+                        email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id
                     </div>
                 </td>
 
                 <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
+                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
@@ -293,7 +293,7 @@
 
             <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
-                <small>Dokumen ini resmi dikeluarkan oleh Pemerintah Desa Wates</small>
+                <small>Dokumen ini resmi dikeluarkan oleh Pemerintah Desa KEMIRIGEDE</small>
             </div>
         </div>
     </div>

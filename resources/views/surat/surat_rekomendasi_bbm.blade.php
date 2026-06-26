@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label>Alamat Usaha <span class="text-danger">*</span></label>
                         <textarea name="alamat_usaha" id="alamat_usaha" class="form-control" rows="2" required
-                            placeholder="Contoh: Jl. Merdeka No. 45 RT 02 RW 03, Desa Wates">{{ old('alamat_usaha') }}</textarea>
+                            placeholder="Contoh: Jl. Merdeka No. 45 RT 02 RW 03, Desa KEMIRIGEDE">{{ old('alamat_usaha') }}</textarea>
                     </div>
 
                     <div class="mb-3">
@@ -125,7 +125,7 @@
                         <div class="col-md-6 mb-3">
                             <label>Tempat Pengambilan <span class="text-danger">*</span></label>
                             <input type="text" name="tempat_pengambilan" class="form-control" required
-                                value="{{ old('tempat_pengambilan') }}" placeholder="Contoh: SPBU Wates">
+                                value="{{ old('tempat_pengambilan') }}" placeholder="Contoh: SPBU KEMIRIGEDE">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Nomor Lembaga Penyalur <span class="text-danger">*</span></label>
@@ -137,7 +137,7 @@
                     <div class="mb-3">
                         <label>Lokasi Penyalur <span class="text-danger">*</span></label>
                         <input type="text" name="lokasi_penyalur" class="form-control" required
-                            value="{{ old('lokasi_penyalur') }}" placeholder="Contoh: Desa Wates, Kec. Wates">
+                            value="{{ old('lokasi_penyalur') }}" placeholder="Contoh: Desa KEMIRIGEDE, Kec. KEMIRIGEDE">
                     </div>
 
                     <div class="mb-3">

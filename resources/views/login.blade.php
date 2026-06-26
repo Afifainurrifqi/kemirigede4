@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SITAKRO Wates | Sistem Informasi Data Mikro Desa Wates</title>
+    <title>SITAKRO KEMIRIGEDE | Sistem Informasi Data Mikro Desa KEMIRIGEDE</title>
 
     <!-- Favicons -->
-    <link rel="shortcut icon" href="/assets3/img/Wates.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets3/img/KEMIRIGEDE.png" type="image/x-icon">
 
     <!-- Fonts & CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
             <div class="content-left-wrapper opacity-mask" data-opacity-mask="rgba(13, 110, 253, 0.8)">
                 <div>
                     <h1>SELAMAT DATANG DI</h1>
-                    <p>Sistem Informasi Data Mikro Desa Wates Kecamatan Kanigoro Kabupaten Blitar</p>
+                    <p>Sistem Informasi Data Mikro Desa KEMIRIGEDE Kecamatan Kanigoro Kabupaten Blitar</p>
                     <a href="https://www.youtube.com/watch?v=l_nwLjT8Vzg"
                        class="btn_1 black rounded pulse_bt plus_icon btn_play" target="_blank">
                         Profil SITAKRO <i class="arrow_triangle-right"></i>
@@ -48,7 +48,7 @@
                             <img src="/assets3/img/logosi2.png" alt="Logo" height="55">
                         </h1>
                         <h2 class="mb-2 text-center">MASUK</h2>
-                        <h3 class="mb-4 text-center">SITAKRO Wates</h3>
+                        <h3 class="mb-4 text-center">SITAKRO KEMIRIGEDE</h3>
 
                         <!-- Error Message -->
                         @if ($errors->has('login'))
@@ -95,7 +95,7 @@
             </div>
 
             <div class="container pb-3 text-center copy">
-                © Desa Wates 2023 - Kabupaten Blitar<br>
+                © Desa KEMIRIGEDE 2023 - Kabupaten Blitar<br>
                 by Tim Smart Village Nasional
             </div>
         </div>

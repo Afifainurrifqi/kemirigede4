@@ -44,11 +44,11 @@
         <td class="kop-logo"><img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar"></td>
         <td class="kop-text">
             <strong>PEMERINTAH KABUPATEN BLITAR</strong>
-            <strong>KECAMATAN WATES</strong>
-            <strong>KANTOR KEPALA DESA WATES</strong>
-            <small>Jln. Merdeka No. 74 Telp. 082139324445<br>Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
+            <strong>KECAMATAN KEMIRIGEDE</strong>
+            <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong>
+            <small>Jln. Merdeka No. 74 Telp. 082139324445<br>Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id</small>
         </td>
-        <td class="kop-logo"><img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa Wates"></td>
+        <td class="kop-logo"><img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE"></td>
     </tr>
 </table>
 <hr class="kop-garis">
@@ -57,7 +57,7 @@
 <div class="nomor">Nomor : {{ $surat->nomor_surat ?? '470/   /409.41.2/' . now('Asia/Jakarta')->year }}</div>
 
 <div class="isi">
-    <p class="normal">Yang bertandatangan dibawah ini Kepala Desa Wates Kecamatan Wates Kabupaten Blitar Menerangkan dengan sebenarnya bahwa :</p>
+    <p class="normal">Yang bertandatangan dibawah ini Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar Menerangkan dengan sebenarnya bahwa :</p>
 
     <table class="data">
         <tr><td>Nama Lengkap</td><td>:</td><td class="text-uppercase" style="font-weight: bold;">{{ $surat->nama_lengkap }}</td></tr>
@@ -87,11 +87,11 @@
 <table class="ttd-table">
     <tr>
         <td></td>
-        <td>Wates, {{ $tanggalSurat }}</td>
+        <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
     </tr>
     <tr>
         <td></td>
-        <td><strong>Kepala Desa Wates</strong></td>
+        <td><strong>Kepala Desa KEMIRIGEDE</strong></td>
     </tr>
     <tr>
         <td></td>
@@ -101,8 +101,8 @@
             </div>
             <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
             <div class="qr-section">
-                <img src="{{ public_path('assets/images/wates2.png') }}" alt="QR Code">
-                <br><small>Scan untuk verifikasi surat resmi Desa Wates</small>
+                <img src="{{ public_path('assets/images/KEMIRIGEDE2.png') }}" alt="QR Code">
+                <br><small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

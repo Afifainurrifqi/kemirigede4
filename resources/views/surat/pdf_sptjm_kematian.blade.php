@@ -35,12 +35,12 @@
             <td class="kop-logo"><img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo"></td>
             <td class="kop-text">
                 <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                <strong>KECAMATAN WATES</strong><br>
-                <strong>KANTOR KEPALA DESA WATES</strong><br>
+                <strong>KECAMATAN KEMIRIGEDE</strong><br>
+                <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                 <small>Jl. Merdeka No. 74 Telp. 082139324445<br>
-                email: watesberkelas@gmail.com / website : wates-blitar.kab.desa.id</small>
+                email: KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitar.kab.desa.id</small>
             </td>
-            <td class="kop-logo"><img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa"></td>
+            <td class="kop-logo"><img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa"></td>
         </tr>
     </table>
     <hr class="kop-garis">
@@ -61,7 +61,7 @@
         <tr><td>Alamat</td><td>:</td><td>{{ $data->alamat ?? '................................' }}</td></tr>
     </table>
 
-    <p>Orang tersebut diatas benar-benar penduduk Desa Wates Kecamatan Wates Kabupaten Blitar, benar-benar menyatakan bahwa {{ $data->nama_suami_istri ?? '................................' }} telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.</p>
+    <p>Orang tersebut diatas benar-benar penduduk Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar, benar-benar menyatakan bahwa {{ $data->nama_suami_istri ?? '................................' }} telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.</p>
 
     <p>Selanjutnya surat keterangan ini dipergunakan untuk melengkapi persyaratan <strong>{{ $data->keperluan ?? 'Pengajuan Perceraian' }}</strong>.</p>
 
@@ -76,8 +76,8 @@
         </div>
 
         <div class="ttd-right">
-            <p>Wates, {{ $tanggalSurat }}</p>
-            <p><strong>Kepala Desa Wates</strong></p>
+            <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
+            <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
             <div class="materai">Materai<br>10.000</div>
             <div class="signature-line"></div>
             <p><u>MOH. HAMID ALMAULUDI, S.Pd.I</u></p>
