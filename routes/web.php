@@ -110,6 +110,9 @@ Route::get('/', [DashboardController::class, 'landingpage'])->name('landingpage'
 
 Route::get('/login', [SesiController::class, 'index'])->name('login');
 Route::post('/login', [SesiController::class, 'login']);
+Route::get('/datapenduduk/lookup/{nik}', [DatapendudukController::class, 'lookupByNik'])
+    ->name('datapenduduk.lookup');
+
 Route::get('/logout', [SesiController::class, 'logout'])->name('logout');
 Route::get('/errorsrole', [SesiController::class, 'error']);
 Route::get('/akundemo', [SesiController::class, 'error2']);
@@ -1091,8 +1094,6 @@ Route::middleware(['checkrole:admin,operator,dasawisma,akundemo'])->group(
         Route::post('/rt_tkejahatan/jsonadmin', [RtTkejahatanController::class, 'jsonadmin'])->name('rt_tkejahatan.jsonadmin');
         Route::post('/rt_kegiatanwarga/json', [RtkegiatanWargaController::class, 'json'])->name('rt_kegiatanwarga.json');
         Route::post('/rt_kegiatanwarga/jsonadmin', [RtkegiatanWargaController::class, 'jsonadmin'])->name('rt_kegiatanwarga.jsonadmin');
-        Route::get('/datapenduduk/lookup/{nik}', [DatapendudukController::class, 'lookupByNik'])
-            ->name('datapenduduk.lookup');
 
 
         Route::get('/home', function () {
