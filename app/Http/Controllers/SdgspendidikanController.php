@@ -21,41 +21,78 @@ class SdgspendidikanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
         $totalPenduduk = datapenduduk::count();
-
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
         $dataTerisi = sdgspendidikan::count();
-
-        // Hitung presentase penyelesaian data
         $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
 
-        $dataPendidikan = sdgspendidikan::all();
+        // Standarisasi hanya ambil nilai yang sesuai dropdown
+        $validPendidikan = [
+            'Tidak sekolah',
+            'SD dan sederajat',
+            'SMP dan sederajat',
+            'SMA dan sederajat',
+            'DIPLOMA I - III',
+            'S-1 dan sederajat',
+            'S-2 dan sederajat',
+            'S-3 dan sederajat',
+            'Pesantren, Seminari, Wihara, dan sejenisnya',
+            'Lainnya'
+        ];
 
-        $pendidikanLabels = $dataPendidikan->pluck('pendidikan_tertinggi')->toArray();
-        $pendidikanCounts = $dataPendidikan->countBy('pendidikan_tertinggi')->values()->toArray();
+        $pendidikanGroup = sdgspendidikan::whereIn('pendidikan_tertinggi', $validPendidikan)
+            ->get()
+            ->countBy('pendidikan_tertinggi')
+            ->sortByDesc(fn($count) => $count); // urutkan dari terbanyak
 
-        return view('sdgs.individu.datasdgspendidikan', compact('dataPendidikan', 'pendidikanLabels', 'pendidikanCounts', 'presentase'));
+        $pendidikanLabels = $pendidikanGroup->keys()->toArray();
+        $pendidikanCounts = $pendidikanGroup->values()->toArray();
+
+        return view('sdgs.individu.datasdgspendidikan', compact(
+            'presentase',
+            'pendidikanLabels',
+            'pendidikanCounts'
+        ));
+
+
     }
 
 
     public function admin_index(Request $request)
     {
         $totalPenduduk = datapenduduk::count();
-
-        // Dapatkan jumlah data yang sudah terisi di tabel datapekerjaansdgs
         $dataTerisi = sdgspendidikan::count();
-
-        // Hitung presentase penyelesaian data
         $presentase = $totalPenduduk > 0 ? ($dataTerisi / $totalPenduduk) * 100 : 0;
 
-        $dataPendidikan = sdgspendidikan::all();
+        // Standarisasi hanya ambil nilai yang sesuai dropdown
+        $validPendidikan = [
+            'Tidak sekolah',
+            'SD dan sederajat',
+            'SMP dan sederajat',
+            'SMA dan sederajat',
+            'DIPLOMA I - III',
+            'S-1 dan sederajat',
+            'S-2 dan sederajat',
+            'S-3 dan sederajat',
+            'Pesantren, Seminari, Wihara, dan sejenisnya',
+            'Lainnya'
+        ];
 
-        $pendidikanLabels = $dataPendidikan->pluck('pendidikan_tertinggi')->toArray();
-        $pendidikanCounts = $dataPendidikan->countBy('pendidikan_tertinggi')->values()->toArray();
+        $pendidikanGroup = sdgspendidikan::whereIn('pendidikan_tertinggi', $validPendidikan)
+            ->get()
+            ->countBy('pendidikan_tertinggi')
+            ->sortByDesc(fn($count) => $count); // urutkan dari terbanyak
 
-        return view('sdgs.individu.admin_data_sdgs_pendidikan', compact('dataPendidikan', 'pendidikanLabels', 'pendidikanCounts', 'presentase'));
+        $pendidikanLabels = $pendidikanGroup->keys()->toArray();
+        $pendidikanCounts = $pendidikanGroup->values()->toArray();
+
+        return view('sdgs.individu.admin_data_sdgs_pendidikan', compact(
+            'presentase',
+            'pendidikanLabels',
+            'pendidikanCounts'
+        ));
     }
 
     public function jsonadmin(Request $request)

@@ -61,7 +61,6 @@
         <div class="container">
 
             @php
-                // Daftar judul dari kamu
                 $titles = [
                     'SURAT PERNYATAAN TIDAK BISA MELAMPIRKAN KTP KEMATIAN',
                     'SURAT PERNYATAAN NUMPANG KK',
@@ -76,7 +75,7 @@
                     'PERNYATAAN PERUBAHAN DATA PENDIDIKAN',
                     'PERNYATAAN PEMBETULAN DATA TIDAK MERUBAH LAGI',
                     'PERNYATAAN MENGIZINKAN IKUT KK SUAMI-ISTRI-KELUARGA',
-                    'PERMOHONAN PENGANTAR KEABSAHAN UNTUK DIRI SENDIRI',
+                    'PERMOHONAN PENGANTAR KEABSAHAN UNTUK DIRI SENDIRI', // ← Sudah ada
                     'PERMOHONAN PENGANTAR KEABSAHAN UNTUK ANAK',
                     'FORM PERNYATAAN BATAL PINDAH',
                     'F-3.01 Formulir Pengajuan User ID',
@@ -92,9 +91,9 @@
                     'F-1.03 PENDAFTARAN PERPINDAHAN PENDUDUK',
                     'F-1.02 PENDAFTARAN PERISTIWA KEPENDUDUKAN',
                     'F-1.01 FORM  BIODATA KELUARGA',
+                    'SURAT KETERANGAN NUMPANG NIKAH',
                 ];
 
-                // Peta judul -> route yang sudah tersedia di app kamu
                 $routeMap = [
                     'SURAT PERNYATAAN TIDAK BISA MELAMPIRKAN KTP KEMATIAN' => 'surat.userkematianktp',
                     'SURAT PERNYATAAN NUMPANG KK' => 'surat.usernumpangkk',
@@ -106,10 +105,17 @@
                     'SURAT PERNYATAAN ANAK SEORANG NAMA IBU (BARU)' => 'surat.useranakseorangibu',
                     'SURAT PERNYATAAN AKTA BARCODE NOMOR SAMA-BARU ISI SENDIRI' => 'surat.useraktabarcode',
                     'SPTJM KEMATIAN' => 'surat.usersptjm',
-                    // tambahkan mapping lain jika route-nya sudah ada...
+                    'PERNYATAAN PERUBAHAN DATA PENDIDIKAN' => 'surat.userperubahdatapendidikan',
+                    'PERNYATAAN PEMBETULAN DATA TIDAK MERUBAH LAGI' => 'surat.userpembetulandata',
+                    'PERNYATAAN MENGIZINKAN IKUT KK SUAMI-ISTRI-KELUARGA' => 'surat.userizinkk',
+                    'PERMOHONAN PENGANTAR KEABSAHAN UNTUK DIRI SENDIRI' => 'surat.user_pengantar_keabsahan',
+                    'PERMOHONAN PENGANTAR KEABSAHAN UNTUK ANAK' => 'surat.user_pengantar_keabsahan_anak',
+                    'FORM PERNYATAAN BATAL PINDAH' => 'surat.user_batal_pindah',
+                    'F-3.01 Formulir Pengajuan User ID' => 'surat.user_formulir_pengajuan_user_id',
+                    'F-2.04 SPTJM SUAMI ISTRI' => 'surat.user_sptjm_suami_istri',
+                    'SURAT KETERANGAN NUMPANG NIKAH' => 'surat.usernumpangnikah',
                 ];
 
-                // Warna kartu akan dirotasi
                 $colors = ['danger', 'info', 'success', 'warning', 'primary'];
             @endphp
 
@@ -120,7 +126,8 @@
                         ? 'Formulir'
                         : (str_contains(strtolower($title), 'sptjm')
                             ? 'SPTJM'
-                            : 'Surat Pernyataan');
+                            : 'Surat Permyataan / Permohonan');
+
                     $routeName = $routeMap[$title] ?? null;
                     $href = $routeName && Route::has($routeName) ? route($routeName) : null;
                 @endphp
@@ -129,7 +136,8 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="service-text">
-                                <h5 class="{{ in_array($color, ['success', 'warning', 'primary']) ? 'text-dark' : '' }}">
+                                <h5
+                                    class="{{ in_array($color, ['success', 'warning', 'primary']) ? 'text-dark' : '' }}">
                                     {{ ucwords(strtolower($title)) }}
                                 </h5>
                                 <p
@@ -142,7 +150,7 @@
                                     <a class="btn m-1 btn-creative btn-light" href="{{ $href }}">Buat Surat</a>
                                 @else
                                     <button class="btn m-1 btn-creative btn-light" type="button" disabled>
-                                        Maintance
+                                        Maintenance
                                     </button>
                                 @endif
                             </div>

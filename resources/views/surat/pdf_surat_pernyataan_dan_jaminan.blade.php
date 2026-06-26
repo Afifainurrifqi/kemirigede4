@@ -4,242 +4,172 @@
     <meta charset="UTF-8">
     <title>Surat Pernyataan dan Jaminan</title>
     <style>
-        @page { margin: 2cm; }
+        @page {
+            margin: 1.1cm 1.6cm 1cm 1.6cm;
+        }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.5;
+            font-size: 10.8pt;
+            line-height: 1.28;
             color: #000;
-            background: #fff;
         }
-
-        h3, p { margin: 0; padding: 0; }
-
-        .text-center { text-align: center; }
-        .text-right  { text-align: right; }
-        .text-justify{ text-align: justify; }
 
         .kop-container { width: 100%; }
-        .kop-logo { width: 130px; }
-        .kop-header { text-align: center; line-height: 1.4; }
-        .kop-garis { border: 2px solid #000; margin-top: 5px; margin-bottom: 20px; }
+        .kop-table { width: 100%; border-collapse: collapse; }
+        .kop-logo { width: 13%; text-align: center; }
+        .kop-logo img { width: 65px; height: auto; }
+        .kop-text { text-align: center; }
+        .kop-text strong { font-size: 11.5pt; }
+        .kop-text small { font-size: 8.5pt; }
+        .kop-garis { border: none; border-top: 2px solid #000; margin: 4px 0 8px 0; }
 
         .judul-surat {
-            margin-top: 10px;
-            margin-bottom: 6px;
             text-align: center;
+            margin-bottom: 4px;
+        }
+        .judul-surat h3 {
+            font-size: 13pt;
+            font-weight: bold;
             text-decoration: underline;
-            font-weight: bold;
-            font-size: 16pt;
-            text-transform: uppercase;
+            margin: 0;
         }
 
-        .nomor {
-            margin-bottom: 20px;
+        .nomor-surat {
             text-align: center;
             font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 10.5pt;
         }
 
-        .isi { text-align: justify; margin-bottom: 16px; }
+        .tulisan {
+            text-align: justify;
+            margin-bottom: 5px;
+        }
 
-        table.data-diri {
+        table.data {
             width: 100%;
-            margin: 8px 0 14px 0;
             border-collapse: collapse;
+            margin: 4px 0 8px 0;
         }
-        table.data-diri td {
+        table.data td {
+            padding: 2px 5px;
             vertical-align: top;
-            padding: 4px 8px;
         }
-        table.data-diri td.label  { width: 35%; }
-        table.data-diri td.colon  { width: 2%; }
-        table.data-diri td.value  { width: 63%; }
+        table.data td:first-child {
+            width: 155px;
+            font-weight: bold;
+        }
 
-        .row-ttd {
+        .ttd-wrapper {
             width: 100%;
-            margin-top: 32px;
-            table-layout: fixed;
+            margin-top: 15px;
         }
-        .row-ttd td { vertical-align: top; padding: 0 10px; }
-
-        .blok-ttd { text-align: center; }
+        .ttd-right {
+            width: 48%;
+            float: right;
+            text-align: center;
+        }
+        .ttd-right p {
+            margin: 1.5px 0;
+        }
         .materai {
-            border: 1px dashed #333;
-            width: 120px; height: 70px;
-            margin: 10px auto 0 auto;
+            border: 1px solid #000;
+            padding: 6px 16px;
+            display: inline-block;
+            margin: 6px 0;
+            font-weight: bold;
             font-size: 10pt;
-            display: flex; align-items: center; justify-content: center;
         }
-        .nama-ttd { margin-top: 70px; font-weight: bold; text-decoration: underline; }
-        .hint { font-size: 10pt; color: #333; }
+        .signature-line {
+            margin-top: 28px;
+            border-bottom: 1px solid #000;
+            width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
-@php
-    use Carbon\Carbon;
 
-    $fmt = function ($tgl) {
-        try {
-            return $tgl ? Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y') : null;
-        } catch (\Throwable $e) {
-            return $tgl;
-        }
-    };
-
-    // Nomor surat otomatis dari DB
-    $nomor = data_get($data, 'nomor_surat');
-
-    // Lokasi & tanggal terbit
-    $kota   = data_get($data, 'kota_terbit', 'Kemirigede');
-    $tglNow = Carbon::now('Asia/Jakarta')->translatedFormat('d F Y');
-
-    // Pejabat penandatangan
-    $namaPejabat = data_get($data, 'nama_pejabat', 'MOH. HAMID ALMAULUDI S.Pd.I');
-    $jabatan     = data_get($data, 'jabatan_pejabat', 'Kepala Desa Kemirigede');
-
-    // Pembuat pernyataan (penjamin)
-    $pNama   = data_get($data, 'nama_pembuat', '................................................');
-    $pNik    = data_get($data, 'nik_pembuat', '................................................');
-    $pAlamat = data_get($data, 'alamat_pembuat', '................................................');
-
-    // Pihak yang dijamin
-    $tNama   = data_get($data, 'nama_terjamin', '................................................');
-    $tNik    = data_get($data, 'nik_terjamin', '................................................');
-    $tAlamat = data_get($data, 'alamat_terjamin', '................................................');
-
-    // Detail pernyataan/jaminan
-    $hubungan      = data_get($data, 'hubungan_dengan_terjamin', '................................................');
-    $uraian        = data_get($data, 'uraian_pernyataan');
-    $bentukJaminan = data_get($data, 'bentuk_jaminan');
-    $mulai         = $fmt(data_get($data, 'berlaku_mulai'));
-    $sampai        = $fmt(data_get($data, 'berlaku_sampai'));
-    $berdasarkan   = data_get($data, 'berdasarkan');
-@endphp
-
-    {{-- KOP SURAT --}}
+    <!-- KOP SURAT -->
     <div class="kop-container">
-        <table width="100%">
+        <table class="kop-table">
             <tr>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" class="kop-logo" alt="Logo Kiri">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
                 </td>
-                <td class="kop-header">
-                    <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                        KECAMATAN Kemirigede<br>
-                        KANTOR KEPALA DESA Kemirigede</strong><br>
-                    <small>
-                        Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
-                    </small>
+                <td class="kop-text">
+                    <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
+                    <strong>KECAMATAN WATES</strong><br>
+                    <strong>KANTOR KEPALA DESA WATES</strong><br>
+                    <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
+                    Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
                 </td>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kanan">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
                 </td>
             </tr>
         </table>
         <hr class="kop-garis">
     </div>
 
-    {{-- JUDUL --}}
-  {{-- JUDUL + NOMOR --}}
-<div class="judul-surat text-center"><u>SURAT PERNYATAAN DAN JAMINAN</u></div>
-
-@php
-    // Kalau nomor_surat belum ada, rakit dari nomor_urut/tahun_nomor
-    $nomorCetak = $data->nomor_surat ?? null;
-
-    if (!$nomorCetak) {
-        $urut  = $data->nomor_urut ?? null;
-        $tahun = $data->tahun_nomor ?? now('Asia/Jakarta')->year;
-        $nnn   = $urut ? str_pad($urut, 3, '0', STR_PAD_LEFT) : '---';
-
-        // >>> Pastikan prefiks ini SAMA dengan NomorSuratService::prefixMap['jaminan']
-        // misal 'jaminan' => 420
-        $nomorCetak = "420 / {$nnn} / 409.41.2 / {$tahun}";
-    }
-@endphp
-
-<div class="nomor text-center"><strong>Nomor: {{ $nomorCetak }}</strong></div>
-
-    {{-- PEMBUKA --}}
-    <div class="isi">
-        <p>Yang bertanda tangan di bawah ini:</p>
+    <!-- JUDUL -->
+    <div class="judul-surat">
+        <h3>SURAT PERNYATAAN DAN JAMINAN</h3>
     </div>
 
-    {{-- IDENTITAS PENJAMIN --}}
-    <table class="data-diri">
-        <tr><td class="label">Nama</td><td class="colon">:</td><td class="value">{{ $pNama }}</td></tr>
-        <tr><td class="label">NIK</td><td class="colon">:</td><td class="value">{{ $pNik }}</td></tr>
-        <tr><td class="label">Alamat</td><td class="colon">:</td><td class="value">{{ $pAlamat }}</td></tr>
-    </table>
-
-    <div class="isi"><p>Dengan ini menyatakan dan menjamin bahwa:</p></div>
-
-    {{-- IDENTITAS TERJAMIN --}}
-    <table class="data-diri">
-        <tr><td class="label">Nama</td><td class="colon">:</td><td class="value">{{ $tNama }}</td></tr>
-        <tr><td class="label">NIK</td><td class="colon">:</td><td class="value">{{ $tNik }}</td></tr>
-        <tr><td class="label">Alamat</td><td class="colon">:</td><td class="value">{{ $tAlamat }}</td></tr>
-        <tr><td class="label">Hubungan dengan Penjamin</td><td class="colon">:</td><td class="value">{{ $hubungan }}</td></tr>
-    </table>
-
-    {{-- URAIAN PERNYATAAN --}}
-    @if($uraian)
-        <div class="isi"><p><strong>Uraian Pernyataan:</strong><br>{!! nl2br(e($uraian)) !!}</p></div>
-    @endif
-
-    {{-- BENTUK JAMINAN --}}
-    @if($bentukJaminan)
-        <div class="isi"><p><strong>Bentuk Jaminan:</strong> {{ $bentukJaminan }}</p></div>
-    @endif
-
-    {{-- MASA BERLAKU --}}
-    @if($mulai || $sampai)
-        <div class="isi">
-            <p><strong>Masa Berlaku:</strong>
-                @if($mulai && $sampai)
-                    {{ $mulai }} s.d. {{ $sampai }}
-                @elseif($mulai && !$sampai)
-                    {{ $mulai }} s.d. selesai
-                @else
-                    s.d. {{ $sampai }}
-                @endif
-            </p>
-        </div>
-    @endif
-
-    {{-- BERDASARKAN --}}
-    @if($berdasarkan)
-        <div class="isi">
-            <p><em>Berdasarkan:</em> {{ $berdasarkan }}.</p>
-        </div>
-    @endif
-
-    {{-- PENUTUP --}}
-    <div class="isi">
-        <p>Demikian surat pernyataan dan jaminan ini saya buat dengan sebenar-benarnya. Apabila di kemudian hari ternyata
-           terdapat ketidakbenaran, saya bersedia mempertanggungjawabkan sesuai ketentuan peraturan perundang-undangan
-           yang berlaku.</p>
+    <!-- NOMOR SURAT -->
+    <div class="nomor-surat">
+        Nomor: {{ $data->nomor_surat ?? '420 / --- / 409.41.2 / ' . now()->year }}
     </div>
 
-    {{-- TANDA TANGAN --}}
-    <table class="row-ttd">
-        <tr>
-            <td class="blok-ttd" style="width:50%;">
-                <div>{{ $kota }}, {{ $tglNow }}</div>
-                <div><strong>Yang Membuat Pernyataan / Penjamin</strong></div>
-                <div class="materai">Materai Rp10.000</div>
-                <div class="nama-ttd">{{ $pNama }}</div>
-                <div class="hint">NIK: {{ $pNik }}</div>
-            </td>
-            <td class="blok-ttd" style="width:50%;">
-                <div>&nbsp;</div>
-                <div><strong>{{ $jabatan }}</strong></div>
-                <br><br><br>
-                <div class="nama-ttd">{{ $namaPejabat }}</div>
-            </td>
-        </tr>
+    <!-- SECTION 1: PENJAMIN -->
+    <p class="tulisan"><strong>Yang bertanda tangan di bawah ini:</strong></p>
+
+    <table class="data">
+        <tr><td>Nama</td><td>: {{ $data->nama_pembuat ?? '...........................................' }}</td></tr>
+        <tr><td>NIK</td><td>: {{ $data->nik_pembuat ?? '...........................................' }}</td></tr>
+        <tr><td>Alamat</td><td>: {{ $data->alamat_pembuat ?? '...........................................' }}</td></tr>
+        <tr><td>Hubungan dengan Terjamin</td><td>: {{ $data->hubungan_dengan_terjamin ?? '...........................................' }}</td></tr>
     </table>
+
+    <!-- SECTION 2: ORANG YANG DIJAMIN -->
+    <p class="tulisan">
+        Selanjutnya menyatakan diri sebagai penjamin/penanggung jawab dengan hormat mengajukan permohonan SKTT untuk orang asing berikut:
+    </p>
+
+    <table class="data">
+        <tr><td>Nama</td><td>: {{ $data->nama_terjamin ?? '...........................................' }}</td></tr>
+        <tr><td>NIK</td><td>: {{ $data->nik_terjamin ?? '...........................................' }}</td></tr>
+        <tr><td>Alamat</td><td>: {{ $data->alamat_terjamin ?? '...........................................' }}</td></tr>
+    </table>
+
+    <!-- SECTION 3: TANGGUNG JAWAB -->
+    <p class="tulisan"><strong>Dan sebagai penjamin/penanggung jawab, Saya bertanggung jawab penuh terhadap:</strong></p>
+
+    <ol style="margin-left: 18px; margin-bottom: 8px; padding-left: 10px;">
+        <li>Hal ihwal keberadaan serta kegiatan orang asing yang bersangkutan selama berada di Indonesia.</li>
+        <li>Setiap perubahan status sipil, status keimigrasian, dan perubahan alamat.</li>
+        <li>Segala biaya yang timbul sebagai akibat dari keberadaan serta kegiatan orang asing yang bersangkutan selama di Indonesia hingga pemulangan ke negara asalnya.</li>
+    </ol>
+
+    <p class="tulisan">
+        Demikian surat pernyataan dan jaminan ini saya buat dengan sesungguhnya, dan apabila dikemudian hari keterangan di atas ternyata tidak benar, maka saya sebagai penjamin bersedia dituntut sesuai dengan ketentuan perundang-undangan yang berlaku.
+    </p>
+
+    <!-- TANDA TANGAN -->
+    <div class="ttd-wrapper">
+        <div class="ttd-right">
+            <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+            <p><strong>Hormat Saya,</strong></p>
+
+            <div class="materai">Materai<br>10.000</div>
+
+            <div class="signature-line"></div>
+            <p><strong>( {{ $data->nama_pembuat ?? '...........................................' }} )</strong></p>
+        </div>
+    </div>
+
 </body>
 </html>

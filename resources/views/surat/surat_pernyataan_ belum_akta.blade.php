@@ -90,4 +90,34 @@
 
 
     </div>
+
+    <script>
+        function autofillFromNik() {
+            const nik = document.getElementById('ybt_nik').value.trim();
+            if (nik.length < 10) return;
+
+            fetch(`/datapenduduk/lookup/${nik}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.data) {
+                        const d = result.data;
+                        document.getElementById('ybt_nama').value   = d.nama || '';
+                        document.getElementById('ybt_alamat').value = d.alamat || '';
+                    } else {
+                        // Opsional: beri tahu user jika NIK tidak ditemukan
+                        // alert(result.message || 'NIK tidak ditemukan di database');
+                    }
+                })
+                .catch(error => {
+                    console.error('Autofill error:', error);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const nikInput = document.getElementById('ybt_nik');
+            if (nikInput) {
+                nikInput.addEventListener('blur', autofillFromNik);
+            }
+        });
+    </script>
 @endsection

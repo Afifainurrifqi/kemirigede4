@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container">
@@ -317,5 +317,97 @@
             jumlahSaksi.addEventListener('input', () => renderInputs(saksiWrapper, jumlahSaksi.value, 'nama_saksi',
                 'Nama Saksi', []));
         })();
+    </script>
+    <script>
+        function setValueIfExists(id, value) {
+            const element = document.getElementById(id);
+            if (element && value !== undefined && value !== null && value !== '') {
+                element.value = value;
+            }
+        }
+
+        function setSelectIfExists(id, value) {
+            const element = document.getElementById(id);
+            if (!element || value === undefined || value === null || value === '') return;
+
+            const options = Array.from(element.options);
+            const matched = options.find(option =>
+                option.value.toLowerCase() === String(value).toLowerCase()
+            );
+
+            if (matched) {
+                element.value = matched.value;
+            }
+        }
+
+        function formatTanggal(value) {
+            if (!value) return '';
+            return String(value).substring(0, 10);
+        }
+
+        function autofillAhliWarisUtama() {
+            const nikInput = document.getElementById('no_ktp');
+            if (!nikInput) return;
+
+            const nik = nikInput.value.trim();
+            if (nik.length < 10) return;
+
+            fetch(`/datapenduduk/lookup/${nik}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.data) {
+                        const d = result.data;
+
+                        setValueIfExists('nama_lengkap', d.nama);
+                        setValueIfExists('tempat_lahir', d.tempat_lahir);
+                        setValueIfExists('tanggal_lahir', formatTanggal(d.tanggal_lahir));
+                        setValueIfExists('alamat', d.alamat);
+
+                        setSelectIfExists('agama', d.agama);
+                        setSelectIfExists('pekerjaan', d.pekerjaan);
+                        setSelectIfExists('status', d.status_perkawinan || d.status);
+                    }
+                })
+                .catch(error => console.log('Autofill ahli waris utama error:', error));
+        }
+
+        function autofillAhliWarisIstri() {
+            const nikInput = document.getElementById('no_ktp_istri');
+            if (!nikInput) return;
+
+            const nik = nikInput.value.trim();
+            if (nik.length < 10) return;
+
+            fetch(`/datapenduduk/lookup/${nik}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.data) {
+                        const d = result.data;
+
+                        setValueIfExists('nama_istri', d.nama);
+                        setValueIfExists('tempat_lahir_istri', d.tempat_lahir);
+                        setValueIfExists('tanggal_lahir_istri', formatTanggal(d.tanggal_lahir));
+                        setValueIfExists('alamat_istri', d.alamat);
+
+                        setSelectIfExists('agama_istri', d.agama);
+                        setSelectIfExists('pekerjaan_istri', d.pekerjaan);
+                        setSelectIfExists('status_istri', d.status_perkawinan || d.status);
+                    }
+                })
+                .catch(error => console.log('Autofill ahli waris istri error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const noKtpUtama = document.getElementById('no_ktp');
+            const noKtpIstri = document.getElementById('no_ktp_istri');
+
+            if (noKtpUtama) {
+                noKtpUtama.addEventListener('blur', autofillAhliWarisUtama);
+            }
+
+            if (noKtpIstri) {
+                noKtpIstri.addEventListener('blur', autofillAhliWarisIstri);
+            }
+        });
     </script>
 @endsection

@@ -9,8 +9,8 @@ class surat_sptjm_kematian extends Eloquent
 {
     use HasFactory;
 
-    protected $connection = 'mongodb';                 // sesuaikan bila perlu
-    protected $collection = 'surat_sptjm_kematian';    // nama koleksi MongoDB
+    protected $connection = 'mongodb';
+    protected $collection = 'surat_sptjm_kematian';
 
     protected $fillable = [
         'nama',
@@ -19,7 +19,8 @@ class surat_sptjm_kematian extends Eloquent
         'ttl_tanggal',
         'pekerjaan',
         'alamat',
-        // menyatakan:
+
+        // Data Jenazah
         'nama_jenazah',
         'nik_jenazah',
         'ttl_tempat_jenazah',
@@ -28,7 +29,18 @@ class surat_sptjm_kematian extends Eloquent
         'anak_ke',
         'nama_ayah_kandung',
         'nama_ibu_kandung',
-        // umum
+
+        // Tambahan baru
+        'tanggal_kematian',
+        'surat_kematian_dari',
+
+        // Saksi
+        'nama_saksi_1',
+        'nik_saksi_1',
+        'nama_saksi_2',
+        'nik_saksi_2',
+
+        // Umum
         'nowa',
         'status_surat',
         'status_verif',
@@ -37,6 +49,7 @@ class surat_sptjm_kematian extends Eloquent
     protected $casts = [
         'ttl_tanggal'         => 'date',
         'ttl_tanggal_jenazah' => 'date',
+        'tanggal_kematian'    => 'date',
         'anak_ke'             => 'integer',
     ];
 }

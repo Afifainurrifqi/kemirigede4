@@ -1,366 +1,170 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-    <title>Surat Pernyataan dan Jaminan</title>
+    <title>Surat Pernyataan Memilih Nama Alias</title>
     <style>
         @page {
-            margin: 2cm;
+            margin: 1.2cm 1.8cm 1.2cm 1.8cm;
         }
-
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.5;
+            font-size: 11.5pt;
+            line-height: 1.35;
             color: #000;
-            background: #fff;
         }
-
-        h3,
-        p {
-            margin: 0;
-            padding: 0;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .text-justify {
-            text-align: justify;
-        }
-
-        .kop-container {
-            width: 100%;
-        }
-
-        .kop-logo {
-            width: 130px;
-        }
-
-        .kop-header {
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .kop-garis {
-            border: 2px solid #000;
-            margin-top: 5px;
-            margin-bottom: 20px;
-        }
+        .kop-container { width: 100%; }
+        .kop-table { width: 100%; border-collapse: collapse; }
+        .kop-logo { width: 14%; text-align: center; }
+        .kop-logo img { width: 72px; height: auto; }
+        .kop-text { text-align: center; }
+        .kop-text strong { font-size: 12pt; }
+        .kop-text small { font-size: 9pt; }
+        .kop-garis { border: none; border-top: 2px solid #000; margin: 5px 0 10px 0; }
 
         .judul-surat {
-            margin-top: 10px;
-            margin-bottom: 6px;
             text-align: center;
+            margin-bottom: 4px;
+        }
+        .judul-surat h3 {
+            font-size: 13.5pt;
+            font-weight: bold;
             text-decoration: underline;
-            font-weight: bold;
-            font-size: 16pt;
-            text-transform: uppercase;
+            margin: 0;
         }
-
-        .sub-judul {
-            text-align: center;
-            margin-top: 2px;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
-        .nomor {
-            margin-bottom: 20px;
+        .nomor-surat {
             text-align: center;
             font-weight: bold;
+            margin-bottom: 14px;
         }
-
-        .isi {
+        .tulisan {
             text-align: justify;
-            margin-bottom: 16px;
+            margin-bottom: 6px;
         }
-
-        table.data-diri {
+        table.data {
             width: 100%;
-            margin: 8px 0 14px 0;
             border-collapse: collapse;
+            margin: 6px 0 10px 0;
         }
-
-        table.data-diri td {
+        table.data td {
+            padding: 3px 6px;
             vertical-align: top;
-            padding: 4px 8px;
         }
-
-        table.data-diri td.label {
-            width: 35%;
+        table.data td:first-child {
+            width: 155px;
+            font-weight: bold;
         }
-
-        table.data-diri td.colon {
-            width: 2%;
-        }
-
-        table.data-diri td.value {
-            width: 63%;
-        }
-
-        .row-ttd {
+        .ttd-wrapper {
             width: 100%;
-            margin-top: 32px;
-            table-layout: fixed;
+            margin-top: 25px;
         }
-
-        .row-ttd td {
-            vertical-align: top;
-            padding: 0 10px;
-        }
-
-        .blok-ttd {
+        .ttd-right {
+            width: 48%;
+            float: right;
             text-align: center;
         }
-
         .materai {
-            border: 1px dashed #333;
-            width: 120px;
-            height: 70px;
-            margin: 10px auto 0 auto;
-            font-size: 10pt;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nama-ttd {
-            margin-top: 70px;
+            border: 1px solid #000;
+            padding: 7px 18px;
+            display: inline-block;
+            margin: 8px 0;
             font-weight: bold;
-            text-decoration: underline;
         }
-
-        .hint {
-            font-size: 10pt;
-            color: #333;
-        }
-
-        .spacer-4 {
-            height: 4px;
-        }
-
-        .spacer-10 {
-            height: 10px;
+        .signature-line {
+            margin-top: 35px;
+            border-bottom: 1px solid #000;
+            width: 210px;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
-
 <body>
-    @php
-        use Carbon\Carbon;
 
-        // Helper tanggal aman
-        $fmt = function ($tgl) {
-            try {
-                return $tgl ? Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y') : null;
-            } catch (\Throwable $e) {
-                return $tgl;
-            }
-        };
-
-        // Nomor surat opsional
-        $nomor = data_get($data, 'nomor_surat') ?? data_get($data, 'nomor');
-
-        // Lokasi & tanggal terbit
-        $kota = data_get($data, 'kota_terbit', 'Kemirigede');
-        $tglNow = Carbon::now('Asia/Jakarta')->translatedFormat('d F Y');
-
-        // Nama pejabat
-        $namaPejabat = data_get($data, 'nama_pejabat', 'MOH. HAMID ALMAULUDI S.Pd.I');
-        $jabatan = data_get($data, 'jabatan_pejabat', 'Kepala Desa Kemirigede');
-
-        // Data pembuat pernyataan (penjamin)
-        $pNama = data_get($data, 'nama_pembuat', '................................................');
-        $pNik = data_get($data, 'nik_pembuat', '................................................');
-        $pTptL = data_get($data, 'tempat_lahir_pembuat', '................................................');
-        $pTglL = $fmt(data_get($data, 'tanggal_lahir_pembuat')) ?? '................................................';
-        $pAgama = data_get($data, 'agama_pembuat', '................................................');
-        $pPkj = data_get($data, 'pekerjaan_pembuat', '................................................');
-        $pAlamat = data_get($data, 'alamat_pembuat', '................................................');
-
-        // Data yang dijamin
-        $tNama = data_get($data, 'nama_terjamin', '................................................');
-        $tNik = data_get($data, 'nik_terjamin', '................................................');
-        $tTptL = data_get($data, 'tempat_lahir_terjamin', '................................................');
-        $tTglL = $fmt(data_get($data, 'tanggal_lahir_terjamin')) ?? '................................................';
-        $tAgama = data_get($data, 'agama_terjamin', '................................................');
-        $tPkj = data_get($data, 'pekerjaan_terjamin', '................................................');
-        $tAlamat = data_get($data, 'alamat_terjamin', '................................................');
-
-        // Detail pernyataan/jaminan
-        $hubungan = data_get($data, 'hubungan', '................................................');
-        $keperluan = data_get($data, 'keperluan', '................................................');
-        $pernyataanTambahan = data_get($data, 'pernyataan_tambahan'); // opsional
-    @endphp
-
-    {{-- KOP SURAT --}}
+    <!-- KOP SURAT -->
     <div class="kop-container">
-        <table width="100%">
+        <table class="kop-table">
             <tr>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" class="kop-logo" alt="Logo Kiri">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
                 </td>
-                <td class="kop-header">
-                    <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                        KECAMATAN Kemirigede<br>
-                        KANTOR KEPALA DESA Kemirigede</strong><br>
-                    <small>
-                        Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
-                    </small>
+                <td class="kop-text">
+                    <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
+                    <strong>KECAMATAN WATES</strong><br>
+                    <strong>KANTOR KEPALA DESA WATES</strong><br>
+                    <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
+                    Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
                 </td>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kanan">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
                 </td>
             </tr>
         </table>
         <hr class="kop-garis">
     </div>
 
-    {{-- JUDUL --}}
-    @php
-        $nomor = $data->nomor_surat ?? null;
-        if (!$nomor) {
-            $urut = $data->nomor_urut ?? null;
-            $tahun = $data->tahun_nomor ?? now('Asia/Jakarta')->year;
-            $nnn = $urut ? str_pad($urut, 3, '0', STR_PAD_LEFT) : '---';
-            // prefix default utk jenis alias = 410
-            $nomor = "410 / {$nnn} / 409.41.2 / {$tahun}";
-        }
-    @endphp
-    <div class="nomor text-center">
-        <strong>Nomor: {{ $nomor }}</strong>
+    <!-- JUDUL -->
+    <div class="judul-surat">
+        <h3>SURAT PERNYATAAN</h3>
     </div>
 
-    {{-- PEMBUKA --}}
-    <div class="isi">
-        <p>Yang bertanda tangan di bawah ini:</p>
+    <!-- NOMOR SURAT -->
+    <div class="nomor-surat">
+        Nomor: {{ $data->nomor_surat ?? '410 / --- / 409.41.2 / ' . now()->year }}
     </div>
 
-    {{-- IDENTITAS PEMBUAT (PENJAMIN) --}}
-    <table class="data-diri">
-        <tr>
-            <td class="label">Nama</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $pNama }}</td>
-        </tr>
-        <tr>
-            <td class="label">NIK</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $pNik }}</td>
-        </tr>
-        <tr>
-            <td class="label">Tempat, Tanggal Lahir</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $pTptL }}, {{ $pTglL }}</td>
-        </tr>
-        <tr>
-            <td class="label">Agama</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $pAgama }}</td>
-        </tr>
-        <tr>
-            <td class="label">Pekerjaan</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $pPkj }}</td>
-        </tr>
-        <tr>
-            <td class="label">Alamat</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $pAlamat }}</td>
-        </tr>
+    <!-- ISI -->
+    <p class="tulisan"><strong>Yang bertanda tangan di bawah ini, Saya:</strong></p>
+
+    <table class="data">
+        <tr><td>Nama</td><td>: {{ $data->nama ?? $data->nama_pemilih ?? '...........................................' }}</td></tr>
+        <tr><td>NIK</td><td>: {{ $data->nik ?? '...........................................' }}</td></tr>
+        <tr><td>Alamat</td><td>: {{ $data->alamat ?? '...........................................' }}</td></tr>
     </table>
 
-    <div class="isi">
-        <p>Dengan ini menyatakan dan menjamin bahwa:</p>
-    </div>
+    <p class="tulisan">
+        Menyatakan dengan sebenarnya bahwa pada Akta Kelahiran:
+    </p>
 
-    {{-- IDENTITAS YANG DIJAMIN --}}
-    <table class="data-diri">
-        <tr>
-            <td class="label">Nama</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $tNama }}</td>
-        </tr>
-        <tr>
-            <td class="label">NIK</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $tNik }}</td>
-        </tr>
-        <tr>
-            <td class="label">Tempat, Tanggal Lahir</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $tTptL }}, {{ $tTglL }}</td>
-        </tr>
-        <tr>
-            <td class="label">Agama</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $tAgama }}</td>
-        </tr>
-        <tr>
-            <td class="label">Pekerjaan</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $tPkj }}</td>
-        </tr>
-        <tr>
-            <td class="label">Alamat</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $tAlamat }}</td>
-        </tr>
-        <tr>
-            <td class="label">Hubungan dengan Penjamin</td>
-            <td class="colon">:</td>
-            <td class="value">{{ $hubungan }}</td>
-        </tr>
+    <table class="data">
+        <tr><td>Nama</td><td>: {{ $data->nama_akta ?? $data->nama_pemilih ?? '...........................................' }}</td></tr>
+        <tr><td>No. Akta Kelahiran</td><td>: {{ $data->no_akta_kelahiran ?? '...........................................' }}</td></tr>
     </table>
 
-    {{-- PERNYATAAN UTAMA --}}
-    <div class="isi">
-        <p>Bahwa yang bersangkutan benar adanya di atas dan segala tindakan, kewajiban, serta konsekuensi hukum
-            yang timbul terkait keperluan <strong>{{ $keperluan }}</strong> menjadi tanggung jawab saya sebagai
-            penjamin.
-            Saya bersedia hadir apabila dibutuhkan dan memenuhi segala persyaratan yang ditetapkan sesuai ketentuan
-            peraturan perundang-undangan yang berlaku.</p>
-    </div>
+    <p class="tulisan">
+        Nama orang tua yang tercatat adalah:
+    </p>
+    <p class="tulisan" style="margin-left: 15px;">
+        {{ $data->nama_orang_tua ?? '...........................................' }} alias {{ $data->alias ?? '...........................................' }}
+    </p>
 
-    @if (!empty($pernyataanTambahan))
-        <div class="isi">
-            <p>{!! nl2br(e($pernyataanTambahan)) !!}</p>
+    <p class="tulisan">
+        Selanjutnya saya mengajukan pembetulan nama orang tua pada Akta Kelahiran dengan menghapus bagian nama alias menjadi:
+    </p>
+    <p class="tulisan" style="margin-left: 15px;">
+        {{ $data->data_alias_dihapus ?? '...........................................' }}
+    </p>
+
+    <p class="tulisan">
+        Berdasarkan: {{ $data->berdasarkan ?? '...........................................' }}
+    </p>
+
+    <p class="tulisan">
+        Demikian surat pernyataan ini saya buat dengan sebenar-sebenarnya dan apabila dikemudian hari ternyata pernyataan saya ini tidak benar, maka saya bersedia diproses secara hukum sesuai dengan peraturan perundang-undangan dan dokumen yang diterbitkan akibat dari pernyataan ini menjadi tidak sah.
+    </p>
+
+    <!-- TANDA TANGAN -->
+    <div class="ttd-wrapper">
+        <div class="ttd-right">
+            <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+            <p><strong>Saya yang menyatakan,</strong></p>
+
+            <div class="materai">Materai<br>10.000</div>
+
+            <div class="signature-line"></div>
+            <p><strong>( {{ $data->nama ?? $data->nama_pemilih ?? '...........................................' }} )</strong></p>
         </div>
-    @endif
-
-    <div class="isi">
-        <p>Demikian surat pernyataan dan jaminan ini saya buat dengan sebenar-benarnya untuk dipergunakan sebagaimana
-            mestinya.</p>
     </div>
 
-    {{-- TANDA TANGAN (dua kolom: Penjamin & Pejabat) --}}
-    <table class="row-ttd">
-        <tr>
-            <td class="blok-ttd" style="width:50%;">
-                <div>{{ $kota }}, {{ $tglNow }}</div>
-                <div><strong>Yang Membuat Pernyataan / Penjamin</strong></div>
-                <div class="materai">Materai Rp10.000</div>
-                <div class="nama-ttd">{{ $pNama }}</div>
-                <div class="hint">NIK: {{ $pNik }}</div>
-            </td>
-            <td class="blok-ttd" style="width:50%;">
-                <div>&nbsp;</div>
-                <div><strong>{{ $jabatan }}</strong></div>
-                <div class="spacer-10"></div>
-                <div class="spacer-10"></div>
-                <div class="spacer-10"></div>
-                <div class="nama-ttd">{{ $namaPejabat }}</div>
-            </td>
-        </tr>
-    </table>
 </body>
-
 </html>

@@ -73,14 +73,13 @@
                     </div>
                 </div>
 
-                <div class="col-lg-12 col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">PENDIDIKAN TERTINGGI</h4>
-                            <canvas id="pendidikanChart"></canvas>
-                        </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h4 class="card-title">PENDIDIKAN TERTINGGI</h4>
+                        <canvas id="pendidikanChart" height="160"></canvas>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -223,46 +222,31 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            var ctxPekerjaan = document.getElementById('pendidikanChart').getContext('2d');
-            var pendidikanLabels = @json($pendidikanLabels);
-            var pendidikanCounts = @json($pendidikanCounts);
+            const ctx = document.getElementById('pendidikanChart');
 
-            var barChart = new Chart(ctxPekerjaan, {
-                type: 'pie', // Change the chart type to 'bar'
+            new Chart(ctx, {
+                type: 'pie',
                 data: {
-                    labels: pendidikanLabels,
+                    labels: @json($pendidikanLabels ?? []),
                     datasets: [{
-                        data: pendidikanCounts,
+                        data: @json($pendidikanCounts ?? []),
                         backgroundColor: [
-                            'rgba(75, 192, 192, 0.7)',
-                            'rgba(54, 162, 235, 0.7)',
-                            // ... add other colors if needed
+                            '#4BC0C0', '#36A2EB', '#FF6384', '#FF9F40',
+                            '#9966FF', '#FFCD56', '#C9CBCF', '#E7E9ED',
+                            '#FF5733', '#33FF57', '#FF33A1'
                         ],
+                        borderWidth: 2
                     }]
                 },
                 options: {
-                    scales: {
-                        x: [{
-                            gridLines: {
-                                display: false,
-                            }
-                        }],
-                        y: [{
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                            gridLines: {
-                                display: false,
-                            }
-                        }]
-                    },
-                    tooltips: {
-                        callbacks: {
-                            label: function(tooltipItem, data) {
-                                var label = data.labels[tooltipItem.index];
-                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem
-                                    .index];
-                                return label + ': ' + value;
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ctx.label + ': ' + ctx.raw + ' orang'
                             }
                         }
                     }

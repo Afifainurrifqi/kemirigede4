@@ -14,14 +14,18 @@ class SuratKeteranganKematianDesaController extends Controller
      */
     public function index()
     {
-        $data = surat_keterangan_kematian_desa::all();
-        return view('surat.surat_keterangan_kematian_desa', compact('data'));
+        $status     = \App\Models\Status::all();
+        $pekerjaan  = \App\Models\Pekerjaan::all();   // ← Tambahkan ini
+
+        return view('surat.surat_keterangan_kematian_desa', compact( 'status', "pekerjaan"));
     }
 
     public function user_kematian()
     {
-        $data = surat_keterangan_kematian_desa::all();
-        return view('surat.user_surat_keterangan_kematian_desa', compact('data'));
+        $status    = \App\Models\Status::all();
+        $pekerjaan = \App\Models\Pekerjaan::all();   // ← Tambahkan ini
+
+        return view('surat.user_surat_keterangan_kematian_desa', compact('status', 'pekerjaan'));
     }
 
     /**
@@ -34,7 +38,7 @@ class SuratKeteranganKematianDesaController extends Controller
         //
     }
 
-     public function userstore(Request $request)
+    public function userstore(Request $request)
     {
         $validated = $request->validate([
             'nama_lengkap'    => 'required|string|max:255',
@@ -109,7 +113,10 @@ class SuratKeteranganKematianDesaController extends Controller
      */
     public function edit(surat_keterangan_kematian_desa $surat)
     {
-        return view('surat.edit_surat_keterangan_kematian_desa', compact('surat'));
+
+        $status     = \App\Models\Status::all();
+        $pekerjaan  = \App\Models\Pekerjaan::all();
+        return view('surat.edit_surat_keterangan_kematian_desa', compact('surat', 'status', 'pekerjaan'));
     }
     /**
      * Update the specified resource in storage.

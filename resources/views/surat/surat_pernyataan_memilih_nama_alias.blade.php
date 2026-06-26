@@ -20,15 +20,15 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="nama" class="form-label">Nama</label>
-                        <input type="text" name="nama" id="nama" class="form-control" required
-                            value="{{ old('nama') }}">
+                        <label for="nik" class="form-label">NIK <span class="text-danger">*</span></label>
+                        <input type="text" name="nik" id="nik" class="form-control" required
+                            value="{{ old('nik') }}">
                     </div>
 
                     <div class="mb-3">
-                        <label for="nik" class="form-label">NIK</label>
-                        <input type="text" name="nik" id="nik" class="form-control" required
-                            value="{{ old('nik') }}">
+                        <label for="nama" class="form-label">Nama</label>
+                        <input type="text" name="nama" id="nama" class="form-control" required
+                            value="{{ old('nama') }}">
                     </div>
 
                     <div class="mb-3">
@@ -36,6 +36,7 @@
                         <textarea name="alamat" id="alamat" class="form-control" rows="3" required>{{ old('alamat') }}</textarea>
                     </div>
 
+                    <!-- Sisanya tetap -->
                     <div class="mb-3">
                         <label for="nama_pemilih" class="form-label">Nama Pemilih</label>
                         <input type="text" name="nama_pemilih" id="nama_pemilih" class="form-control" required
@@ -87,8 +88,8 @@
                         <select name="status_verif" id="status_verif" class="form-control" required>
                             <option value="">-- Pilih Verifikasi --</option>
                             @foreach (['Belum Verifikasi', 'Terverifikasi'] as $verif)
-                                <option value="{{ $verif }}"
-                                    {{ old('status_verif') == $verif ? 'selected' : '' }}>{{ $verif }}</option>
+                                <option value="{{ $verif }}" {{ old('status_verif') == $verif ? 'selected' : '' }}>
+                                    {{ $verif }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -104,4 +105,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function autofillData(nikFieldId) {
+            const nik = document.getElementById(nikFieldId).value.trim();
+            if (nik.length < 10) return;
+
+            fetch(`/datapenduduk/lookup/${nik}`)
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        const d = result.data;
+                        document.getElementById('nama').value = d.nama || '';
+                        document.getElementById('alamat').value = d.alamat || '';
+                    } else {
+                        alert(result.message || 'NIK tidak ditemukan');
+                    }
+                })
+                .catch(() => alert('Gagal mengambil data'));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const nikInput = document.getElementById('nik');
+            if (nikInput) nikInput.addEventListener('blur', () => autofillData('nik'));
+        });
+    </script>
 @endsection

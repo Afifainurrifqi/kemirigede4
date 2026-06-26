@@ -1,5 +1,4 @@
- @extends(Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
-
+@extends(Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container-fluid">
@@ -7,19 +6,20 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h1 class="card-title">Form Tambah Penduduk</h1>
-                        {{-- <button type="button" class="btn mb-1 btn-warning" onclick="window.location='{{ url('datapenduduk') }}'">Kembali</button> --}}
-                        <br><br><br>
+                        <h1 class="card-title">Form Tambah Data Penduduk</h1>
+
                         <div class="form-validation">
                             <form class="form-valide" action="{{ route('datapenduduk.store') }}" method="POST" id="form-tambah-penduduk">
                                 @csrf
+
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label" for="valNokk">No KK <span
                                             class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control @error('valNokk') is-invalid @enderror"
-                                            id="valNokk" name="valNokk" value="{{ old('valNokk') }}" placeholder="No KK... "
+                                            id="valNokk" name="valNokk" value="{{ old('valNokk') }}"
+                                            placeholder="No KK... "
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                         @error('valNokkxam')
                                             <div id="" class="invalid-feedback">
@@ -43,6 +43,8 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                {{-- Gelar Awal --}}
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label" for="valGelara">Gelar awal <span
                                             class="text-danger">*</span></label>
@@ -215,49 +217,50 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <!-- Pendidikan, Pekerjaan, Goldar → copy dari kode lama jika perlu -->
+
+                                {{-- Status + Tahun Perkawinan --}}
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label" for="valStatus">Status <span class="text-danger">*</span></label>
+                                    <label class="col-lg-4 col-form-label" for="valStatus">Status <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control @error('valStatus') is-invalid @enderror" id="valStatus" name="valStatus">
+                                        <select class="form-control @error('valStatus') is-invalid @enderror"
+                                            id="valStatus" name="valStatus" required>
                                             <option value="0" disabled selected>--Pilih Status--</option>
                                             @foreach ($status as $item)
-                                                <option value="{{ $item->id }}" {{ old('valStatus') == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->nama }}</option>
+                                                <option value="{{ $item->id }}"
+                                                    {{ old('valStatus') == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->nama }}
+                                                </option>
                                             @endforeach
                                         </select>
                                         @error('valStatus')
-                                            <div id="" class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
-                                        <div class="form-group row" id="tanggalPerkawinanFormGroup" style="display: none;">
-                                            <label class="col-lg-4 col-form-label" for="valTanggalperkawinan">Tanggal Perkawinan <span class="text-danger">*</span></label>
+
+                                        {{-- Tahun Perkawinan (TIDAK WAJIB) --}}
+                                        <div class="form-group row mt-3" id="tahunPerkawinanFormGroup"
+                                            style="display:none;">
+                                            <label class="col-lg-4 col-form-label" for="valTahunperkawinan">Tahun
+                                                Perkawinan</label>
                                             <div class="col-lg-6">
-                                                <input type="date" value="{{ old('valTanggalperkawinan') }}"
-                                                       class="form-control @error('valTanggalperkawinan') is-invalid @enderror"
-                                                       id="valTanggalperkawinan" name="valTanggalperkawinan" placeholder="Tanggal Tanggalperkawinan...">
-                                                @error('valTanggalperkawinan')
-                                                    <div id="" class="invalid-feedback">{{ $message }}</div>
+                                                <input type="number"
+                                                    class="form-control @error('valTahunperkawinan') is-invalid @enderror"
+                                                    id="valTahunperkawinan" name="valTahunperkawinan"
+                                                    value="{{ old('valTahunperkawinan') }}" placeholder="Contoh: 2015"
+                                                    min="1900" max="{{ date('Y') }}">
+                                                @error('valTahunperkawinan')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
+                                                <small class="text-muted">Isi tahun saja (contoh: 2015). Tidak wajib
+                                                    diisi.</small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-
-                                <script>
-                                    document.getElementById('valStatus').addEventListener('change', function () {
-                                        var selectedStatus = this.value;
-                                        var tanggalPerkawinanFormGroup = document.getElementById('tanggalPerkawinanFormGroup');
-
-                                        // Tampilkan atau sembunyikan form tanggal perkawinan berdasarkan status yang dipilih
-                                        if (selectedStatus === '1') { // Gantilah '1' dengan nilai yang sesuai untuk status 'Kawin'
-                                            tanggalPerkawinanFormGroup.style.display = 'block';
-                                        } else {
-                                            tanggalPerkawinanFormGroup.style.display = 'none';
-                                        }
-                                    });
-                                </script>
-
-                                <div class="form-group row">
+                                {{-- Hubungan, Ayah, Ibu, Alamat, RT, RW, Datak --}}
+                            <div class="form-group row">
                                     <label class="col-lg-4 col-form-label " for="valHubungan">Hubungan <span
                                             class="text-danger">*</span>
                                     </label>
@@ -371,9 +374,12 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                {{-- Tombol Simpan --}}
                                 <div class="form-group row">
                                     <div class="col-lg-8 ml-auto">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Simpan</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#confirmModal">Simpan</button>
                                     </div>
                                 </div>
                             </form>
@@ -384,18 +390,17 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    {{-- Modal Konfirmasi --}}
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmModalLabel">Konfirmasi</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="modal-body">
-                    Apakah kamu sudah yakin?
-                </div>
+                <div class="modal-body">Apakah kamu sudah yakin?</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                     <button type="button" class="btn btn-primary" id="confirmSave">Yakin</button>
@@ -408,5 +413,19 @@
         document.getElementById('confirmSave').addEventListener('click', function() {
             document.getElementById('form-tambah-penduduk').submit();
         });
+
+        function toggleTahunPerkawinan() {
+            const selectedText = document.getElementById('valStatus').options[document.getElementById('valStatus')
+                .selectedIndex].text.toLowerCase();
+            const fg = document.getElementById('tahunPerkawinanFormGroup');
+            if (selectedText.includes('kawin')) {
+                fg.style.display = 'block';
+            } else {
+                fg.style.display = 'none';
+            }
+        }
+
+        document.getElementById('valStatus').addEventListener('change', toggleTahunPerkawinan);
+        document.addEventListener('DOMContentLoaded', toggleTahunPerkawinan);
     </script>
 @endsection

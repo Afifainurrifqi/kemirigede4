@@ -1,92 +1,150 @@
 @extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
-    <div class="container">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="mb-4">Form Surat Keterangan Kematian Desa</h4>
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-4">Form Surat Keterangan Kematian Desa (Admin)</h4>
 
-                <form action="{{ route('surat.kematian.store') }}" method="POST">
-                    @csrf
+            <form action="{{ route('surat.kematian.store') }}" method="POST">
+                @csrf
 
-                    <h5 class="mb-3">Data Almarhum</h5>
-                    <div class="mb-3">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                <h5 class="mb-3">Data Almarhum</h5>
+
+                <div class="mb-3">
+                    <label for="nik" class="form-label">NIK Almarhum <span class="text-danger">*</span></label>
+                    <input type="text" name="nik" id="nik" class="form-control" required value="{{ old('nik') }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="nama_lengkap" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="{{ old('nama_lengkap') }}">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="jenis_kelamin" class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
                         <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
                             <option value="">-- Pilih --</option>
-                            <option value="Laki-laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
+                            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="kewarganegaraan" class="form-label">Kewarganegaraan</label>
-                        <input type="text" name="kewarganegaraan" id="kewarganegaraan" class="form-control" required
-                            value="Indonesia">
+                    <div class="col-md-6 mb-3">
+                        <label for="kewarganegaraan" class="form-label">Kewarganegaraan <span class="text-danger">*</span></label>
+                        <input type="text" name="kewarganegaraan" id="kewarganegaraan" class="form-control" required value="{{ old('kewarganegaraan', 'Indonesia') }}">
                     </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <input type="text" name="status" id="status" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="pekerjaan" class="form-label">Pekerjaan</label>
-                        <input type="text" name="pekerjaan" id="pekerjaan" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="alamat" class="form-label">Alamat</label>
-                        <textarea name="alamat" id="alamat" class="form-control" rows="2" required></textarea>
-                    </div>
+                </div>
 
-                    <h5 class="mb-3">Keterangan Meninggal</h5>
-                    <div class="mb-3">
-                        <label for="hari" class="form-label">Hari</label>
-                        <input type="text" name="hari" id="hari" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="tanggal" class="form-label">Tanggal</label>
-                        <input type="date" name="tanggal" id="tanggal" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="penyebab" class="form-label">Disebabkan Karena</label>
-                        <input type="text" name="penyebab" id="penyebab" class="form-control" required>
-                    </div>
+                <!-- STATUS PERKAWINAN -->
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status Perkawinan <span class="text-danger">*</span></label>
+                    <select name="status" id="status" class="form-control" required>
+                        <option value="">-- Pilih Status Perkawinan --</option>
+                        @foreach ($status as $item)
+                            @php $statusId = (string) ($item->_id ?? $item->id); @endphp
+                            <option value="{{ $statusId }}" {{ old('status') == $statusId ? 'selected' : '' }}>
+                                {{ $item->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-                    {{-- Hidden default --}}
-                    <div class="mb-3">
-                        <label for="status_surat" class="form-label">Status Surat</label>
-                        <select name="status_surat" id="status_surat" class="form-control" required>
-                            <option value="">-- Pilih Status --</option>
-                            @foreach (['Pending', 'Di cek', 'Di terima', 'Ditolak'] as $status)
-                                <option value="{{ $status }}" {{ old('status_surat') == $status ? 'selected' : '' }}>
-                                    {{ $status }}</option>
-                            @endforeach
+                <!-- PEKERJAAN (Dropdown dari Master Data) -->
+                <div class="mb-3">
+                    <label for="pekerjaan" class="form-label">Pekerjaan <span class="text-danger">*</span></label>
+                    <select name="pekerjaan" id="pekerjaan" class="form-control" required>
+                        <option value="">-- Pilih Pekerjaan --</option>
+                        @foreach ($pekerjaan as $item)
+                            @php $jobId = (string) ($item->_id ?? $item->id); @endphp
+                            <option value="{{ $jobId }}" {{ old('pekerjaan') == $jobId ? 'selected' : '' }}>
+                                {{ $item->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="alamat" class="form-label">Alamat <span class="text-danger">*</span></label>
+                    <textarea name="alamat" id="alamat" class="form-control" rows="2" required>{{ old('alamat') }}</textarea>
+                </div>
+
+                <h5 class="mb-3">Keterangan Meninggal</h5>
+                <div class="mb-3">
+                    <label for="hari" class="form-label">Hari <span class="text-danger">*</span></label>
+                    <input type="text" name="hari" id="hari" class="form-control" required value="{{ old('hari') }}">
+                </div>
+                <div class="mb-3">
+                    <label for="tanggal" class="form-label">Tanggal Meninggal <span class="text-danger">*</span></label>
+                    <input type="date" name="tanggal" id="tanggal" class="form-control" required value="{{ old('tanggal') }}">
+                </div>
+                <div class="mb-3">
+                    <label for="penyebab" class="form-label">Disebabkan Karena <span class="text-danger">*</span></label>
+                    <input type="text" name="penyebab" id="penyebab" class="form-control" required value="{{ old('penyebab') }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="nowa" class="form-label">No WhatsApp <span class="text-danger">*</span></label>
+                    <input type="text" name="nowa" id="nowa" class="form-control" required value="{{ old('nowa') }}">
+                </div>
+
+                <!-- Status Admin -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Status Surat <span class="text-danger">*</span></label>
+                        <select name="status_surat" class="form-control" required>
+                            <option value="Pending" {{ old('status_surat') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="Di cek" {{ old('status_surat') == 'Di cek' ? 'selected' : '' }}>Di cek</option>
+                            <option value="Di terima" {{ old('status_surat') == 'Di terima' ? 'selected' : '' }}>Di terima</option>
+                            <option value="Ditolak" {{ old('status_surat') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="status_verif" class="form-label">Status Verifikasi</label>
-                        <select name="status_verif" id="status_verif" class="form-control" required>
-                            <option value="">-- Pilih Verifikasi --</option>
-                            @foreach (['Belum Verifikasi', 'Terverifikasi'] as $verif)
-                                <option value="{{ $verif }}" {{ old('status_verif') == $verif ? 'selected' : '' }}>
-                                    {{ $verif }}</option>
-                            @endforeach
+                    <div class="col-md-6 mb-3">
+                        <label>Status Verifikasi <span class="text-danger">*</span></label>
+                        <select name="status_verif" class="form-control" required>
+                            <option value="Belum Verifikasi" {{ old('status_verif') == 'Belum Verifikasi' ? 'selected' : '' }}>Belum Verifikasi</option>
+                            <option value="Terverifikasi" {{ old('status_verif') == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
                         </select>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="nowa" class="form-label">No WhatsApp</label>
-                        <input type="text" name="nowa" id="nowa" class="form-control" required>
-                    </div>
-
-                    <div class="text-end mt-4">
-                        <button type="submit" class="btn btn-primary px-4">Kirim</button>
-                    </div>
-                </form>
-            </div>
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 @endsection
+
+<!-- ==================== AUTOFILL SCRIPT ==================== -->
+<script>
+    function autofillKematianAdmin() {
+        const nik = document.getElementById('nik').value.trim();
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    const d = result.data;
+
+                    document.getElementById('nama_lengkap').value = d.nama || '';
+                    document.getElementById('alamat').value = d.alamat || '';
+
+                    if (d.jenis_kelamin) document.getElementById('jenis_kelamin').value = d.jenis_kelamin;
+                    if (d.kewarganegaraan) document.getElementById('kewarganegaraan').value = d.kewarganegaraan;
+                    if (d.status) document.getElementById('status').value = d.status;
+                    // Pekerjaan diisi manual karena menggunakan ID dari master
+                }
+            })
+            .catch(err => console.log('Autofill Error:', err));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const nikInput = document.getElementById('nik');
+        if (nikInput) {
+            nikInput.addEventListener('blur', autofillKematianAdmin);
+        }
+    });
+</script>

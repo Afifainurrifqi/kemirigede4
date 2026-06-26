@@ -117,7 +117,7 @@
             <div class="header-content position-relative d-flex align-items-center justify-content-between">
                 <!-- Back Button -->
                 <div class="back-button">
-                     <a href={{ route('surat.pengajuan_surat') }}>
+                    <a href={{ route('surat.pengajuan_surat') }}>
                         <i class="bi bi-arrow-left-short"></i>
                     </a>
                 </div>
@@ -149,193 +149,227 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('user_suratpernyataantidakbisamelampirkanktpkematian.store') }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route('user_suratpernyataantidakbisamelampirkanktpkematian.store') }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="container">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
 
-                                    <h5 class="mb-4">Data Pelapor</h5>
+                        <h5 class="mb-4">Data Pelapor</h5>
 
-                                    <div class="mb-3">
-                                        <label for="nama_pelapor" class="form-label">Nama Pelapor <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="nama_pelapor" id="nama_pelapor"
-                                            class="form-control" required value="{{ old('nama_pelapor') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nik_pelapor" class="form-label">NIK Pelapor <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="nik_pelapor" id="nik_pelapor"
-                                            class="form-control" required value="{{ old('nik_pelapor') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tempat_lahir_pelapor" class="form-label">Tempat Lahir Pelapor
-                                            <span class="text-danger">*</span></label>
-                                        <input type="text" name="tempat_lahir_pelapor" id="tempat_lahir_pelapor"
-                                            class="form-control" required value="{{ old('tempat_lahir_pelapor') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tanggal_lahir_pelapor" class="form-label">Tanggal Lahir Pelapor
-                                            <span class="text-danger">*</span></label>
-                                        <input type="date" name="tanggal_lahir_pelapor" id="tanggal_lahir_pelapor"
-                                            class="form-control" required value="{{ old('tanggal_lahir_pelapor') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="jenis_kelamin_pelapor" class="form-label">Jenis Kelamin Pelapor
-                                            <span class="text-danger">*</span></label>
-                                        <select name="jenis_kelamin_pelapor" id="jenis_kelamin_pelapor"
-                                            class="form-select" required>
-                                            <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="Laki-laki"
-                                                {{ old('jenis_kelamin_pelapor') == 'Laki-laki' ? 'selected' : '' }}>
-                                                Laki-laki</option>
-                                            <option value="Perempuan"
-                                                {{ old('jenis_kelamin_pelapor') == 'Perempuan' ? 'selected' : '' }}>
-                                                Perempuan</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="pekerjaan_pelapor" class="form-label">Pekerjaan Pelapor <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="pekerjaan_pelapor" id="pekerjaan_pelapor"
-                                            class="form-control" required value="{{ old('pekerjaan_pelapor') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="alamat_pelapor" class="form-label">Alamat Pelapor <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="alamat_pelapor" id="alamat_pelapor"
-                                            class="form-control" required value="{{ old('alamat_pelapor') }}">
-                                    </div>
-
-                                    <hr>
-
-                                    <h5 class="mb-4">Data Jenazah</h5>
-
-                                    <div class="mb-3">
-                                        <label for="nik_jenazah" class="form-label">NIK Jenazah <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="nik_jenazah" id="nik_jenazah"
-                                            class="form-control" required value="{{ old('nik_jenazah') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nama_jenazah" class="form-label">Nama Jenazah <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="nama_jenazah" id="nama_jenazah"
-                                            class="form-control" required value="{{ old('nama_jenazah') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tanggal_lahir_jenazah" class="form-label">Tanggal Lahir Jenazah
-                                            <span class="text-danger">*</span></label>
-                                        <input type="date" name="tanggal_lahir_jenazah" id="tanggal_lahir_jenazah"
-                                            class="form-control" required value="{{ old('tanggal_lahir_jenazah') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="jenis_kelamin_jenazah" class="form-label">Jenis Kelamin Jenazah
-                                            <span class="text-danger">*</span></label>
-                                        <select name="jenis_kelamin_jenazah" id="jenis_kelamin_jenazah"
-                                            class="form-select" required>
-                                            <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="Laki-laki"
-                                                {{ old('jenis_kelamin_jenazah') == 'Laki-laki' ? 'selected' : '' }}>
-                                                Laki-laki</option>
-                                            <option value="Perempuan"
-                                                {{ old('jenis_kelamin_jenazah') == 'Perempuan' ? 'selected' : '' }}>
-                                                Perempuan</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="alamat_jenazah" class="form-label">Alamat Jenazah <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="alamat_jenazah" id="alamat_jenazah"
-                                            class="form-control" required value="{{ old('alamat_jenazah') }}">
-                                    </div>
-
-                                    <hr>
-
-                                    <div class="mb-3">
-                                        <label for="alasan" class="form-label">Alasan Tidak Bisa Melampirkan KTP
-                                            <span class="text-danger">*</span></label>
-                                        <input type="text" name="alasan" id="alasan" class="form-control"
-                                            required value="{{ old('alasan') }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nowa" class="form-label">No WhatsApp <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="nowa" id="nowa" class="form-control"
-                                            required value="{{ old('nowa') }}">
-                                    </div>
-
-                                    <!-- Hidden select untuk status surat dan verif -->
-                                    <select name="status_surat" id="status_surat" class="form-select d-none"
-                                        required>
-                                        <option value="Pending" selected>Pending</option>
-                                    </select>
-
-                                    <select name="status_verif" id="status_verif" class="form-select d-none"
-                                        required>
-                                        <option value="Belum Verifikasi" selected>Belum Verifikasi</option>
-                                    </select>
-
-                                    <div class="d-grid mt-4">
-                                        <button type="submit" class="btn btn-primary btn-lg">Simpan</button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="nik_pelapor" class="form-label">NIK Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nik_pelapor" id="nik_pelapor" class="form-control" required
+                                value="{{ old('nik_pelapor') }}">
                         </div>
-                    </form>
+
+                        <div class="mb-3">
+                            <label for="nama_pelapor" class="form-label">Nama Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nama_pelapor" id="nama_pelapor" class="form-control"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tempat_lahir_pelapor" class="form-label">Tempat Lahir Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="tempat_lahir_pelapor" id="tempat_lahir_pelapor"
+                                class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tanggal_lahir_pelapor" class="form-label">Tanggal Lahir Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" name="tanggal_lahir_pelapor" id="tanggal_lahir_pelapor"
+                                class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="jenis_kelamin_pelapor" class="form-label">Jenis Kelamin Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <select name="jenis_kelamin_pelapor" id="jenis_kelamin_pelapor" class="form-select"
+                                required>
+                                <option value="">-- Pilih --</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pekerjaan_pelapor" class="form-label">Pekerjaan Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="pekerjaan_pelapor" id="pekerjaan_pelapor"
+                                class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="alamat_pelapor" class="form-label">Alamat Pelapor <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="alamat_pelapor" id="alamat_pelapor" class="form-control"
+                                required>
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-4">Data Jenazah</h5>
+
+                        <div class="mb-3">
+                            <label for="nik_jenazah" class="form-label">NIK Jenazah <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nik_jenazah" id="nik_jenazah" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nama_jenazah" class="form-label">Nama Jenazah <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nama_jenazah" id="nama_jenazah" class="form-control"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tanggal_lahir_jenazah" class="form-label">Tanggal Lahir Jenazah
+                                <span class="text-danger">*</span></label>
+                            <input type="date" name="tanggal_lahir_jenazah" id="tanggal_lahir_jenazah"
+                                class="form-control" required value="{{ old('tanggal_lahir_jenazah') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="jenis_kelamin_jenazah" class="form-label">Jenis Kelamin Jenazah
+                                <span class="text-danger">*</span></label>
+                            <select name="jenis_kelamin_jenazah" id="jenis_kelamin_jenazah" class="form-select"
+                                required>
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="Laki-laki"
+                                    {{ old('jenis_kelamin_jenazah') == 'Laki-laki' ? 'selected' : '' }}>
+                                    Laki-laki</option>
+                                <option value="Perempuan"
+                                    {{ old('jenis_kelamin_jenazah') == 'Perempuan' ? 'selected' : '' }}>
+                                    Perempuan</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="alamat_jenazah" class="form-label">Alamat Jenazah <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="alamat_jenazah" id="alamat_jenazah" class="form-control"
+                                required value="{{ old('alamat_jenazah') }}">
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="alasan" class="form-label">Alasan Tidak Bisa Melampirkan KTP
+                                <span class="text-danger">*</span></label>
+                            <input type="text" name="alasan" id="alasan" class="form-control" required
+                                value="{{ old('alasan') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nowa" class="form-label">No WhatsApp <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nowa" id="nowa" class="form-control" required
+                                value="{{ old('nowa') }}">
+                        </div>
+
+                        <!-- Hidden select untuk status surat dan verif -->
+                        <select name="status_surat" id="status_surat" class="form-select d-none" required>
+                            <option value="Pending" selected>Pending</option>
+                        </select>
+
+                        <select name="status_verif" id="status_verif" class="form-select d-none" required>
+                            <option value="Belum Verifikasi" selected>Belum Verifikasi</option>
+                        </select>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Simpan</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+        </form>
 
 
-                    <!-- Footer Nav -->
-                    <div class="footer-nav-area" id="footerNav">
-                        <div class="container px-0">
-                            <!-- Footer Content -->
-                            <div class="footer-nav position-relative">
-                                <ul class="h-100 d-flex align-items-center justify-content-between ps-0">
-                                    <li class="active">
-                                         <a href={{ route('surat.pengajuan_surat') }}>
+        <!-- Footer Nav -->
+        <div class="footer-nav-area" id="footerNav">
+            <div class="container px-0">
+                <!-- Footer Content -->
+                <div class="footer-nav position-relative">
+                    <ul class="h-100 d-flex align-items-center justify-content-between ps-0">
+                        <li class="active">
+                            <a href={{ route('surat.pengajuan_surat') }}>
                                 <i class="bi bi-house"></i>
                                 <span>Beranda</span>
                             </a>
-                                    </li>
+                        </li>
 
 
 
 
 
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function autofillData(nikFieldId, prefix) {
+                const nik = document.getElementById(nikFieldId).value.trim();
+                if (nik.length < 10) return;
+
+                fetch(`/datapenduduk/lookup/${nik}`)
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            const d = result.data;
+
+                            if (prefix === 'pelapor') {
+                                document.getElementById('nama_pelapor').value = d.nama;
+                                document.getElementById('tempat_lahir_pelapor').value = d.tempat_lahir;
+                                document.getElementById('tanggal_lahir_pelapor').value = d.tanggal_lahir;
+                                document.getElementById('jenis_kelamin_pelapor').value = d.jenis_kelamin;
+                                document.getElementById('pekerjaan_pelapor').value = d.pekerjaan;
+                                document.getElementById('alamat_pelapor').value = d.alamat;
+                            } else if (prefix === 'jenazah') {
+                                document.getElementById('nama_jenazah').value = d.nama;
+                                document.getElementById('tanggal_lahir_jenazah').value = d.tanggal_lahir;
+                                document.getElementById('jenis_kelamin_jenazah').value = d.jenis_kelamin;
+                                document.getElementById('alamat_jenazah').value = d.alamat;
+                            }
+                        } else {
+                            alert(result.message);
+                        }
+                    })
+                    .catch(() => alert('Gagal mengambil data'));
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Autofill Pelapor
+                document.getElementById('nik_pelapor').addEventListener('blur', () => {
+                    autofillData('nik_pelapor', 'pelapor');
+                });
+
+                // Autofill Jenazah
+                document.getElementById('nik_jenazah').addEventListener('blur', () => {
+                    autofillData('nik_jenazah', 'jenazah');
+                });
+            });
+        </script>
 
 
-                    <!-- All JavaScript Files -->
-                    <script src="{{ asset('assets4/dist/js/bootstrap.bundle.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/slideToggle.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/internet-status.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/tiny-slider.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/venobox.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/countdown.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/rangeslider.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/vanilla-dataTables.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/index.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/imagesloaded.pkgd.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/isotope.pkgd.min.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/dark-rtl.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
-                    <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
+        <!-- All JavaScript Files -->
+        <script src="{{ asset('assets4/dist/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/slideToggle.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/internet-status.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/tiny-slider.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/venobox.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/countdown.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/rangeslider.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/vanilla-dataTables.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/index.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/imagesloaded.pkgd.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/isotope.pkgd.min.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/dark-rtl.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
+        <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
 </body>
 
 </html>

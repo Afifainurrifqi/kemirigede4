@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\surat_pernyataan_anak_seorang_nama_ibu;
+use App\Services\NomorSuratService;
 use Illuminate\Http\Request;
 
 class SuratPernyataanAnakSeorangNamaIbuController extends Controller
@@ -12,6 +13,14 @@ class SuratPernyataanAnakSeorangNamaIbuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(private NomorSuratService $svc) {}
+
+    protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
+    {
+        $this->svc->maybeAssignNomorSurat($suratOrNull, $payload, 'anakseorangibu');
+    }
+
     public function index()
     {
         $data = surat_pernyataan_anak_seorang_nama_ibu::all();

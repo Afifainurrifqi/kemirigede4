@@ -1,9 +1,7 @@
-{{-- resources/views/surat/tidakmampu/create.blade.php --}}
-@extends(auth()->user()?->role === 'admin' ? 'layout.main2' : 'layout.main')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container">
-        {{-- Alert error validasi --}}
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -16,347 +14,171 @@
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <h4 class="mb-4">Form Surat Keterangan Tidak Mampu</h4>
+                <h4 class="mb-4">Form Surat Keterangan Tidak Mampu (Admin)</h4>
 
-                <form action="{{ route('surat.tidakmampu.store') }}" method="POST" novalidate>
+                <form action="{{ route('surat.tidakmampu.store') }}" method="POST">
                     @csrf
 
-                    {{-- Peruntukan SKTM --}}
+                    <h5 class="mb-3">Data Pemohon</h5>
+
                     <div class="mb-3">
-                        <label for="peruntukan_sktm" class="form-label">
-                            Peruntukan untuk SKTM <span class="text-danger">*</span>
-                        </label>
-                        <select name="peruntukan_sktm" id="peruntukan_sktm"
-                            class="form-control @error('peruntukan_sktm') is-invalid @enderror" required>
-                            <option value="">-- Pilih Peruntukan --</option>
-                            @foreach (['Biaya Pendidikan', 'Bantuan Sosial', 'Biaya Kesehatan'] as $peruntukan)
-                                <option value="{{ $peruntukan }}"
-                                    {{ old('peruntukan_sktm') == $peruntukan ? 'selected' : '' }}>
-                                    {{ $peruntukan }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('peruntukan_sktm')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>NIK <span class="text-danger">*</span></label>
+                        <input type="text" name="nik" id="nik" class="form-control" required value="{{ old('nik') }}">
                     </div>
 
-                    {{-- Nama Lengkap --}}
                     <div class="mb-3">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                        <input type="text" name="nama_lengkap" id="nama_lengkap"
-                            class="form-control @error('nama_lengkap') is-invalid @enderror" required
-                            value="{{ old('nama_lengkap') }}">
-                        @error('nama_lengkap')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="{{ old('nama_lengkap') }}">
                     </div>
 
-                    {{-- NIK --}}
-                    <div class="mb-3">
-                        <label for="nik" class="form-label">NIK <span class="text-danger">*</span></label>
-                        <input type="text" name="nik" id="nik"
-                            class="form-control @error('nik') is-invalid @enderror" required value="{{ old('nik') }}">
-                        @error('nik')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- TTL --}}
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="tempat_lahir" class="form-label">Tempat Lahir <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="tempat_lahir" id="tempat_lahir"
-                                class="form-control @error('tempat_lahir') is-invalid @enderror" required
-                                value="{{ old('tempat_lahir') }}">
-                            @error('tempat_lahir')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label>Tempat Lahir <span class="text-danger">*</span></label>
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" required value="{{ old('tempat_lahir') }}">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" name="tanggal_lahir" id="tanggal_lahir"
-                                class="form-control @error('tanggal_lahir') is-invalid @enderror" required
-                                value="{{ old('tanggal_lahir') }}">
-                            @error('tanggal_lahir')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label>Tanggal Lahir <span class="text-danger">*</span></label>
+                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required value="{{ old('tanggal_lahir') }}">
                         </div>
                     </div>
 
-                    {{-- Kewarganegaraan --}}
+                    <!-- KEWARGANEGARAAN -->
                     <div class="mb-3">
-                        <label for="kewarganegaraan" class="form-label">Kewarganegaraan <span
-                                class="text-danger">*</span></label>
-                        <input type="text" name="kewarganegaraan" id="kewarganegaraan"
-                            class="form-control @error('kewarganegaraan') is-invalid @enderror" required
-                            value="{{ old('kewarganegaraan') }}">
-                        @error('kewarganegaraan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Kewarganegaraan <span class="text-danger">*</span></label>
+                        <select name="kewarganegaraan" id="kewarganegaraan" class="form-control" required>
+                            <option value="">-- Pilih Kewarganegaraan --</option>
+                            <option value="Warga Negara Indonesia (WNI)" {{ old('kewarganegaraan') == 'Warga Negara Indonesia (WNI)' ? 'selected' : '' }}>Warga Negara Indonesia (WNI)</option>
+                            <option value="Warga Negara Asing (WNA)" {{ old('kewarganegaraan') == 'Warga Negara Asing (WNA)' ? 'selected' : '' }}>Warga Negara Asing (WNA)</option>
+                        </select>
                     </div>
 
-                    {{-- Agama --}}
+
+
                     <div class="mb-3">
-                        <label for="agama" class="form-label">Agama <span class="text-danger">*</span></label>
-                        <select name="agama" id="agama" class="form-control @error('agama') is-invalid @enderror"
-                            required>
-                            <option value="">-- Pilih Agama --</option>
-                            @foreach (['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Khonghucu'] as $agama)
-                                <option value="{{ $agama }}" {{ old('agama') == $agama ? 'selected' : '' }}>
-                                    {{ $agama }}</option>
+                        <label>Agama <span class="text-danger">*</span></label>
+                        <select name="agama" id="agama" class="form-control" required>
+                            <option value="">-- Pilih --</option>
+                            @foreach(['Islam','Kristen','Katolik','Hindu','Buddha','Khonghucu'] as $agama)
+                                <option value="{{ $agama }}" {{ old('agama') == $agama ? 'selected' : '' }}>{{ $agama }}</option>
                             @endforeach
                         </select>
-                        @error('agama')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
-                    {{-- Status Perkawinan --}}
                     <div class="mb-3">
-                        <label for="status_perkawinan" class="form-label">Status Perkawinan <span
-                                class="text-danger">*</span></label>
-                        <select name="status_perkawinan" id="status_perkawinan"
-                            class="form-control @error('status_perkawinan') is-invalid @enderror" required>
-                            <option value="">-- Pilih Status --</option>
-                            @foreach (['Kawin', 'Belum Kawin', 'Cerai Hidup', 'Cerai'] as $status)
-                                <option value="{{ $status }}"
-                                    {{ old('status_perkawinan') == $status ? 'selected' : '' }}>{{ $status }}
-                                </option>
+                        <label>Status Perkawinan <span class="text-danger">*</span></label>
+                        <select name="status_perkawinan" id="status_perkawinan" class="form-control" required>
+                            <option value="">-- Pilih --</option>
+                            <option value="Belum Kawin" {{ old('status_perkawinan') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
+                            <option value="Kawin" {{ old('status_perkawinan') == 'Kawin' ? 'selected' : '' }}>Kawin</option>
+                            <option value="Cerai Hidup" {{ old('status_perkawinan') == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
+                            <option value="Cerai" {{ old('status_perkawinan') == 'Cerai' ? 'selected' : '' }}>Cerai</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Pekerjaan <span class="text-danger">*</span></label>
+                        <select name="pekerjaan" id="pekerjaan" class="form-control" required>
+                            <option value="">-- Pilih Pekerjaan --</option>
+                            @php
+                                $jobs = ["BELUM/TIDAK BEKERJA","PELAJAR/MAHASISWA","KARYAWAN SWASTA","IBU RUMAH TANGGA","WIRASWASTA","PETANI/PEKEBUN","BURUH TANI","PEDAGANG","PEGAWAI NEGERI SIPIL (PNS)","KARYAWAN HONORER","BURUH HARIAN LEPAS","SOPIR","KARYAWAN BUMN","PENSIUNAN","Lainnya"];
+                            @endphp
+                            @foreach($jobs as $job)
+                                <option value="{{ $job }}" {{ old('pekerjaan') == $job ? 'selected' : '' }}>{{ $job }}</option>
                             @endforeach
                         </select>
-                        @error('status_perkawinan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
-                    {{-- Pekerjaan --}}
                     <div class="mb-3">
-                        <label for="pekerjaan" class="form-label">Pekerjaan <span class="text-danger">*</span></label>
-                        @php
-                            $jobs = [
-                                'BELUM/TIDAK BEKERJA',
-                                'PELAJAR/MAHASISWA',
-                                'TIDAK/BELUM SEKOLAH',
-                                'KARYAWAN SWASTA',
-                                'IBU RUMAH TANGGA',
-                                'WIRASWASTA',
-                                'TENTARA NASIONAL INDONESIA (TNI)',
-                                'KEPOLISIAN RI (POLRI)',
-                                'DOSEN',
-                                'GURU',
-                                'Guru agama_pelapor',
-                                'KEPALA DESA',
-                                'PERANGKAT DESA',
-                                'Pegawai Kantor Desa',
-                                'BIDAN',
-                                'DOKTER',
-                                'PERAWAT',
-                                'PETANI/PEKEBUN PEMILIK LAHAN',
-                                'BURUH TANI/PERKEBUNAN',
-                                'PEDAGANG',
-                                'PEGAWAI NEGERI SIPIL (PNS)',
-                                'BURUH HARIAN LEPAS',
-                                'SOPIR',
-                                'KARYAWAN BUMN',
-                                'PENSIUNAN',
-                                'PEMBANTU RUMAH TANGGA',
-                                'BURUH PETERNAKAN',
-                                'KONSTRUKSI',
-                                'PELAUT',
-                                'NELAYAN/PERIKANAN',
-                                'KARYAWAN HONORER',
-                                'PETERNAK',
-                                'MEKANIK',
-                                'PENATA RIAS',
-                                'TUKANG LAS/PANDAI BESI',
-                                'INDUSTRI',
-                                'USTADZ/MUBALIGH',
-                                'TABIB',
-                                'BURUH NELAYAN/PERIKANAN',
-                                'JURU MASAK',
-                                'SENIMAN',
-                                'AKUNTAN',
-                                'Petani/Pekebun penyewa',
-                                'TKI',
-                                'Lainnya',
-                            ];
-                        @endphp
-                        <select name="pekerjaan" id="pekerjaan"
-                            class="form-control @error('pekerjaan') is-invalid @enderror" required>
-                            <option value="">-- Pilih pekerjaan --</option>
-                            @foreach ($jobs as $job)
-                                <option value="{{ $job }}" {{ old('pekerjaan') == $job ? 'selected' : '' }}>
-                                    {{ $job }}</option>
-                            @endforeach
+                        <label>Alamat Rumah <span class="text-danger">*</span></label>
+                        <textarea name="alamat_rumah" id="alamat_rumah" class="form-control" rows="3" required>{{ old('alamat_rumah') }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Peruntukan SKTM <span class="text-danger">*</span></label>
+                        <select name="peruntukan_sktm" class="form-control" required>
+                            <option value="">-- Pilih Peruntukan --</option>
+                            <option value="Biaya Pendidikan" {{ old('peruntukan_sktm') == 'Biaya Pendidikan' ? 'selected' : '' }}>Biaya Pendidikan</option>
+                            <option value="Bantuan Sosial" {{ old('peruntukan_sktm') == 'Bantuan Sosial' ? 'selected' : '' }}>Bantuan Sosial</option>
+                            <option value="Biaya Kesehatan" {{ old('peruntukan_sktm') == 'Biaya Kesehatan' ? 'selected' : '' }}>Biaya Kesehatan</option>
                         </select>
-                        @error('pekerjaan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
-                    {{-- Alamat Rumah --}}
                     <div class="mb-3">
-                        <label for="alamat_rumah" class="form-label">Alamat Rumah <span
-                                class="text-danger">*</span></label>
-                        <textarea name="alamat_rumah" id="alamat_rumah" rows="3"
-                            class="form-control @error('alamat_rumah') is-invalid @enderror" required>{{ old('alamat_rumah') }}</textarea>
-                        @error('alamat_rumah')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Keterangan Fungsi Surat <span class="text-danger">*</span></label>
+                        <textarea name="keterangan_fungsi_surat" class="form-control" rows="3" required>{{ old('keterangan_fungsi_surat') }}</textarea>
                     </div>
 
-                    {{-- Keterangan Fungsi Surat --}}
                     <div class="mb-3">
-                        <label for="keterangan_fungsi_surat" class="form-label">Keterangan Fungsi Surat (Kelengkapan)
-                            <span class="text-danger">*</span></label>
-                        <textarea name="keterangan_fungsi_surat" id="keterangan_fungsi_surat" rows="3"
-                            class="form-control @error('keterangan_fungsi_surat') is-invalid @enderror" required>{{ old('keterangan_fungsi_surat') }}</textarea>
-                        @error('keterangan_fungsi_surat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>No WhatsApp <span class="text-danger">*</span></label>
+                        <input type="text" name="nowa" id="nowa" class="form-control" required value="{{ old('nowa') }}">
                     </div>
 
-                    {{-- Bantuan Sosial + Input ID Dinamis --}}
-                    @php
-                        $bansosMap = [
-                            'pkh' => 'PKH',
-                            'kip' => 'KIP',
-                            'kis' => 'KIS',
-                            'bpnt' => 'BPNT',
-                            'dtks' => 'ID. DTKS',
-                            'blt_dd' => 'BLT DD',
-                            'bansos' => 'BANSOS',
-                        ];
-                        $oldBantuan = old('bantuan', []); // array of selected keys
-                        $oldIds = old('bantuan_id', []); // assoc: bantuan_id[key] => value
-                    @endphp
-
-                    <div class="mb-3">
-                        <label class="form-label">Apakah anda memiliki bantuan sosial?</label>
-                        <div class="d-flex flex-column gap-2">
-                            @foreach ($bansosMap as $key => $label)
-                                @php
-                                    $isChecked = in_array($key, (array) $oldBantuan);
-                                    $cbId = "bantuan_$key";
-                                    $wrapId = "wrap_$key";
-                                @endphp
-
-                                <div class="border rounded p-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input bantuan-checkbox" type="checkbox" name="bantuan[]"
-                                            id="{{ $cbId }}" value="{{ $key }}"
-                                            data-target="#{{ $wrapId }}" {{ $isChecked ? 'checked' : '' }}
-                                            onchange="toggleBansosWrap(this)">
-                                        <label class="form-check-label"
-                                            for="{{ $cbId }}">{{ $label }}</label>
-                                    </div>
-
-                                    <div id="{{ $wrapId }}" class="mt-2"
-                                        style="{{ $isChecked ? '' : 'display:none' }}">
-                                        <label for="bantuan_id_{{ $key }}" class="form-label mb-1">
-                                            ID {{ $label }} <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text"
-                                            class="form-control @error("bantuan_id.$key") is-invalid @enderror"
-                                            name="bantuan_id[{{ $key }}]" id="bantuan_id_{{ $key }}"
-                                            value="{{ $oldIds[$key] ?? '' }}" {{ $isChecked ? 'required' : '' }}
-                                            placeholder="Masukkan ID {{ $label }}">
-                                        @error("bantuan_id.$key")
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            @endforeach
+                    <!-- Status Admin -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Status Surat <span class="text-danger">*</span></label>
+                            <select name="status_surat" class="form-control" required>
+                                <option value="Pending" {{ old('status_surat') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Di cek" {{ old('status_surat') == 'Di cek' ? 'selected' : '' }}>Di cek</option>
+                                <option value="Di terima" {{ old('status_surat') == 'Di terima' ? 'selected' : '' }}>Di terima</option>
+                                <option value="Ditolak" {{ old('status_surat') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
                         </div>
-                        @error('bantuan')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- No WhatsApp --}}
-                    <div class="mb-3">
-                        <label for="nowa" class="form-label">No WhatsApp <span class="text-danger">*</span></label>
-                        <input type="text" name="nowa" id="nowa"
-                            class="form-control @error('nowa') is-invalid @enderror" required
-                            value="{{ old('nowa') }}">
-                        @error('nowa')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- Status Surat --}}
-                    <div class="mb-3">
-                        <label for="status_surat" class="form-label">Status Surat <span
-                                class="text-danger">*</span></label>
-                        <select name="status_surat" id="status_surat"
-                            class="form-control @error('status_surat') is-invalid @enderror" required>
-                            @foreach (['Pending', 'Di cek', 'Di terima', 'Ditolak'] as $statusSurat)
-                                <option value="{{ $statusSurat }}"
-                                    {{ old('status_surat') == $statusSurat ? 'selected' : '' }}>
-                                    {{ $statusSurat }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('status_surat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- Status Verifikasi --}}
-                    <div class="mb-3">
-                        <label for="status_verif" class="form-label">Status Verifikasi <span
-                                class="text-danger">*</span></label>
-                        <select name="status_verif" id="status_verif"
-                            class="form-control @error('status_verif') is-invalid @enderror" required>
-                            @foreach (['Belum Verifikasi', 'Terverifikasi'] as $statusVerif)
-                                <option value="{{ $statusVerif }}"
-                                    {{ old('status_verif') == $statusVerif ? 'selected' : '' }}>
-                                    {{ $statusVerif }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('status_verif')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <div class="col-md-6 mb-3">
+                            <label>Status Verifikasi <span class="text-danger">*</span></label>
+                            <select name="status_verif" class="form-control" required>
+                                <option value="Belum Verifikasi" {{ old('status_verif') == 'Belum Verifikasi' ? 'selected' : '' }}>Belum Verifikasi</option>
+                                <option value="Terverifikasi" {{ old('status_verif') == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary px-4">Kirim</button>
+                        <button type="submit" class="btn btn-primary px-4">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
-    {{-- Inline Script agar langsung jalan --}}
-    <script>
-        function toggleBansosWrap(cb) {
-            var sel = cb.getAttribute('data-target');
-            var wrap = document.querySelector(sel);
-            if (!wrap) return;
-            var input = wrap.querySelector('input');
-
-            if (cb.checked) {
-                wrap.style.display = '';
-                if (input) input.setAttribute('required', 'required');
-            } else {
-                wrap.style.display = 'none';
-                if (input) {
-                    input.removeAttribute('required');
-                    // opsional: kosongkan saat uncheck
-                    // input.value = '';
-                }
-            }
-        }
-
-        // Inisialisasi onload (untuk old values saat gagal validasi)
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.bantuan-checkbox').forEach(function(cb) {
-                toggleBansosWrap(cb);
-            });
-        });
-    </script>
 @endsection
+
+<!-- ==================== AUTOFILL SCRIPT (SUDAH DIPERBAIKI) ==================== -->
+<script>
+    function autofillAdminSKTM() {
+        const nik = document.getElementById('nik').value.trim();
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    const d = result.data;
+
+                    // Data utama
+                    document.getElementById('nama_lengkap').value = d.nama || '';
+                    document.getElementById('tempat_lahir').value = d.tempat_lahir || '';
+                    document.getElementById('tanggal_lahir').value = d.tanggal_lahir ? d.tanggal_lahir.substring(0,10) : '';
+                    document.getElementById('alamat_rumah').value = d.alamat || '';
+
+                    // Dropdown fields
+                    if (d.jenis_kelamin) document.getElementById('jenis_kelamin').value = d.jenis_kelamin;
+                    if (d.agama) document.getElementById('agama').value = d.agama;
+                    if (d.pekerjaan) document.getElementById('pekerjaan').value = d.pekerjaan;
+                    if (d.status_perkawinan || d.status) {
+                        document.getElementById('status_perkawinan').value = d.status_perkawinan || d.status;
+                    }
+                    if (d.kewarganegaraan) {
+                        document.getElementById('kewarganegaraan').value = d.kewarganegaraan;
+                    }
+                }
+            })
+            .catch(err => console.log('Autofill error:', err));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const nikInput = document.getElementById('nik');
+        if (nikInput) {
+            nikInput.addEventListener('blur', autofillAdminSKTM);
+        }
+    });
+</script>

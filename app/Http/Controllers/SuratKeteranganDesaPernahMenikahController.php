@@ -41,7 +41,7 @@ class SuratKeteranganDesaPernahMenikahController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-public function userstore(Request $request)
+    public function userstore(Request $request)
     {
         $validated = $request->validate([
             'nama_lengkap'      => 'required|string|max:255',
@@ -56,14 +56,16 @@ public function userstore(Request $request)
             'alamat'            => 'required|string',
             'rt'                => 'required|string|max:10',
             'rw'                => 'required|string|max:10',
-            'status_surat'      => 'required|string',
-            'status_verif'      => 'required|string',
             'nowa'              => 'required|string|max:20',
+            // status_surat & status_verif tidak perlu divalidasi karena di-set manual
         ]);
+
+        $validated['status_surat'] = 'Pending';
+        $validated['status_verif'] = 'Belum Verifikasi';
 
         surat_keterangan_desa_pernah_menikah::create($validated);
 
-        return redirect()->route('surat.suratberhasil')->with('success', 'Surat Keterangan Desa Pernah Menikah berhasil disimpan.');
+        return redirect()->route('surat.suratberhasil')->with('success', 'Pengajuan Surat Keterangan Desa Pernah Menikah berhasil dikirim.');
     }
 
     public function store(Request $request)
@@ -108,7 +110,7 @@ public function userstore(Request $request)
      * @param  \App\Models\surat_keterangan_desa_pernah_menikah  $surat_keterangan_desa_pernah_menikah
      * @return \Illuminate\Http\Response
      */
-     public function edit(surat_keterangan_desa_pernah_menikah $surat)
+    public function edit(surat_keterangan_desa_pernah_menikah $surat)
     {
         return view('surat.edit_surat_keterangan_desa_pernah_menikah', compact('surat'));
     }

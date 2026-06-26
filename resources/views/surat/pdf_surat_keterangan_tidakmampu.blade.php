@@ -1,207 +1,177 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <title>Surat Keterangan Tidak Mampu</title>
     <style>
-        @page {
-            margin: 2cm;
-        }
-
+        @page { margin: 1.3cm 1.8cm 1.3cm 1.8cm; }
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.5;
-            color: #000;
-            background: #fff;
+            font-size: 11.5pt;
+            line-height: 1.35;
         }
 
-        h3,
-        p {
-            margin: 0;
-            padding: 0;
-        }
-
-        .text-center {
-            text-align: center;
-        }
+        .kop-container { width: 100%; }
+        .kop-table { width: 100%; border-collapse: collapse; }
+        .kop-logo { width: 15%; text-align: center; }
+        .kop-logo img { width: 78px; height: auto; }
+        .kop-text { text-align: center; }
+        .kop-text strong { font-size: 12.5pt; line-height: 1.2; }
+        .kop-text small { font-size: 9.3pt; line-height: 1.1; }
+        .kop-garis { border: none; border-top: 2.5px solid #000; margin: 6px 0 12px 0; }
 
         .judul-surat {
-            margin-top: 20px;
-            margin-bottom: 10px;
             text-align: center;
             text-decoration: underline;
             font-weight: bold;
-            font-size: 16pt;
+            font-size: 13.5pt;
+            margin-bottom: 12px;
         }
 
-        .nomor {
-            margin-bottom: 30px;
+        .nomor-surat {
             text-align: center;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .tulisan { text-align: justify; margin-bottom: 8px; }
+
+        table.data {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 6px 0 12px 0;
+        }
+        table.data td {
+            padding: 3px 6px;
+            vertical-align: top;
+        }
+        table.data td:first-child {
+            width: 160px;
             font-weight: bold;
         }
 
-        .isi {
-            text-align: justify;
-            margin-bottom: 30px;
-        }
-
-        table.data-diri {
+        .ttd-wrapper {
             width: 100%;
-            margin: 10px 0 20px 0;
-            border-collapse: collapse;
+            margin-top: 35px;
         }
-
-        table.data-diri td {
-            vertical-align: top;
-            padding: 4px 8px;
-        }
-
-        .ttd-container {
-            width: 100%;
-            margin-top: 50px;
-            text-align: right;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-        }
-
-        .kop-container {
-            width: 100%;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-        }
-
-        .kop-logo {
-            width: 130px;
-        }
-
-        .kop-header {
+        .ttd-right {
+            width: 48%;
+            float: right;
             text-align: center;
-            line-height: 1.4;
+        }
+        .ttd-img-wrapper {
+            height: 65px;
+            text-align: center;
+            margin: 8px 0;
+        }
+        .ttd-img { width: 180px; height: auto; }
+
+        .materai {
+            border: 1px solid #000;
+            padding: 4px 12px;
+            display: inline-block;
+            margin: 6px 0;
+            font-weight: bold;
+            font-size: 9.5pt;
         }
 
-        .kop-garis {
-            border: 2px solid black;
-            margin-top: 5px;
-            margin-bottom: 20px;
+        .barcode {
+            margin-top: 10px;
+            text-align: center;
         }
+        .barcode img { width: 85px; height: auto; }
+        .barcode small { font-size: 7.8pt; display: block; margin-top: 3px; }
     </style>
 </head>
-
 <body>
 
-    {{-- KOP SURAT --}}
+    <!-- KOP SURAT -->
     <div class="kop-container">
-        <table width="100%">
+        <table class="kop-table">
             <tr>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" class="kop-logo" alt="Logo Blitar">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
                 </td>
-                <td class="kop-header">
-                    <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                        KECAMATAN Kemirigede<br>
-                        KANTOR KEPALA DESA Kemirigede</strong><br>
-                    <small>
-                        Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
-                    </small>
+                <td class="kop-text">
+                    <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
+                    <strong>KECAMATAN WATES</strong><br>
+                    <strong>KANTOR KEPALA DESA WATES</strong><br>
+                    <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
+                    Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
                 </td>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kemirigede">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
                 </td>
             </tr>
         </table>
         <hr class="kop-garis">
     </div>
 
-    {{-- JUDUL SURAT --}}
+    <!-- JUDUL -->
     <div class="judul-surat">
         SURAT KETERANGAN TIDAK MAMPU
     </div>
 
-    <div class="nomor">
-        @php
-            // jika sudah ada nomor_surat (misal: "475 / 007 / 409.41.2 / 2025"), pakai itu
-            $nomor =
-                $data->nomor_surat ??
-                '475 / ' .
-                    str_pad((string) ($data->nomor_urut ?? 0), 3, '0', STR_PAD_LEFT) .
-                    ' / 409.41.2 / ' .
-                    ($data->tahun_nomor ?? \Carbon\Carbon::now()->year);
-            // fallback terakhir (ketika belum ada nomor_urut sama sekali)
-            if (empty($data->nomor_surat) && empty($data->nomor_urut)) {
-                $nomor = '475 / ---- / 409.41.2 / ' . \Carbon\Carbon::now()->year;
-            }
-        @endphp
-
-        Nomor : {{ $nomor }}
+    <!-- NOMOR SURAT -->
+    <div class="nomor-surat">
+        Nomor: {{ $data->nomor_surat ?? '475 / --- / 409.41.2 / ' . now()->year }}
     </div>
 
-    {{-- ISI SURAT --}}
-    <div class="isi">
-        <p>Yang bertanda tangan di bawah ini Kepala Desa Kemirigede, Kecamatan Kemirigede, Kabupaten Blitar, menerangkan dengan
-            sebenarnya bahwa :</p>
+    <!-- ISI -->
+    <p class="tulisan">
+        Yang bertanda tangan di bawah ini Kepala Desa Wates, Kecamatan Wates, Kabupaten Blitar, menerangkan dengan sebenarnya bahwa:
+    </p>
 
-        <table class="data-diri">
-            <tr>
-                <td width="35%">Nama Lengkap</td>
-                <td>: {{ $data->nama_lengkap }}</td>
-            </tr>
-            <tr>
-                <td>NIK</td>
-                <td>: {{ $data->nik }}</td>
-            </tr>
-            <tr>
-                <td>Tempat Lahir</td>
-                <td>: {{ $data->tempat_lahir }}</td>
-            </tr>
-            <tr>
-                <td>Tanggal Lahir</td>
-                <td>: {{ \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') }}</td>
-            </tr>
-            <tr>
-                <td>Kewarganegaraan</td>
-                <td>: {{ $data->kewarganegaraan }}</td>
-            </tr>
-            <tr>
-                <td>Agama</td>
-                <td>: {{ $data->agama }}</td>
-            </tr>
-            <tr>
-                <td>Status</td>
-                <td>: {{ $data->status_perkawinan }}</td>
-            </tr>
-            <tr>
-                <td>Pekerjaan</td>
-                <td>: {{ $data->pekerjaan }}</td>
-            </tr>
-            <tr>
-                <td>Alamat Rumah</td>
-                <td>: {{ $data->alamat_rumah }}</td>
-            </tr>
-        </table>
+    <table class="data">
+        <tr><td>Nama Lengkap</td><td>: {{ $data->nama_lengkap ?? '...........................................' }}</td></tr>
+        <tr><td>NIK</td><td>: {{ $data->nik ?? '...........................................' }}</td></tr>
+        <tr><td>Tempat, Tanggal Lahir</td><td>: {{ $data->tempat_lahir ?? '' }}, {{ isset($data->tanggal_lahir) ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') : '...........................................' }}</td></tr>
+        <tr><td>Agama</td><td>: {{ $data->agama ?? '...........................................' }}</td></tr>
+        <tr><td>Status Perkawinan</td><td>: {{ $data->status_perkawinan ?? '...........................................' }}</td></tr>
+        <tr><td>Pekerjaan</td><td>: {{ $data->pekerjaan ?? '...........................................' }}</td></tr>
+        <tr><td>Alamat</td><td>: {{ $data->alamat_rumah ?? '...........................................' }}</td></tr>
+    </table>
 
-        <p>
-            Orang tersebut di atas benar-benar penduduk Desa Kemirigede Kecamatan Kemirigede Kabupaten Blitar dan yang
-            bersangkutan tergolong keluarga yang tidak mampu.
-            Surat keterangan ini diberikan untuk kelengkapan <strong>{{ $data->keterangan_fungsi_surat }}</strong>.
-        </p>
+    <p class="tulisan">
+        Bahwa yang bersangkutan tersebut di atas adalah <strong>benar-benar tidak mampu</strong> dan memerlukan bantuan untuk
+        <strong>{{ $data->peruntukan_sktm ?? '...........................................' }}</strong>.
+    </p>
 
-        <p>
-            Demikian surat keterangan ini dibuat atas dasar yang sebenarnya untuk menjadikan periksa dan dapat
-            dipergunakan sebagaimana perlunya.
-        </p>
-    </div>
+    <p class="tulisan">
+        Keterangan Fungsi Surat: <strong>{{ $data->keterangan_fungsi_surat ?? '...........................................' }}</strong>
+    </p>
 
-    {{-- TTD --}}
-    <div class="ttd-container">
-        <p>Kemirigede, {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
-        <p>Kepala Desa Kemirigede</p>
-        <br><br><br>
-        <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
+    @if(!empty($data->bantuan))
+    <p class="tulisan">
+        Yang bersangkutan juga menerima bantuan sosial:
+        <strong>{{ implode(', ', (array)$data->bantuan) }}</strong>
+    </p>
+    @endif
+
+    <p class="tulisan">
+        Demikian surat keterangan ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
+    </p>
+
+    <!-- TANDA TANGAN -->
+    <div class="ttd-wrapper">
+        <div class="ttd-right">
+            <p>Wates, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+            <p><strong>Kepala Desa Wates</strong></p>
+
+            <div class="ttd-img-wrapper">
+                <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
+            </div>
+
+            <div class="materai">Materai<br>10.000</div>
+
+            <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
+
+            <div class="barcode">
+                <img src="{{ public_path('assets/images/barcode_surat.png') }}" alt="Barcode">
+                <small>Scan untuk verifikasi surat resmi Desa Wates</small>
+            </div>
+        </div>
     </div>
 
 </body>
-
 </html>

@@ -117,7 +117,7 @@
             <div class="header-content position-relative d-flex align-items-center justify-content-between">
                 <!-- Back Button -->
                 <div class="back-button">
-                   <a href={{ route('surat.pengajuan_surat') }}>
+                    <a href={{ route('surat.pengajuan_surat') }}>
                         <i class="bi bi-arrow-left-short"></i>
                     </a>
                 </div>
@@ -149,75 +149,84 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                   <form action="{{ route('surat.userpernyataanjaminan.store') }}" method="POST">
-                @csrf
+                    <form action="{{ route('surat.userpernyataanjaminan.store') }}" method="POST">
+                        @csrf
 
-                <h6 class="mb-2">A. Identitas Pembuat Pernyataan (Penjamin)</h6>
-                <div class="mb-3">
-                    <label class="form-label">Nama</label>
-                    <input class="form-control" name="nama_pembuat" value="{{ old('nama_pembuat') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">NIK</label>
-                    <input class="form-control" name="nik_pembuat" value="{{ old('nik_pembuat') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Alamat</label>
-                    <textarea class="form-control" name="alamat_pembuat" rows="2" required>{{ old('alamat_pembuat') }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Hubungan dengan Terjamin</label>
-                    <input class="form-control" name="hubungan_dengan_terjamin" value="{{ old('hubungan_dengan_terjamin') }}" placeholder="Orang Tua/Wali/Saudara/Atasan" required>
-                </div>
+                        <h6 class="mb-2">A. Identitas Pembuat Pernyataan (Penjamin)</h6>
+                        <div class="mb-3">
+                            <label class="form-label">NIK Penjamin <span class="text-danger">*</span></label>
+                            <input class="form-control" name="nik_pembuat" id="nik_pembuat" required
+                                value="{{ old('nik_pembuat') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Penjamin</label>
+                            <input class="form-control" name="nama_pembuat" id="nama_pembuat" required
+                                value="{{ old('nama_pembuat') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Penjamin</label>
+                            <textarea class="form-control" name="alamat_pembuat" rows="2" required>{{ old('alamat_pembuat') }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hubungan dengan Terjamin</label>
+                            <input class="form-control" name="hubungan_dengan_terjamin" required
+                                value="{{ old('hubungan_dengan_terjamin') }}">
+                        </div>
 
-                <h6 class="mb-2 mt-3">B. Identitas Pihak yang Dijamin</h6>
-                <div class="mb-3">
-                    <label class="form-label">Nama Terjamin</label>
-                    <input class="form-control" name="nama_terjamin" value="{{ old('nama_terjamin') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">NIK Terjamin</label>
-                    <input class="form-control" name="nik_terjamin" value="{{ old('nik_terjamin') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Alamat Terjamin</label>
-                    <textarea class="form-control" name="alamat_terjamin" rows="2" required>{{ old('alamat_terjamin') }}</textarea>
-                </div>
+                        <h6 class="mb-2 mt-3">B. Identitas Pihak yang Dijamin</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Terjamin</label>
+                            <input class="form-control" name="nama_terjamin" required
+                                value="{{ old('nama_terjamin') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">NIK Terjamin</label>
+                            <input class="form-control" name="nik_terjamin" required
+                                value="{{ old('nik_terjamin') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Terjamin</label>
+                            <textarea class="form-control" name="alamat_terjamin" rows="2" required>{{ old('alamat_terjamin') }}</textarea>
+                        </div>
 
-                <h6 class="mb-2 mt-3">C. Pernyataan & Jaminan</h6>
-                <div class="mb-3">
-                    <label class="form-label">Uraian Pernyataan</label>
-                    <textarea class="form-control" name="uraian_pernyataan" rows="3" required>{{ old('uraian_pernyataan') }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Bentuk Jaminan</label>
-                    <input class="form-control" name="bentuk_jaminan" value="{{ old('bentuk_jaminan') }}" placeholder="contoh: pertanggungjawaban moral / uang jaminan / barang / jasa">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Berlaku Mulai</label>
-                    <input type="date" class="form-control" name="berlaku_mulai" value="{{ old('berlaku_mulai') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Berlaku Sampai (opsional)</label>
-                    <input type="date" class="form-control" name="berlaku_sampai" value="{{ old('berlaku_sampai') }}">
-                </div>
+                        <h6 class="mb-2 mt-3">C. Pernyataan & Jaminan</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Uraian Pernyataan</label>
+                            <textarea class="form-control" name="uraian_pernyataan" rows="3" required>{{ old('uraian_pernyataan') }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bentuk Jaminan</label>
+                            <input class="form-control" name="bentuk_jaminan" value="{{ old('bentuk_jaminan') }}">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Berlaku Mulai</label>
+                                <input type="date" class="form-control" name="berlaku_mulai" required
+                                    value="{{ old('berlaku_mulai') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Berlaku Sampai</label>
+                                <input type="date" class="form-control" name="berlaku_sampai"
+                                    value="{{ old('berlaku_sampai') }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Berdasarkan</label>
+                            <textarea class="form-control" name="berdasarkan" rows="2">{{ old('berdasarkan') }}</textarea>
+                        </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Berdasarkan (opsional)</label>
-                    <textarea class="form-control" name="berdasarkan" rows="2">{{ old('berdasarkan') }}</textarea>
-                </div>
+                        {{-- status hidden default --}}
+                        <input type="hidden" name="status_surat" value="{{ old('status_surat', 'Pending') }}">
+                        <input type="hidden" name="status_verif"
+                            value="{{ old('status_verif', 'Belum Verifikasi') }}">
 
-                {{-- status hidden default --}}
-                <input type="hidden" name="status_surat" value="{{ old('status_surat', 'Pending') }}">
-                <input type="hidden" name="status_verif" value="{{ old('status_verif', 'Belum Verifikasi') }}">
+                        <div class="mb-3">
+                            <label class="form-label">No WhatsApp</label>
+                            <input class="form-control" name="nowa" value="{{ old('nowa') }}" required>
+                        </div>
 
-                <div class="mb-3">
-                    <label class="form-label">No WhatsApp</label>
-                    <input class="form-control" name="nowa" value="{{ old('nowa') }}" required>
-                </div>
-
-                <button class="btn btn-primary">Kirim</button>
-            </form>
+                        <button class="btn btn-primary">Kirim</button>
+                    </form>
 
                     <!-- Footer Nav -->
                     <div class="footer-nav-area" id="footerNav">
@@ -226,10 +235,10 @@
                             <div class="footer-nav position-relative">
                                 <ul class="h-100 d-flex align-items-center justify-content-between ps-0">
                                     <li class="active">
-                                         <a href={{ route('surat.pengajuan_surat') }}>
-                                <i class="bi bi-house"></i>
-                                <span>Beranda</span>
-                            </a>
+                                        <a href={{ route('surat.pengajuan_surat') }}>
+                                            <i class="bi bi-house"></i>
+                                            <span>Beranda</span>
+                                        </a>
                                     </li>
 
 
@@ -257,6 +266,22 @@
                     <script src="{{ asset('assets4/dist/js/dark-rtl.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
+                    <script>
+                        function autofillPembuat() {
+                            const nik = document.getElementById('nik_pembuat').value.trim();
+                            if (nik.length < 10) return;
+                            fetch(`/datapenduduk/lookup/${nik}`)
+                                .then(res => res.json())
+                                .then(r => {
+                                    if (r.success) {
+                                        document.getElementById('nama_pembuat').value = r.data.nama || '';
+                                        document.getElementById('alamat_pembuat').value = r.data.alamat || '';
+                                    }
+                                });
+                        }
+
+                        document.getElementById('nik_pembuat').addEventListener('blur', autofillPembuat);
+                    </script>
 </body>
 
 </html>

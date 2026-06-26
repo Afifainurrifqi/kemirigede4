@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Surat Keterangan Penghasilan</title>
+    <style>
+        @page { margin: 1.2cm 1.8cm; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.45; color: #000; }
+        .kop-table { width: 100%; border-collapse: collapse; }
+        .kop-logo { width: 13%; text-align: center; vertical-align: middle; }
+        .kop-logo img { width: 68px; height: auto; }
+        .kop-text { text-align: center; vertical-align: middle; }
+        .kop-text strong { font-size: 13pt; line-height: 1.2; display: block; }
+        .kop-text small { font-size: 9pt; display: block; margin-top: 3px; }
+        .kop-garis { border: none; border-top: 3px double #000; margin: 7px 0 15px 0; }
+        .judul { text-align: center; font-weight: bold; text-decoration: underline; font-size: 14pt; margin-top: 10px; }
+        .nomor { text-align: center; margin-bottom: 20px; font-size: 11pt; }
+        .isi { text-align: justify; }
+        p { margin-bottom: 10px; margin-top: 0; text-indent: 45px; }
+        p.normal { text-indent: 0px; }
+        table.data { width: 100%; border-collapse: collapse; margin: 8px 0 12px 45px; }
+        table.data td { padding: 2px 5px; vertical-align: top; }
+        table.data td:first-child { width: 170px; }
+        table.data td:nth-child(2) { width: 10px; }
+        .text-uppercase { text-transform: uppercase; }
+        .ttd-table { width: 100%; margin-top: 30px; border-collapse: collapse; }
+        .ttd-table td { width: 50%; text-align: center; vertical-align: top; }
+        .ttd-img-wrapper { height: 60px; margin: 5px auto; text-align: center; }
+        .ttd-img { max-height: 60px; width: auto; }
+        .nama-kades { font-weight: bold; text-decoration: underline; text-transform: uppercase; margin-top: 5px; }
+        .qr-section { margin-top: 8px; text-align: center; }
+        .qr-section img { width: 75px; height: auto; }
+        .qr-section small { font-size: 7.5pt; color: #444; display: block; line-height: 1.2; }
+    </style>
+</head>
+<body>
+
+@php
+    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+@endphp
+
+<table class="kop-table">
+    <tr>
+        <td class="kop-logo"><img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar"></td>
+        <td class="kop-text">
+            <strong>PEMERINTAH KABUPATEN BLITAR</strong>
+            <strong>KECAMATAN WATES</strong>
+            <strong>KANTOR KEPALA DESA WATES</strong>
+            <small>Jln. Merdeka No. 74 Telp. 082139324445<br>Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
+        </td>
+        <td class="kop-logo"><img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa Wates"></td>
+    </tr>
+</table>
+<hr class="kop-garis">
+
+<div class="judul">SURAT KETERANGAN PENGHASILAN</div>
+<div class="nomor">Nomor : {{ $surat->nomor_surat ?? '470/   /409.41.2/' . now('Asia/Jakarta')->year }}</div>
+
+<div class="isi">
+    <p class="normal">Yang bertandatangan dibawah ini Kepala Desa Wates Kecamatan Wates Kabupaten Blitar Menerangkan dengan sebenarnya bahwa :</p>
+
+    <table class="data">
+        <tr><td>Nama Lengkap</td><td>:</td><td class="text-uppercase" style="font-weight: bold;">{{ $surat->nama_lengkap }}</td></tr>
+        <tr><td>NIK</td><td>:</td><td>{{ $surat->nik }}</td></tr>
+        <tr><td>Jenis Kelamin</td><td>:</td><td>{{ $surat->jenis_kelamin }}</td></tr>
+        <tr><td>Tempat, Tanggal Lahir</td><td>:</td><td>{{ $surat->tempat_lahir }}, {{ \Carbon\Carbon::parse($surat->tanggal_lahir)->translatedFormat('d F Y') }}</td></tr>
+        <tr><td>Agama</td><td>:</td><td>{{ $surat->agama }}</td></tr>
+        <tr><td>Kewarganegaraan</td><td>:</td><td>{{ $surat->kewarganegaraan }}</td></tr>
+        <tr><td>Status</td><td>:</td><td>{{ $surat->status }}</td></tr>
+        <tr><td>Pekerjaan</td><td>:</td><td>{{ $surat->pekerjaan }}</td></tr>
+        <tr><td>Alamat</td><td>:</td><td>{{ $surat->alamat }}</td></tr>
+        <tr><td>Penghasilan</td><td>:</td><td><strong>{{ $surat->nominal_penghasilan }}</strong> / Bulan</td></tr>
+    </table>
+
+    <p>Orang tersebut di atas benar-benar Orang tua / Wali dari :</p>
+
+    <table class="data">
+        <tr><td>Nama Lengkap</td><td>:</td><td class="text-uppercase" style="font-weight: bold;">{{ $surat->nama_anak }}</td></tr>
+        <tr><td>NIK</td><td>:</td><td>{{ $surat->nik_anak }}</td></tr>
+        <tr><td>Sekolah / Universitas</td><td>:</td><td>{{ $surat->sekolah_universitas }}</td></tr>
+    </table>
+
+    <p>Surat keterangan ini dipergunakan untuk <strong>{{ $surat->keperluan }}</strong>.</p>
+    <p>Demikian Surat Keterangan ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>
+</div>
+
+<table class="ttd-table">
+    <tr>
+        <td></td>
+        <td>Wates, {{ $tanggalSurat }}</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><strong>Kepala Desa Wates</strong></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <div class="ttd-img-wrapper">
+                <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
+            </div>
+            <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
+            <div class="qr-section">
+                <img src="{{ public_path('assets/images/wates2.png') }}" alt="QR Code">
+                <br><small>Scan untuk verifikasi surat resmi Desa Wates</small>
+            </div>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

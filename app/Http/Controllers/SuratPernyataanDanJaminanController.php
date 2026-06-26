@@ -15,20 +15,7 @@ class SuratPernyataanDanJaminanController extends Controller
      */
     protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
     {
-        $status = $payload['status_surat'] ?? ($suratOrNull->status_surat ?? null);
-        $verif  = $payload['status_verif'] ?? ($suratOrNull->status_verif ?? null);
-
-        if ($status === 'Di terima' && $verif === 'Terverifikasi'
-            && empty($payload['nomor_surat'])
-            && empty($suratOrNull?->nomor_surat)) {
-
-            $tahun = now('Asia/Jakarta')->year;
-            $issued = $this->svc->issue('jaminan', $tahun); // gunakan key "jaminan"
-
-            $payload['nomor_urut']  = $issued['urut'];
-            $payload['tahun_nomor'] = $issued['tahun'];
-            $payload['nomor_surat'] = $issued['nomor_surat'];
-        }
+        $this->svc->maybeAssignNomorSurat($suratOrNull, $payload, 'jaminan');  // ← penting
     }
 
     /**
@@ -36,7 +23,7 @@ class SuratPernyataanDanJaminanController extends Controller
      */
     public function index()
     {
-        $data = surat_pernyataan_dan_jaminan::orderBy('_id','desc')->get();
+        $data = surat_pernyataan_dan_jaminan::orderBy('_id', 'desc')->get();
         return view('surat.surat_pernyataan_dan_jaminan', compact('data'));
     }
 
@@ -57,7 +44,7 @@ class SuratPernyataanDanJaminanController extends Controller
             // pembuat (penjamin)
             'nama_pembuat'  => 'required|string|max:255',
             'nik_pembuat'   => 'required|string|max:32',
-            'alamat_pembuat'=> 'required|string',
+            'alamat_pembuat' => 'required|string',
             'hubungan_dengan_terjamin' => 'required|string|max:100',
 
             // terjamin
@@ -98,7 +85,7 @@ class SuratPernyataanDanJaminanController extends Controller
         $validated = $request->validate([
             'nama_pembuat'  => 'required|string|max:255',
             'nik_pembuat'   => 'required|string|max:32',
-            'alamat_pembuat'=> 'required|string',
+            'alamat_pembuat' => 'required|string',
             'hubungan_dengan_terjamin' => 'required|string|max:100',
 
             'nama_terjamin' => 'required|string|max:255',
@@ -144,7 +131,7 @@ class SuratPernyataanDanJaminanController extends Controller
         $validated = $request->validate([
             'nama_pembuat'  => 'required|string|max:255',
             'nik_pembuat'   => 'required|string|max:32',
-            'alamat_pembuat'=> 'required|string',
+            'alamat_pembuat' => 'required|string',
             'hubungan_dengan_terjamin' => 'required|string|max:100',
 
             'nama_terjamin' => 'required|string|max:255',

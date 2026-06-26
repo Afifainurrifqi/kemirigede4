@@ -20,20 +20,7 @@ class SuratPernyataanMemilihNamaAliasController extends Controller
      */
     protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
     {
-        $status = $payload['status_surat'] ?? ($suratOrNull->status_surat ?? null);
-        $verif  = $payload['status_verif'] ?? ($suratOrNull->status_verif ?? null);
-
-        if ($status === 'Di terima' && $verif === 'Terverifikasi'
-            && empty($payload['nomor_surat'])
-            && empty($suratOrNull?->nomor_surat)) {
-
-            // issue() akan atomic: naikkan counter & kembalikan format nomor
-            $issued = $this->svc->issue('alias'); // ['urut'=>int,'tahun'=>int,'nomor_surat'=>string]
-
-            $payload['nomor_urut']  = $issued['urut'];
-            $payload['tahun_nomor'] = $issued['tahun'];
-            $payload['nomor_surat'] = $issued['nomor_surat']; // contoh: "410 / 007 / 409.41.2 / 2025"
-        }
+        $this->svc->maybeAssignNomorSurat($suratOrNull, $payload, 'alias');  // ← 'alias'
     }
 
     /**

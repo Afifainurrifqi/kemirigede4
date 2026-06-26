@@ -2,200 +2,161 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\surat_kuasa;
+use App\Models\SuratKuasa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;   // Pastikan sudah diimport jika pakai export PDF
 
 class SuratKuasaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Halaman Form Admin
      */
     public function index()
     {
-        $data = surat_kuasa::all();
-        return view('surat.surat_kuasa', compact('data'));
+        return view('surat.surat_kuasa');
     }
 
-    public function user_kuasa()
+    /**
+     * Halaman Form User
+     */
+    public function userForm()
     {
-        $data = surat_kuasa::all();
-        return view('surat.user_surat_kuasa', compact('data'));
+        return view('surat.user_surat_kuasa');
     }
 
+    /**
+     * Simpan dari User
+     */
     public function userstore(Request $request)
     {
         $validated = $request->validate([
-            // PIHAK 1 (Pemberi Kuasa)
-            'p1_nama_lengkap'   => 'required|string|max:255',
-            'p1_jenis_kelamin'  => 'required|string|max:20',
-            'p1_tempat_lahir'   => 'required|string|max:100',
-            'p1_tanggal_lahir'  => 'required|date',
-            'p1_agama'          => 'required|string|max:50',
-            'p1_status'         => 'required|string|max:50',
-            'p1_nik'            => 'required|string|max:32',
-            'p1_pekerjaan'      => 'required|string|max:100',
-            'p1_alamat'         => 'required|string',
+            // Pihak I (Pemberi Kuasa)
+            'nama_pihak1'          => 'required|string|max:255',
+            'jenis_kelamin_pihak1' => 'required|string',
+            'tempat_lahir_pihak1'  => 'required|string',
+            'tanggal_lahir_pihak1' => 'required|date',
+            'agama_pihak1'         => 'required|string',
+            'status_pihak1'        => 'required|string',
+            'nik_pihak1'           => 'required|string|max:16',
+            'pekerjaan_pihak1'     => 'required|string',
+            'alamat_pihak1'        => 'required|string',
 
-            // PIHAK 2 (Penerima Kuasa)
-            'p2_nama_lengkap'   => 'required|string|max:255',
-            'p2_jenis_kelamin'  => 'required|string|max:20',
-            'p2_tempat_lahir'   => 'required|string|max:100',
-            'p2_tanggal_lahir'  => 'required|date',
-            'p2_agama'          => 'required|string|max:50',
-            'p2_status'         => 'required|string|max:50',
-            'p2_nik'            => 'required|string|max:32',
-            'p2_pekerjaan'      => 'required|string|max:100',
-            'p2_alamat'         => 'required|string',
+            // Pihak II (Penerima Kuasa)
+            'nama_pihak2'          => 'required|string|max:255',
+            'jenis_kelamin_pihak2' => 'required|string',
+            'tempat_lahir_pihak2'  => 'required|string',
+            'tanggal_lahir_pihak2' => 'required|date',
+            'agama_pihak2'         => 'required|string',
+            'status_pihak2'        => 'required|string',
+            'nik_pihak2'           => 'required|string|max:16',
+            'pekerjaan_pihak2'     => 'required|string',
+            'alamat_pihak2'        => 'required|string',
 
-            // umum
-            'uraian_kuasa'      => 'nullable|string',
-            'status_surat'      => 'nullable|string',
-            'status_verif'      => 'nullable|string',
-            'nowa'              => 'required|string|max:20',
+            // Isi Kuasa
+            'keterangan_kuasa'     => 'required|string',
+
+            // Umum
+            'nowa'                 => 'required|string|max:20',
         ]);
 
-        // default untuk user
-        $validated['status_surat'] = $validated['status_surat'] ?? 'Pending';
-        $validated['status_verif'] = $validated['status_verif'] ?? 'Belum Verifikasi';
+        $validated['status_surat'] = 'Pending';
+        $validated['status_verif'] = 'Belum Verifikasi';
 
-        surat_kuasa::create($validated);
+        SuratKuasa::create($validated);
 
         return redirect()->route('surat.suratberhasil')
-            ->with('success', 'Surat Kuasa berhasil dibuat.');
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+            ->with('success', 'Pengajuan Surat Kuasa berhasil dikirim.');
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Simpan dari Admin
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            // PIHAK 1 (Pemberi Kuasa)
-            'p1_nama_lengkap'   => 'required|string|max:255',
-            'p1_jenis_kelamin'  => 'required|string|max:20',
-            'p1_tempat_lahir'   => 'required|string|max:100',
-            'p1_tanggal_lahir'  => 'required|date',
-            'p1_agama'          => 'required|string|max:50',
-            'p1_status'         => 'required|string|max:50',
-            'p1_nik'            => 'required|string|max:32',
-            'p1_pekerjaan'      => 'required|string|max:100',
-            'p1_alamat'         => 'required|string',
+            // Pihak I
+            'nama_pihak1'          => 'required|string|max:255',
+            'jenis_kelamin_pihak1' => 'required|string',
+            'tempat_lahir_pihak1'  => 'required|string',
+            'tanggal_lahir_pihak1' => 'required|date',
+            'agama_pihak1'         => 'required|string',
+            'status_pihak1'        => 'required|string',
+            'nik_pihak1'           => 'required|string|max:16',
+            'pekerjaan_pihak1'     => 'required|string',
+            'alamat_pihak1'        => 'required|string',
 
-            // PIHAK 2 (Penerima Kuasa)
-            'p2_nama_lengkap'   => 'required|string|max:255',
-            'p2_jenis_kelamin'  => 'required|string|max:20',
-            'p2_tempat_lahir'   => 'required|string|max:100',
-            'p2_tanggal_lahir'  => 'required|date',
-            'p2_agama'          => 'required|string|max:50',
-            'p2_status'         => 'required|string|max:50',
-            'p2_nik'            => 'required|string|max:32',
-            'p2_pekerjaan'      => 'required|string|max:100',
-            'p2_alamat'         => 'required|string',
+            // Pihak II
+            'nama_pihak2'          => 'required|string|max:255',
+            'jenis_kelamin_pihak2' => 'required|string',
+            'tempat_lahir_pihak2'  => 'required|string',
+            'tanggal_lahir_pihak2' => 'required|date',
+            'agama_pihak2'         => 'required|string',
+            'status_pihak2'        => 'required|string',
+            'nik_pihak2'           => 'required|string|max:16',
+            'pekerjaan_pihak2'     => 'required|string',
+            'alamat_pihak2'        => 'required|string',
 
-            // umum
-            'uraian_kuasa'      => 'nullable|string',
-            'status_surat'      => 'nullable|string',
-            'status_verif'      => 'nullable|string',
-            'nowa'              => 'required|string|max:20',
+            'keterangan_kuasa'     => 'required|string',
+            'nowa'                 => 'required|string|max:20',
+            'nomor_surat'          => 'nullable|string',
+            'status_surat'         => 'required|string',
+            'status_verif'         => 'required|string',
         ]);
 
-        surat_kuasa::create($validated);
+        $validated['nomor_surat'] = $validated['nomor_surat'] ?? '470 / --- / 409.42.1 / ' . now()->year;
+
+        SuratKuasa::create($validated);
 
         return redirect()->route('surat.keluar')
-            ->with('success', 'Surat Kuasa berhasil disimpan.');
+            ->with('success', 'Surat Kuasa berhasil dibuat.');
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\surat_kuasa  $surat_kuasa
-     * @return \Illuminate\Http\Response
+     * Halaman Edit (Admin)
      */
-    public function show(surat_kuasa $surat_kuasa)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\surat_kuasa  $surat_kuasa
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(surat_kuasa $surat)
+    public function edit(SuratKuasa $surat)
     {
         return view('surat.edit_surat_kuasa', compact('surat'));
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\surat_kuasa  $surat_kuasa
-     * @return \Illuminate\Http\Response
+     * Update Surat
      */
-    public function update(Request $request, surat_kuasa $surat)
+    public function update(Request $request, SuratKuasa $surat)
     {
         $validated = $request->validate([
-            // PIHAK 1 (Pemberi Kuasa)
-            'p1_nama_lengkap'   => 'required|string|max:255',
-            'p1_jenis_kelamin'  => 'required|string|max:20',
-            'p1_tempat_lahir'   => 'required|string|max:100',
-            'p1_tanggal_lahir'  => 'required|date',
-            'p1_agama'          => 'required|string|max:50',
-            'p1_status'         => 'required|string|max:50',
-            'p1_nik'            => 'required|string|max:32',
-            'p1_pekerjaan'      => 'required|string|max:100',
-            'p1_alamat'         => 'required|string',
+            // Semua field sama seperti di store
+            'nama_pihak1'          => 'required|string|max:255',
+            'jenis_kelamin_pihak1' => 'required|string',
+            'tempat_lahir_pihak1'  => 'required|string',
+            'tanggal_lahir_pihak1' => 'required|date',
+            'agama_pihak1'         => 'required|string',
+            'status_pihak1'        => 'required|string',
+            'nik_pihak1'           => 'required|string|max:16',
+            'pekerjaan_pihak1'     => 'required|string',
+            'alamat_pihak1'        => 'required|string',
 
-            // PIHAK 2 (Penerima Kuasa)
-            'p2_nama_lengkap'   => 'required|string|max:255',
-            'p2_jenis_kelamin'  => 'required|string|max:20',
-            'p2_tempat_lahir'   => 'required|string|max:100',
-            'p2_tanggal_lahir'  => 'required|date',
-            'p2_agama'          => 'required|string|max:50',
-            'p2_status'         => 'required|string|max:50',
-            'p2_nik'            => 'required|string|max:32',
-            'p2_pekerjaan'      => 'required|string|max:100',
-            'p2_alamat'         => 'required|string',
+            'nama_pihak2'          => 'required|string|max:255',
+            'jenis_kelamin_pihak2' => 'required|string',
+            'tempat_lahir_pihak2'  => 'required|string',
+            'tanggal_lahir_pihak2' => 'required|date',
+            'agama_pihak2'         => 'required|string',
+            'status_pihak2'        => 'required|string',
+            'nik_pihak2'           => 'required|string|max:16',
+            'pekerjaan_pihak2'     => 'required|string',
+            'alamat_pihak2'        => 'required|string',
 
-            // umum
-            'uraian_kuasa'      => 'nullable|string',
-            'status_surat'      => 'nullable|string',
-            'status_verif'      => 'nullable|string',
-            'nowa'              => 'required|string|max:20',
+            'keterangan_kuasa'     => 'required|string',
+            'nowa'                 => 'required|string|max:20',
+            'nomor_surat'          => 'nullable|string',
+            'status_surat'         => 'required|string',
+            'status_verif'         => 'required|string',
         ]);
 
         $surat->update($validated);
 
         return redirect()->route('surat.keluar')
             ->with('success', 'Surat Kuasa berhasil diperbarui.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\surat_kuasa  $surat_kuasa
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(surat_kuasa $surat_kuasa)
-    {
-        //
     }
 }

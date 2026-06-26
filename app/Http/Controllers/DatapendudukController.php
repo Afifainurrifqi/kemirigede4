@@ -172,24 +172,76 @@ class DatapendudukController extends Controller
 
     public function add()
     {
-        $datapenduduk = datapenduduk::all();
-        $agama = Agama::all();
+        $agama      = Agama::all();
         $pendidikan = Pendidikan::all();
-        $pekerjaan = Pekerjaan::all();
-        $goldar = Goldar::all();
-        $status = Status::all();
-        return view('datapenduduk.tambahpenduduk', compact('datapenduduk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status'));
+        $pekerjaan  = Pekerjaan::all();
+        $goldar     = Goldar::all();
+        $status     = Status::all();
+
+        $statusKawinId = Status::whereRaw('LOWER(nama) LIKE ?', ['%kawin%'])->value('id') ?? 0;
+
+        return view('datapenduduk.tambahpenduduk', compact(
+            'agama',
+            'pendidikan',
+            'pekerjaan',
+            'goldar',
+            'status',
+            'statusKawinId'
+        ));
     }
+
+    public function lookupByNik($nik)
+    {
+        $penduduk = Datapenduduk::where('nik', $nik)
+            ->with(['pekerjaan', 'detailkk.kk'])   // ← Tambahkan ini
+            ->first();
+
+        if (!$penduduk) {
+            return response()->json([
+                'success' => false,
+                'message' => 'NIK tidak ditemukan'
+            ], 404);
+        }
+
+        $nokk = optional(optional($penduduk->detailkk)->kk)->nokk ?? '';
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'nama'          => $penduduk->nama ?? '',
+                'tempat_lahir'  => $penduduk->tempat_lahir ?? '',
+                'tanggal_lahir' => $penduduk->tanggal_lahir ?? '',
+                'jenis_kelamin' => $penduduk->jenis_kelamin == '1' ? 'Laki-laki' : 'Perempuan',
+                'pekerjaan'     => optional($penduduk->pekerjaan)->nama ?? '',
+                'alamat'        => $penduduk->alamat ?? '',
+                'rt'            => $penduduk->RT ?? '',
+                'rw'            => $penduduk->RW ?? '',
+                'nokk'          => $nokk,
+                'agama'            => $penduduk->agama->agama ?? $penduduk->agama->nama_agama ?? '',
+                'status_perkawinan' => $penduduk->status->status ?? $penduduk->status->nama_status ?? '',        // ← Tambahan No KK
+            ]
+        ]);
+    }
+
 
     public function addadmin()
     {
-        $datapenduduk = datapenduduk::all();
-        $agama = Agama::all();
+        $agama      = Agama::all();
         $pendidikan = Pendidikan::all();
-        $pekerjaan = Pekerjaan::all();
-        $goldar = Goldar::all();
-        $status = Status::all();
-        return view('datapenduduk.tambahpendudukuser', compact('datapenduduk', 'agama', 'pendidikan', 'pekerjaan', 'goldar', 'status'));
+        $pekerjaan  = Pekerjaan::all();
+        $goldar     = Goldar::all();
+        $status     = Status::all();
+
+        $statusKawinId = Status::whereRaw('LOWER(nama) LIKE ?', ['%kawin%'])->value('id') ?? 0;
+
+        return view('datapenduduk.tambahpendudukuser', compact(
+            'agama',
+            'pendidikan',
+            'pekerjaan',
+            'goldar',
+            'status',
+            'statusKawinId'
+        ));
     }
 
 
@@ -254,7 +306,9 @@ class DatapendudukController extends Controller
         $datapenduduk->pekerjaan_id = $request->valPekerjaan;
         $datapenduduk->goldar_id = $request->valGoldar;
         $datapenduduk->status_id = $request->valStatus;
-        $datapenduduk->tanggal_perkawinan = $request->valTanggalperkawinan;
+        $datapenduduk->tanggal_perkawinan = !empty($request->valTahunperkawinan)
+            ? $request->valTahunperkawinan . '-01-01'  // simpan sebagai tanggal 1 Januari tahun tersebut
+            : null;
         $datapenduduk->hubungan = $request->valHubungan;
         $datapenduduk->ayah = $request->valAyah;
         $datapenduduk->ibu = $request->valIbu;
@@ -308,9 +362,10 @@ class DatapendudukController extends Controller
         $tglLahir = $datapenduduk->tanggal_lahir
             ? \Carbon\Carbon::parse($datapenduduk->tanggal_lahir)->format('Y-m-d')
             : '';
-        $tglNikah = $datapenduduk->tanggal_perkawinan
-            ? \Carbon\Carbon::parse($datapenduduk->tanggal_perkawinan)->format('Y-m-d')
-            : '';
+        $tahunPerkawinan = '';
+        if ($datapenduduk->tanggal_perkawinan) {
+            $tahunPerkawinan = Carbon::parse($datapenduduk->tanggal_perkawinan)->format('Y');
+        }
 
         return view('datapenduduk.formedit', compact(
             'datapenduduk',
@@ -334,7 +389,7 @@ class DatapendudukController extends Controller
             'valPekerjaan'          => $datapenduduk->pekerjaan_id,
             'valGoldar'             => $datapenduduk->goldar_id,
             'valStatus'             => $datapenduduk->status_id,
-            'valTanggalperkawinan'  => $tglNikah,
+            'valTahunperkawinan'    => $tahunPerkawinan,
             'valHubungan'           => $datapenduduk->hubungan,
             'valAyah'               => $datapenduduk->ayah,
             'valIbu'                => $datapenduduk->ibu,
@@ -382,8 +437,8 @@ class DatapendudukController extends Controller
         $datapenduduk->pekerjaan_id = $request->valPekerjaan;
         $datapenduduk->goldar_id = $request->valGoldar;
         $datapenduduk->status_id = $request->valStatus;
-        $datapenduduk->tanggal_perkawinan = !empty($request->valTanggalperkawinan)
-            ? $request->valTanggalperkawinan
+        $datapenduduk->tanggal_perkawinan = !empty($request->valTahunperkawinan)
+            ? $request->valTahunperkawinan . '-01-01'
             : null;
         $datapenduduk->hubungan = $request->valHubungan;
         $datapenduduk->ayah = $request->valAyah;

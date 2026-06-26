@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\surat_pernyataan_belum_akta;
+use App\Services\NomorSuratService;
 use Illuminate\Http\Request;
 
 class SuratPernyataanBelumAktaController extends Controller
@@ -12,6 +13,13 @@ class SuratPernyataanBelumAktaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(private NomorSuratService $svc) {}
+
+    protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
+    {
+        $this->svc->maybeAssignNomorSurat($suratOrNull, $payload, 'belumakta');
+    }
     public function index()
     {
         $data = surat_pernyataan_belum_akta::all();
@@ -33,6 +41,7 @@ class SuratPernyataanBelumAktaController extends Controller
     {
         //
     }
+
 
     /**
      * Store a newly created resource in storage.

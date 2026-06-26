@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Datapenduduk;
 use App\Models\surat_pernyataan_tidak_bisa_melampirkan_ktp_kematian;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -39,36 +40,67 @@ class SuratPernyataanTidakBisaMelampirkanKtpKematianController extends Controlle
         return $pdf->download($filename);
     }
 
+    /**
+     * Autofill data berdasarkan NIK (untuk form surat)
+     */
+    public function lookupByNik($nik)
+    {
+        $penduduk = Datapenduduk::where('nik', $nik)
+            ->with(['pekerjaan'])
+            ->first();
+
+        if (!$penduduk) {
+            return response()->json([
+                'success' => false,
+                'message' => 'NIK tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'nama'          => $penduduk->nama ?? '',
+                'tempat_lahir'  => $penduduk->tempat_lahir ?? '',
+                'tanggal_lahir' => $penduduk->tanggal_lahir ?? '',
+                'jenis_kelamin' => $penduduk->jenis_kelamin == '1' ? 'Laki-laki' : 'Perempuan',
+                'pekerjaan'     => optional($penduduk->pekerjaan)->nama ?? '',
+                'alamat'        => $penduduk->alamat ?? '',
+                'rt'            => $penduduk->RT ?? '',
+                'rw'            => $penduduk->RW ?? '',
+            ]
+        ]);
+    }
+
     /*** ========= Validasi ========= ***/
     protected function baseValidator(Request $request, bool $isAdmin): Validator
     {
         $rules = [
-            'nowa'                   => ['required','string','max:20'],
-            'nama_pelapor'           => ['required','string','max:255'],
-            'nik_pelapor'            => ['required','string','max:32'],
-            'tempat_lahir_pelapor'   => ['required','string','max:100'],
-            'tanggal_lahir_pelapor'  => ['required','date'],
-            'jenis_kelamin_pelapor'  => ['required','string','max:20'],
-            'pekerjaan_pelapor'      => ['required','string','max:100'],
-            'alamat_pelapor'         => ['required','string'],
-            'alasan'                 => ['required','string'],
+            'nowa'                   => ['required', 'string', 'max:20'],
+            'nama_pelapor'           => ['required', 'string', 'max:255'],
+            'nik_pelapor'            => ['required', 'string', 'max:32'],
+            'tempat_lahir_pelapor'   => ['required', 'string', 'max:100'],
+            'tanggal_lahir_pelapor'  => ['required', 'date'],
+            'jenis_kelamin_pelapor'  => ['required', 'string', 'max:20'],
+            'pekerjaan_pelapor'      => ['required', 'string', 'max:100'],
+            'alamat_pelapor'         => ['required', 'string'],
+            'alasan'                 => ['required', 'string'],
 
-            'nik_jenazah'            => ['required','string','max:32'],
-            'nama_jenazah'           => ['required','string','max:255'],
-            'tanggal_lahir_jenazah'  => ['required','date'],
-            'jenis_kelamin_jenazah'  => ['required','string','max:20'],
-            'alamat_jenazah'         => ['required','string'],
+            'nik_jenazah'            => ['required', 'string', 'max:32'],
+            'nama_jenazah'           => ['required', 'string', 'max:255'],
+            'tanggal_lahir_jenazah'  => ['required', 'date'],
+            'jenis_kelamin_jenazah'  => ['required', 'string', 'max:20'],
+            'alamat_jenazah'         => ['required', 'string'],
 
             // opsional, hanya admin formmu yang tadi pakai ini
-            'agama_pelapor'          => ['nullable','string','max:50'],
+            'agama_pelapor'          => ['nullable', 'string', 'max:50'],
         ];
 
         if ($isAdmin) {
-            $rules['status_surat'] = ['required','string','in:Pending,Di cek,Di terima,Ditolak'];
-            $rules['status_verif'] = ['required','string','in:Belum Verifikasi,Terverifikasi'];
+            $rules['status_surat'] = ['required', 'string', 'in:Pending,Di cek,Di terima,Ditolak'];
+            $rules['status_verif'] = ['required', 'string', 'in:Belum Verifikasi,Terverifikasi'];
         } else {
-            $rules['status_surat'] = ['nullable','string'];
-            $rules['status_verif'] = ['nullable','string'];
+            $rules['status_surat'] = ['nullable', 'string'];
+            $rules['status_verif'] = ['nullable', 'string'];
         }
 
         return VFacade::make($request->all(), $rules);
@@ -77,25 +109,13 @@ class SuratPernyataanTidakBisaMelampirkanKtpKematianController extends Controlle
     /** Assign nomor kalau eligible (Di terima + Terverifikasi) dan belum punya nomor */
     protected function maybeAssignNomorSurat($modelOrNull, array &$payload): void
     {
-        $status = $payload['status_surat'] ?? ($modelOrNull->status_surat ?? null);
-        $verif  = $payload['status_verif'] ?? ($modelOrNull->status_verif ?? null);
-
-        if ($status === 'Di terima' && $verif === 'Terverifikasi'
-            && empty($payload['nomor_surat'])
-            && empty($modelOrNull?->nomor_surat)) {
-
-            $tahun = now('Asia/Jakarta')->year;
-            $urut  = $this->svc->nextFor($this->jenisCounter, $tahun);
-            $payload['nomor_urut']  = $urut;
-            $payload['tahun_nomor'] = $tahun;
-            $payload['nomor_surat'] = $this->svc->formatFor($urut, $tahun);
-        }
+        $this->svc->maybeAssignNomorSurat($modelOrNull, $payload, 'spktp');   // ← tambahkan 'spktp'
     }
 
     /** USER store (status default Pending/Belum Verifikasi) */
     public function userstore(Request $request)
     {
-        $validator = $this->baseValidator($request, isAdmin:false);
+        $validator = $this->baseValidator($request, isAdmin: false);
         $validated = $validator->validate();
 
         $payload = array_merge($validated, [
@@ -113,7 +133,7 @@ class SuratPernyataanTidakBisaMelampirkanKtpKematianController extends Controlle
     /** ADMIN store (bisa langsung assign nomor jika eligible) */
     public function store(Request $request)
     {
-        $validator = $this->baseValidator($request, isAdmin:true);
+        $validator = $this->baseValidator($request, isAdmin: true);
         $validated = $validator->validate();
         $payload   = $validated;
 
@@ -134,7 +154,7 @@ class SuratPernyataanTidakBisaMelampirkanKtpKematianController extends Controlle
     /** ADMIN update (bisa memicu nomor jika eligible) */
     public function update(Request $request, surat_pernyataan_tidak_bisa_melampirkan_ktp_kematian $surat)
     {
-        $validator = $this->baseValidator($request, isAdmin:true);
+        $validator = $this->baseValidator($request, isAdmin: true);
         $validated = $validator->validate();
         $payload   = $validated;
 

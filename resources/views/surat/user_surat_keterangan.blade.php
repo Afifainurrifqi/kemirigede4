@@ -68,9 +68,10 @@
                     'KETERANGAN   PENGANTAR   SKCK',
                     'Surat Keterangan Kepemilikan  Aset',
                     'SURAT  KETERANGAN  USAHA',
-                    'Surat Keterangan Desa Warga Miskin',
+                    'SURAT KETERANGAN WARGA DESA MISKIN',
                     'SURAT KETERANGAN MISKIN ( SKM )',
-                    'SURAT  KETERANGAN  AHLI WARIS',
+                    'SURAT KETERANGAN AHLI WARIS DESA',
+                    // 'SURAT  KETERANGAN  AHLI WARIS',
                     'SURAT KETERANGAN GHOIB',
                     'SURAT KETERANGAN PENGHASILAN',
                     'SURAT KETERANGAN DOMISILI LEMBAGA',
@@ -93,9 +94,21 @@
                     'SURAT KETERANGAN TIDAK MAMPU' => 'surat.usertidakmampu',
                     'SURAT KETERANGAN DESA PERNAH MENIKAH' => 'surat.userpernahmenikah',
                     'SURAT KETERANGAN KEMATIAN DESA' => 'surat.userkematian',
-                    'SURAT KETERANGAN WARIS' => 'surat.userahliwaris',
+                    'SURAT KETERANGAN AHLI WARIS DESA' => 'surat.userahliwarisdesa',
+                    // 'SURAT KETERANGAN WARIS' => 'surat.userahliwaris',
                     'SURAT KETERANGAN HARGA KEPEMILIKAN TANAH' => 'surat.userkepemilikantanah',
                     'KETERANGAN PENGANTAR SKCK' => 'surat.userskck',
+                    'SURAT KETERANGAN NUMPANG NIKAH' => 'surat.usernumpangnikah',
+                    'SURAT KETERANGAN USAHA' => 'surat.userusaha',
+                    'SURAT KETERANGAN WARGA DESA MISKIN' => 'surat.usermiskindesa',
+                    'SURAT KETERANGAN MISKIN ( SKM )' => 'surat.userskm',
+                    'SURAT KETERANGAN GHOIB' => 'surat.userghoib',
+                    'SURAT KETERANGAN PENGHASILAN' => 'surat.userpenghasilan.index',
+                    'SURAT KETERANGAN DESA SEBAGAI PENDUDUK DESA' => 'surat.user_desa_penduduk',
+                    'SURAT KETERANGAN DOMISILI LEMBAGA' => 'surat.user_domisili_lembaga',
+                    'SURAT KETERANGAN DOMISILI WARGA' => 'surat.user_domisili_warga', // ← BARU
+                    'SURAT KETERANGAN KEPEMILIKAN ASET' => 'surat.user_kepemilikan_aset',
+
                     // Tambahkan mapping lain bila route sudah dibuat
                 ];
 
@@ -134,7 +147,8 @@
                                 @if ($href)
                                     <a class="btn m-1 btn-creative btn-light" href="{{ $href }}">Buat Surat</a>
                                 @else
-                                    <button class="btn m-1 btn-creative btn-light" type="button" disabled>Maintance</button>
+                                    <button class="btn m-1 btn-creative btn-light" type="button"
+                                        disabled>Maintance</button>
                                 @endif
                             </div>
                         </div>

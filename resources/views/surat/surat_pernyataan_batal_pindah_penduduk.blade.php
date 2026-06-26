@@ -1,0 +1,123 @@
+@extends('layout.main2')
+
+@section('content')
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Buat Surat Pernyataan Batal Pindah Penduduk</h5>
+        </div>
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul></div>
+            @endif
+
+            <form action="{{ route('surat.batal_pindah.store') }}" method="POST">
+                @csrf
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>NIK <span class="text-danger">*</span></label>
+                        <input type="text" name="nik" id="nik" class="form-control" value="{{ old('nik') }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Tempat Lahir</label>
+                        <input type="text" name="ttl_tempat" id="ttl_tempat" class="form-control" value="{{ old('ttl_tempat') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Tanggal Lahir</label>
+                        <input type="date" name="ttl_tanggal" id="ttl_tanggal" class="form-control" value="{{ old('ttl_tanggal') }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Alamat <span class="text-danger">*</span></label>
+                    <textarea name="alamat" id="alamat" class="form-control" rows="2" required>{{ old('alamat') }}</textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Agama</label>
+                        <input type="text" name="agama" class="form-control" value="{{ old('agama') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Status Perkawinan</label>
+                        <input type="text" name="status" class="form-control" value="{{ old('status') }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Ke Alamat (Tujuan Pindah yang Dibatalkan) <span class="text-danger">*</span></label>
+                    <textarea name="ke_alamat" class="form-control" rows="2" required>{{ old('ke_alamat') }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Dikarenakan (Alasan Batal Pindah) <span class="text-danger">*</span></label>
+                    <textarea name="alasan_batal" class="form-control" rows="2" required>{{ old('alasan_batal') }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Dan Akan Menetap Sesuai Alamat Asal di <span class="text-danger">*</span></label>
+                    <textarea name="alamat_asal" class="form-control" rows="2" required>{{ old('alamat_asal') }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>No WhatsApp <span class="text-danger">*</span></label>
+                    <input type="text" name="nowa" class="form-control" value="{{ old('nowa') }}" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Status Surat</label>
+                        <select name="status_surat" class="form-control">
+                            <option value="Pending">Pending</option>
+                            <option value="Di cek">Di cek</option>
+                            <option value="Di terima">Di terima</option>
+                            <option value="Ditolak">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Status Verifikasi</label>
+                        <select name="status_verif" class="form-control">
+                            <option value="Belum Verifikasi">Belum Verifikasi</option>
+                            <option value="Terverifikasi">Terverifikasi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Simpan Surat</button>
+                <a href="{{ route('surat.keluar') }}" class="btn btn-secondary ms-2">Kembali</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function autofill() {
+        const nik = document.getElementById('nik').value.trim();
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    const d = result.data;
+                    document.getElementById('nama').value = d.nama || '';
+                    document.getElementById('ttl_tempat').value = d.tempat_lahir || '';
+                    document.getElementById('ttl_tanggal').value = d.tanggal_lahir ? d.tanggal_lahir.substring(0,10) : '';
+                    document.getElementById('alamat').value = d.alamat || '';
+                }
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('nik').addEventListener('blur', autofill);
+    });
+</script>
+@endsection

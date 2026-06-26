@@ -19,19 +19,19 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 class="card-title mb-0">Data Penduduk</h2>
                         </div>
- <div class="d-flex flex-wrap gap-2">
-                                {{-- Tombol Import --}}
-                                <button type="button" class="btn mb-1 btn-success" data-toggle="modal"
-                                    data-target="#importModal">
-                                    Import <span class="btn-icon-right"><i class="fa fa-file-excel-o"></i></span>
-                                </button>
+                        <div class="d-flex flex-wrap gap-2">
+                            {{-- Tombol Import --}}
+                            <button type="button" class="btn mb-1 btn-success" data-toggle="modal"
+                                data-target="#importModal">
+                                Import <span class="btn-icon-right"><i class="fa fa-file-excel-o"></i></span>
+                            </button>
 
-                                {{-- Tombol Tambah --}}
-                                <button type="button" class="btn mb-1 btn-primary"
-                                    onclick="window.location='{{ url('datapenduduk/add') }}'">
-                                    Tambah penduduk <span class="btn-icon-right"><i class="fa fa-plus-circle"></i></span>
-                                </button>
-                            </div>
+                            {{-- Tombol Tambah --}}
+                            <button type="button" class="btn mb-1 btn-primary"
+                                onclick="window.location='{{ url('datapenduduk/add') }}'">
+                                Tambah penduduk <span class="btn-icon-right"><i class="fa fa-plus-circle"></i></span>
+                            </button>
+                        </div>
                         {{-- Modal Import --}}
                         <div class="modal fade" id="importModal" tabindex="-1" role="dialog"
                             aria-labelledby="importModalLabel" aria-hidden="true">
@@ -86,7 +86,7 @@
                                         <th>Pekejaan</th>
                                         <th>Goldar</th>
                                         <th>Status</th>
-                                        <th>Tanggal perkawinan</th>
+                                        <th>Tahun perkawinan</th>
                                         <th>Hubungan</th>
                                         <th>Ayah</th>
                                         <th>Ibu</th>
@@ -123,7 +123,7 @@
             var now = new Date();
             var pad = n => String(n).padStart(2, '0');
             var stamp = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '_' + pad(now
-            .getHours()) + pad(now.getMinutes());
+                .getHours()) + pad(now.getMinutes());
             var excelFileName = 'datapenduduk_' + stamp;
 
             function mapJK(val) {
@@ -215,7 +215,7 @@
                         name: 'jenis_kelamin',
                         render: function(data, type) {
                             if (type === 'export' || type === 'display' || type === 'filter')
-                            return mapJK(data);
+                                return mapJK(data);
                             return data;
                         }
                     },
@@ -250,7 +250,12 @@
                     },
                     {
                         data: 'tanggal_perkawinan',
-                        name: 'tanggal_perkawinan'
+                        name: 'tanggal_perkawinan',
+                        render: function(data, type, row) {
+                            if (!data) return '';
+                            // Ambil hanya tahun (YYYY)
+                            return String(data).substring(0, 4);
+                        }
                     },
                     {
                         data: 'hubungan',

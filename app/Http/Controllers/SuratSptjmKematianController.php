@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\surat_sptjm_kematian;
+use App\Services\NomorSuratService;
 use Illuminate\Http\Request;
 
 class SuratSptjmKematianController extends Controller
@@ -12,6 +13,13 @@ class SuratSptjmKematianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(private NomorSuratService $svc) {}
+
+    protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
+    {
+        $this->svc->maybeAssignNomorSurat($suratOrNull, $payload, 'sptjmkematian');
+    }
     public function index()
     {
         $data = surat_sptjm_kematian::all();
@@ -49,35 +57,48 @@ class SuratSptjmKematianController extends Controller
             'pekerjaan'     => 'required|string|max:100',
             'alamat'        => 'required|string',
 
-            // Menyatakan (Jenazah)
+            // Jenazah
             'nama_jenazah'        => 'required|string|max:255',
             'nik_jenazah'         => 'required|string|max:32',
             'ttl_tempat_jenazah'  => 'required|string|max:100',
             'ttl_tanggal_jenazah' => 'required|date',
-            'jenis_kelamin'       => 'required',
-            'anak_ke'             => 'required|integer|min:1', // ⬅️ integer tunggal
+            'jenis_kelamin'       => 'required|string',
+            'anak_ke'             => 'required|integer|min:1',
             'nama_ayah_kandung'   => 'required|string|max:255',
             'nama_ibu_kandung'    => 'required|string|max:255',
 
-            // umum
+            // Tambahan
+            'tanggal_kematian'    => 'nullable|date',
+            'surat_kematian_dari' => 'nullable|string|max:255',
+
+            // Saksi
+            'nama_saksi_1' => 'nullable|string|max:255',
+            'nik_saksi_1'  => 'nullable|string|max:32',
+            'nama_saksi_2' => 'nullable|string|max:255',
+            'nik_saksi_2'  => 'nullable|string|max:32',
+
+            // Umum
             'nowa'         => 'required|string|max:20',
             'status_surat' => 'nullable|string',
             'status_verif' => 'nullable|string',
         ]);
 
-        $validated['status_surat'] = $validated['status_surat'] ?? 'Pending';
-        $validated['status_verif'] = $validated['status_verif'] ?? 'Belum Verifikasi';
+        $payload = $validated;
+        $payload['status_surat'] = $validated['status_surat'] ?? 'Pending';
+        $payload['status_verif'] = $validated['status_verif'] ?? 'Belum Verifikasi';
 
-        surat_sptjm_kematian::create($validated);
+        $this->maybeAssignNomorSurat(null, $payload);
+
+        surat_sptjm_kematian::create($payload);
 
         return redirect()->route('surat.keluar')
             ->with('success', 'SPTJM Kematian berhasil disimpan.');
     }
 
+    // ==================== STORE USER ====================
     public function userstore(Request $request)
     {
         $validated = $request->validate([
-            // Pelapor
             'nama'          => 'required|string|max:255',
             'nik'           => 'required|string|max:32',
             'ttl_tempat'    => 'required|string|max:100',
@@ -85,31 +106,34 @@ class SuratSptjmKematianController extends Controller
             'pekerjaan'     => 'required|string|max:100',
             'alamat'        => 'required|string',
 
-            // Menyatakan (Jenazah)
             'nama_jenazah'        => 'required|string|max:255',
             'nik_jenazah'         => 'required|string|max:32',
             'ttl_tempat_jenazah'  => 'required|string|max:100',
             'ttl_tanggal_jenazah' => 'required|date',
-            'jenis_kelamin'       => 'required',
-            'anak_ke'             => 'required|integer|min:1', // ⬅️ integer tunggal
+            'jenis_kelamin'       => 'required|string',
+            'anak_ke'             => 'required|integer|min:1',
             'nama_ayah_kandung'   => 'required|string|max:255',
             'nama_ibu_kandung'    => 'required|string|max:255',
 
-            // umum
-            'nowa'         => 'required|string|max:20',
-            'status_surat' => 'nullable|string',
-            'status_verif' => 'nullable|string',
+            'tanggal_kematian'    => 'nullable|date',
+            'surat_kematian_dari' => 'nullable|string|max:255',
+
+            'nama_saksi_1' => 'nullable|string|max:255',
+            'nik_saksi_1'  => 'nullable|string|max:32',
+            'nama_saksi_2' => 'nullable|string|max:255',
+            'nik_saksi_2'  => 'nullable|string|max:32',
+
+            'nowa' => 'required|string|max:20',
         ]);
 
-        $validated['status_surat'] = $validated['status_surat'] ?? 'Pending';
-        $validated['status_verif'] = $validated['status_verif'] ?? 'Belum Verifikasi';
+        $validated['status_surat'] = 'Pending';
+        $validated['status_verif'] = 'Belum Verifikasi';
 
         surat_sptjm_kematian::create($validated);
 
         return redirect()->route('surat.suratberhasil')
-            ->with('success', 'SPTJM Kematian berhasil disimpan.');
+            ->with('success', 'Pengajuan SPTJM Kematian berhasil dikirim.');
     }
-
     /**
      * Display the specified resource.
      *
@@ -142,7 +166,6 @@ class SuratSptjmKematianController extends Controller
     public function update(Request $request, surat_sptjm_kematian $surat)
     {
         $validated = $request->validate([
-            // Pelapor
             'nama'          => 'required|string|max:255',
             'nik'           => 'required|string|max:32',
             'ttl_tempat'    => 'required|string|max:100',
@@ -150,25 +173,29 @@ class SuratSptjmKematianController extends Controller
             'pekerjaan'     => 'required|string|max:100',
             'alamat'        => 'required|string',
 
-            // Menyatakan (Jenazah)
             'nama_jenazah'        => 'required|string|max:255',
             'nik_jenazah'         => 'required|string|max:32',
             'ttl_tempat_jenazah'  => 'required|string|max:100',
             'ttl_tanggal_jenazah' => 'required|date',
-            'jenis_kelamin'       => 'required',
-            'anak_ke'             => 'required|integer|min:1', // ⬅️ integer tunggal
+            'jenis_kelamin'       => 'required|string',
+            'anak_ke'             => 'required|integer|min:1',
             'nama_ayah_kandung'   => 'required|string|max:255',
             'nama_ibu_kandung'    => 'required|string|max:255',
 
-            // umum
+            'tanggal_kematian'    => 'nullable|date',
+            'surat_kematian_dari' => 'nullable|string|max:255',
+
+            'nama_saksi_1' => 'nullable|string|max:255',
+            'nik_saksi_1'  => 'nullable|string|max:32',
+            'nama_saksi_2' => 'nullable|string|max:255',
+            'nik_saksi_2'  => 'nullable|string|max:32',
+
             'nowa'         => 'required|string|max:20',
             'status_surat' => 'nullable|string',
             'status_verif' => 'nullable|string',
         ]);
 
-        $validated['status_surat'] = $validated['status_surat'] ?? 'Pending';
-        $validated['status_verif'] = $validated['status_verif'] ?? 'Belum Verifikasi';
-
+        $this->maybeAssignNomorSurat($surat, $validated);
         $surat->update($validated);
 
         return redirect()->route('surat.keluar')

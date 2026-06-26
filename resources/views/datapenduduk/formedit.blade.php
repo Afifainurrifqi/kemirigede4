@@ -216,7 +216,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <select class="form-control @error('valStatus') is-invalid @enderror"
-                                            id="valStatus" name="valStatus">
+                                            id="valStatus" name="valStatus" required>
                                             <option value="0" disabled>--Pilih Status--</option>
                                             @foreach ($status as $item)
                                                 <option value="{{ $item->id }}"
@@ -229,24 +229,27 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
 
-                                        {{-- Tanggal Perkawinan (muncul jika status = Kawin) --}}
-                                        <div class="form-group row mt-3" id="tanggalPerkawinanFormGroup"
+                                        {{-- Tahun Perkawinan (TIDAK WAJIB) --}}
+                                        <div class="form-group row mt-3" id="tahunPerkawinanFormGroup"
                                             style="display:none;">
-                                            <label class="col-lg-4 col-form-label" for="valTanggalperkawinan">Tanggal
-                                                Perkawinan <span class="text-danger">*</span></label>
+                                            <label class="col-lg-4 col-form-label" for="valTahunperkawinan">
+                                                Tahun Perkawinan
+                                            </label>
                                             <div class="col-lg-6">
-                                                <input type="date"
-                                                    value="{{ old('valTanggalperkawinan', $valTanggalperkawinan) }}"
-                                                    class="form-control @error('valTanggalperkawinan') is-invalid @enderror"
-                                                    id="valTanggalperkawinan" name="valTanggalperkawinan">
-                                                @error('valTanggalperkawinan')
+                                                <input type="number"
+                                                    class="form-control @error('valTahunperkawinan') is-invalid @enderror"
+                                                    id="valTahunperkawinan" name="valTahunperkawinan"
+                                                    value="{{ old('valTahunperkawinan', $valTahunperkawinan) }}"
+                                                    placeholder="Contoh: 2015" min="1900" max="{{ date('Y') }}">
+                                                @error('valTahunperkawinan')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
+                                                <small class="text-muted">Isi tahun saja (contoh: 2015). Tidak wajib
+                                                    diisi.</small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 {{-- Hubungan --}}
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label" for="valHubungan">Hubungan <span
@@ -392,25 +395,25 @@
 
     {{-- Script tombol simpan + toggle tanggal perkawinan --}}
     <script>
+        // Konfirmasi Simpan
         document.getElementById('confirmSave').addEventListener('click', function() {
             document.getElementById('form-edit-datpen').submit();
         });
 
-        function toggleTanggalPerkawinan() {
-            const KAWIN_ID = '{{ $statusKawinId }}'; // ID status "Kawin" dari controller
+        // Toggle Tahun Perkawinan
+        function toggleTahunPerkawinan() {
+            const KAWIN_ID = '{{ $statusKawinId ?? 0 }}';
             const selectedStatus = document.getElementById('valStatus').value;
-            const fg = document.getElementById('tanggalPerkawinanFormGroup');
+            const fg = document.getElementById('tahunPerkawinanFormGroup');
 
             if (selectedStatus === String(KAWIN_ID)) {
                 fg.style.display = 'block';
             } else {
                 fg.style.display = 'none';
-                // Opsional: kosongkan ketika bukan kawin
-                // document.getElementById('valTanggalperkawinan').value = '';
             }
         }
 
-        document.getElementById('valStatus').addEventListener('change', toggleTanggalPerkawinan);
-        document.addEventListener('DOMContentLoaded', toggleTanggalPerkawinan);
+        document.getElementById('valStatus').addEventListener('change', toggleTahunPerkawinan);
+        document.addEventListener('DOMContentLoaded', toggleTahunPerkawinan);
     </script>
 @endsection

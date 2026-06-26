@@ -117,7 +117,7 @@
             <div class="header-content position-relative d-flex align-items-center justify-content-between">
                 <!-- Back Button -->
                 <div class="back-button">
-                   <a href={{ route('surat.pengajuan_surat') }}>
+                    <a href={{ route('surat.pengajuan_surat') }}>
                         <i class="bi bi-arrow-left-short"></i>
                     </a>
                 </div>
@@ -154,15 +154,18 @@
 
                         <h5>Pemilik KK</h5>
                         <div class="mb-3">
-                            <label for="nama_pemilik_kk" class="form-label">Nama</label>
-                            <input type="text" name="nama_pemilik_kk" id="nama_pemilik_kk" class="form-control"
-                                required value="{{ old('nama_pemilik_kk') }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="nik_pemilik_kk" class="form-label">NIK</label>
+                            <label for="nik_pemilik_kk" class="form-label">NIK Pemilik KK <span
+                                    class="text-danger">*</span></label>
                             <input type="text" name="nik_pemilik_kk" id="nik_pemilik_kk" class="form-control"
                                 required value="{{ old('nik_pemilik_kk') }}">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="nama_pemilik_kk" class="form-label">Nama Pemilik KK</label>
+                            <input type="text" name="nama_pemilik_kk" id="nama_pemilik_kk" class="form-control"
+                                required value="{{ old('nama_pemilik_kk') }}">
+                        </div>
+
                         <div class="mb-3">
                             <label for="no_kk" class="form-label">No. KK</label>
                             <input type="text" name="no_kk" id="no_kk" class="form-control" required
@@ -364,10 +367,10 @@
                             <div class="footer-nav position-relative">
                                 <ul class="h-100 d-flex align-items-center justify-content-between ps-0">
                                     <li class="active">
-                                         <a href={{ route('surat.pengajuan_surat') }}>
-                                <i class="bi bi-house"></i>
-                                <span>Beranda</span>
-                            </a>
+                                        <a href={{ route('surat.pengajuan_surat') }}>
+                                            <i class="bi bi-house"></i>
+                                            <span>Beranda</span>
+                                        </a>
                                     </li>
 
 
@@ -395,6 +398,45 @@
                     <script src="{{ asset('assets4/dist/js/dark-rtl.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
+                    <script>
+                        function autofillData(nikFieldId, prefix) {
+                            const nik = document.getElementById(nikFieldId).value.trim();
+                            if (nik.length < 10) return;
+
+                            fetch(`/datapenduduk/lookup/${nik}`)
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        const d = result.data;
+
+                                        if (prefix === 'pemilik') {
+                                            document.getElementById('nama_pemilik_kk').value = d.nama || '';
+                                            document.getElementById('no_kk').value = d.nokk || ''; // ← Tambahkan ini
+                                            document.getElementById('alamat_pemilik_kk').value = d.alamat || '';
+                                            document.getElementById('pekerjaan_pemilik_kk').value = d.pekerjaan || '';
+                                        } else if (prefix === 'penumpang') {
+                                            document.getElementById('nama_penumpang_kk').value = d.nama || '';
+                                            document.getElementById('tempat_lahir_penumpang_kk').value = d.tempat_lahir || '';
+                                            document.getElementById('tanggal_lahir_penumpang_kk').value = d.tanggal_lahir || '';
+                                        }
+                                    } else {
+                                        alert(result.message || 'NIK tidak ditemukan');
+                                    }
+                                })
+                                .catch(() => alert('Gagal mengambil data dari server'));
+                        }
+
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Autofill Pemilik KK
+                            const nikPemilik = document.getElementById('nik_pemilik_kk');
+                            if (nikPemilik) nikPemilik.addEventListener('blur', () => autofillData('nik_pemilik_kk', 'pemilik'));
+
+                            // Autofill Penumpang KK
+                            const nikPenumpang = document.getElementById('nik_penumpang_kk');
+                            if (nikPenumpang) nikPenumpang.addEventListener('blur', () => autofillData('nik_penumpang_kk',
+                                'penumpang'));
+                        });
+                    </script>
 </body>
 
 </html>

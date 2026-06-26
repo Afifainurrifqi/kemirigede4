@@ -2,253 +2,184 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Pernyataan Memilih Nama Alias (Satu Orang Tua)</title>
+    <title>Surat Pernyataan Memilih Nama Alias Satu Orang Tua</title>
     <style>
-        @page { margin: 2cm; }
+        @page {
+            margin: 1.2cm 1.7cm 1.2cm 1.7cm;
+        }
 
-        body { font-family:'Times New Roman', Times, serif; font-size:12pt; line-height:1.5; color:#000; background:#fff; }
-        h3, p { margin:0; padding:0; }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11.5pt;
+            line-height: 1.35;
+            color: #000;
+        }
 
-        .text-center { text-align:center; }
-        .text-right  { text-align:right; }
-        .text-justify{ text-align:justify; }
+        .kop-container { width: 100%; }
+        .kop-table { width: 100%; border-collapse: collapse; }
+        .kop-logo { width: 14%; text-align: center; }
+        .kop-logo img { width: 72px; height: auto; }
+        .kop-text { text-align: center; }
+        .kop-text strong { font-size: 12pt; }
+        .kop-text small { font-size: 9pt; }
+        .kop-garis { border: none; border-top: 2px solid #000; margin: 5px 0 10px 0; }
 
-        /* KOP */
-        .kop-container { width:100%; }
-        .kop-logo { width:130px; }
-        .kop-header { text-align:center; line-height:1.4; }
-        .kop-garis { border:2px solid #000; margin-top:5px; margin-bottom:20px; }
-
-        /* Judul & nomor */
         .judul-surat {
-            margin-top:10px; margin-bottom:6px;
-            text-align:center; text-decoration:underline;
-            font-weight:bold; font-size:16pt; text-transform:uppercase;
+            text-align: center;
+            margin-bottom: 4px;
         }
-        .nomor { margin-bottom:20px; text-align:center; font-weight:bold; }
-
-        /* Isi & tabel data */
-        .isi { text-align:justify; margin-bottom:20px; }
-        table.data-diri { width:100%; margin:10px 0 15px 0; border-collapse:collapse; }
-        table.data-diri td { vertical-align:top; padding:4px 8px; }
-        table.data-diri td.label  { width:35%; }
-        table.data-diri td.colon  { width:2%; }
-        table.data-diri td.value  { width:63%; }
-
-        /* TTD */
-        .ttd-wrapper { width:100%; margin-top:40px; }
-        .ttd-table { width:100%; }
-        .ttd-table td { vertical-align:top; }
-        .materai-box {
-            width:140px; height:90px; border:1px dashed #000;
-            display:inline-block; text-align:center; padding-top:10px; margin-top:6px; font-size:10pt;
+        .judul-surat h3 {
+            font-size: 13.5pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 0;
         }
 
-        .underline { text-decoration:underline; }
-        .bold { font-weight:bold; }
-        .mb-0 { margin-bottom:0; }
-        .mt-0 { margin-top:0; }
+        .nomor-surat {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .tulisan {
+            text-align: justify;
+            margin-bottom: 6px;
+        }
+
+        table.data {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5px 0 9px 0;
+        }
+        table.data td {
+            padding: 2.5px 6px;
+            vertical-align: top;
+        }
+        table.data td:first-child {
+            width: 155px;
+            font-weight: bold;
+        }
+
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 22px;
+        }
+        .ttd-right {
+            width: 48%;
+            float: right;
+            text-align: center;
+        }
+        .ttd-right p {
+            margin: 2px 0;
+        }
+        .materai {
+            border: 1px solid #000;
+            padding: 7px 18px;
+            display: inline-block;
+            margin: 8px 0;
+            font-weight: bold;
+        }
+        .signature-line {
+            margin-top: 32px;
+            border-bottom: 1px solid #000;
+            width: 210px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
-@php
-    use Carbon\Carbon;
 
-    // Nomor surat: gunakan yang tersimpan; jika kosong, fallback (jenis alias_ortu => prefix 411)
-    $nomorSurat = data_get($data, 'nomor_surat');
-    if (!$nomorSurat) {
-        $urut  = data_get($data, 'nomor_urut');
-        $tahun = data_get($data, 'tahun_nomor', now('Asia/Jakarta')->year);
-        $nnn   = $urut ? str_pad($urut, 3, '0', STR_PAD_LEFT) : '---';
-        $nomorSurat = "411 / {$nnn} / 409.41.2 / {$tahun}";
-    }
-
-    // Helper tanggal aman (jika nanti kamu menambah field tanggal pada dokumen)
-    $fmt = function ($tgl) {
-        try { return $tgl ? Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y') : null; }
-        catch (\Throwable $e) { return $tgl; }
-    };
-
-    // Lokasi & tanggal
-    $kota    = data_get($data, 'kota_terbit', 'Kemirigede');
-    $tglNow  = Carbon::now('Asia/Jakarta')->translatedFormat('d F Y');
-
-    // Nama yang tanda tangan (default ambil nama_menyatakan; fallback nama)
-    $namaTtd = data_get($data, 'nama_menyatakan', data_get($data, 'nama', '( ................................. )'));
-
-    // Data orang tua & alias
-    $ayah      = trim((string) data_get($data, 'nama_ortu_ayah_tercatat', ''));
-    $aliasAyah = trim((string) data_get($data, 'nama_alias_ayah', ''));
-    $ibu       = trim((string) data_get($data, 'nama_ortu_ibu_tercatat', ''));
-    $aliasIbu  = trim((string) data_get($data, 'nama_alias_ibu', ''));
-
-    // Alias yang dihapus
-    $hapus1 = trim((string) data_get($data, 'nama_alias_dihapus_1', ''));
-    $hapus2 = trim((string) data_get($data, 'nama_alias_dihapus_2', ''));
-
-    // Berdasarkan
-    $berdasarkan = trim((string) data_get($data, 'berdasarkan', ''));
-@endphp
-
-    {{-- =================== KOP SURAT =================== --}}
+    <!-- KOP SURAT -->
     <div class="kop-container">
-        <table width="100%">
+        <table class="kop-table">
             <tr>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" class="kop-logo" alt="Logo Kiri">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
                 </td>
-                <td class="kop-header">
-                    <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                        KECAMATAN Kemirigede<br>
-                        KANTOR KEPALA DESA Kemirigede</strong><br>
-                    <small>
-                        Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
-                    </small>
+                <td class="kop-text">
+                    <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
+                    <strong>KECAMATAN WATES</strong><br>
+                    <strong>KANTOR KEPALA DESA WATES</strong><br>
+                    <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
+                    Email: watesberkelas@gmail.com | Website: wates-blitarkab.desa.id</small>
                 </td>
-                <td width="15%" align="center">
-                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" class="kop-logo" alt="Logo Kanan">
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/Wates.png') }}" alt="Logo Desa Wates">
                 </td>
             </tr>
         </table>
         <hr class="kop-garis">
     </div>
 
-    {{-- =================== JUDUL & NOMOR =================== --}}
-    <div class="judul-surat">SURAT PERNYATAAN MEMILIH NAMA ALIAS</div>
-    <div class="nomor">Nomor : {{ $nomorSurat }}</div>
-
-    {{-- =================== PEMBUKA =================== --}}
-    <div class="isi">
-        <p class="mb-0">Yang bertanda tangan di bawah ini, saya:</p>
+    <!-- JUDUL -->
+    <div class="judul-surat">
+        <h3>SURAT PERNYATAAN</h3>
     </div>
 
-    {{-- =================== IDENTITAS PEMBUAT PERNYATAAN =================== --}}
-    <table class="data-diri">
-        <tr>
-            <td class="label">Nama</td>
-            <td class="colon">:</td>
-            <td class="value">{{ data_get($data, 'nama_menyatakan', '................................................') }}</td>
-        </tr>
-        <tr>
-            <td class="label">NIK</td>
-            <td class="colon">:</td>
-            <td class="value">{{ data_get($data, 'nik', '................................................') }}</td>
-        </tr>
-        <tr>
-            <td class="label">Alamat</td>
-            <td class="colon">:</td>
-            <td class="value">{{ data_get($data, 'alamat', '................................................') }}</td>
-        </tr>
+    <!-- NOMOR SURAT -->
+    <div class="nomor-surat">
+        Nomor: {{ $data->nomor_surat ?? '411 / --- / 409.41.2 / ' . now()->year }}
+    </div>
+
+    <!-- ISI -->
+    <p class="tulisan"><strong>Yang bertanda tangan di bawah ini, Saya:</strong></p>
+
+    <table class="data">
+        <tr><td>Nama</td><td>: {{ $data->nama_menyatakan ?? $data->nama ?? '...........................................' }}</td></tr>
+        <tr><td>NIK</td><td>: {{ $data->nik ?? '...........................................' }}</td></tr>
+        <tr><td>Alamat</td><td>: {{ $data->alamat ?? '...........................................' }}</td></tr>
     </table>
 
-    {{-- =================== BAGIAN AKTA KELAHIRAN =================== --}}
-    <div class="isi">
-        <p class="mb-0">Menyatakan dengan sebenar-benarnya bahwa pada Akta Kelahiran:</p>
-    </div>
+    <p class="tulisan">
+        Menyatakan dengan sebenarnya bahwa pada Akta Kelahiran:
+    </p>
 
-    <table class="data-diri">
-        <tr>
-            <td class="label">Nama pada Akta</td>
-            <td class="colon">:</td>
-            <td class="value">{{ data_get($data, 'nama', '................................................') }}</td>
-        </tr>
-        <tr>
-            <td class="label">No. Akta Kelahiran</td>
-            <td class="colon">:</td>
-            <td class="value">{{ data_get($data, 'no_akta_kelahiran', '................................................') }}</td>
-        </tr>
+    <table class="data">
+        <tr><td>Nama</td><td>: {{ $data->nama_menyatakan ?? '...........................................' }}</td></tr>
+        <tr><td>No. Akta Kelahiran</td><td>: {{ $data->no_akta_kelahiran ?? '...........................................' }}</td></tr>
     </table>
 
-    {{-- =================== ORANG TUA & ALIAS =================== --}}
-    <div class="isi">
-        <p class="mb-0">Nama orang tua yang tercatat adalah:</p>
+    <p class="tulisan">
+        Nama orang tua <strong>Ayah/Ibu*</strong> yang tercatat adalah:
+    </p>
+    <p class="tulisan" style="margin-left: 15px;">
+        {{ $data->nama_ortu_ayah_tercatat ?? $data->nama_ortu_ibu_tercatat ?? '...........................................' }}
+        alias {{ $data->nama_alias_ayah ?? $data->nama_alias_ibu ?? '...........................................' }}
+    </p>
+
+    <p class="tulisan">
+        Selanjutnya saya mengajukan pembetulan nama orang tua pada Akta Kelahiran dengan menghapus bagian nama alias menjadi:
+    </p>
+    <p class="tulisan" style="margin-left: 15px;">
+        {{ $data->nama_alias_dihapus_1 ?? '...........................................' }}
+        @if($data->nama_alias_dihapus_2) dan {{ $data->nama_alias_dihapus_2 }} @endif
+    </p>
+
+    <p class="tulisan">
+        Berdasarkan: {{ $data->berdasarkan ?? '...........................................' }}
+    </p>
+
+    <p class="tulisan">
+        Demikian surat pernyataan ini saya buat dengan sebenar-sebenarnya dan apabila dikemudian hari ternyata pernyataan saya ini tidak benar, maka saya bersedia diproses secara hukum sesuai dengan peraturan perundang-undangan dan dokumen yang diterbitkan akibat dari pernyataan ini menjadi tidak sah.
+    </p>
+
+    <div style="font-size: 10pt; margin-top: 8px;">
+        *Pilih salah satu
     </div>
 
-    <table class="data-diri">
-        @if($ayah !== '')
-        <tr>
-            <td class="label">Ayah</td>
-            <td class="colon">:</td>
-            <td class="value">
-                {{ $ayah }}
-                @if($aliasAyah !== '') &nbsp;alias&nbsp;<strong>{{ $aliasAyah }}</strong>@endif
-            </td>
-        </tr>
-        @endif
-
-        @if($ibu !== '')
-        <tr>
-            <td class="label">Ibu</td>
-            <td class="colon">:</td>
-            <td class="value">
-                {{ $ibu }}
-                @if($aliasIbu !== '') &nbsp;alias&nbsp;<strong>{{ $aliasIbu }}</strong>@endif
-            </td>
-        </tr>
-        @endif
-
-        @if($ayah === '' && $ibu === '')
-        <tr>
-            <td class="label">Orang Tua</td>
-            <td class="colon">:</td>
-            <td class="value">................................................</td>
-        </tr>
-        @endif
-    </table>
-
-    {{-- =================== PENGHAPUSAN ALIAS =================== --}}
-    <div class="isi">
-        <p class="mb-0">
-            Selanjutnya saya mengajukan pembetulan nama orang tua pada Akta Kelahiran dengan
-            <strong>menghapus bagian nama alias</strong> menjadi:
-        </p>
-    </div>
-
-    <table class="data-diri">
-        <tr>
-            <td class="label">Alias dihapus</td>
-            <td class="colon">:</td>
-            <td class="value">
-                <strong>
-                    @if($hapus1 === '' && $hapus2 === '')
-                        ................................................
-                    @else
-                        {{ $hapus1 }}@if($hapus1 !== '' && $hapus2 !== ''), @endif{{ $hapus2 }}
-                    @endif
-                </strong>
-            </td>
-        </tr>
-    </table>
-
-    {{-- =================== DASAR / BERDASARKAN =================== --}}
-    @if($berdasarkan !== '')
-        <div class="isi">
-            <p class="mb-0"><em>Berdasarkan</em> {{ $berdasarkan }}.</p>
-        </div>
-    @endif
-
-    {{-- =================== PENUTUP =================== --}}
-    <div class="isi">
-        <p>Demikian surat pernyataan ini saya buat dengan sebenar-benarnya. Apabila di kemudian hari ternyata pernyataan
-            ini tidak benar, saya bersedia diproses sesuai ketentuan peraturan perundang-undangan dan seluruh dokumen
-            yang diterbitkan akibat pernyataan ini menjadi tidak sah.</p>
-        <p class="mb-0"><i>*Pilih salah satu (Ayah/Ibu) sesuai kebutuhan.</i></p>
-    </div>
-
-    {{-- =================== TANDA TANGAN (kanan + materai) =================== --}}
+    <!-- TANDA TANGAN -->
     <div class="ttd-wrapper">
-        <table class="ttd-table">
-            <tr>
-                <td width="55%"></td>
-                <td class="text-center">
-                    <p class="mb-0">{{ $kota }}, {{ $tglNow }}</p>
-                    <p class="mb-0">Yang Membuat Pernyataan</p>
-                    <div class="materai-box">Materai<br>Rp10.000</div>
-                    <p class="mt-0 bold underline">{{ $namaTtd }}</p>
-                </td>
-            </tr>
-        </table>
+        <div class="ttd-right">
+            <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+            <p><strong>Saya yang menyatakan,</strong></p>
+
+            <div class="materai">Materai<br>10.000</div>
+
+            <div class="signature-line"></div>
+            <p><strong>( {{ $data->nama_menyatakan ?? $data->nama ?? '...........................................' }} )</strong></p>
+        </div>
     </div>
+
 </body>
 </html>

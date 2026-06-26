@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\surat_pernyataan_akta_barcode_nomor_sama;
+use App\Services\NomorSuratService;
 use Illuminate\Http\Request;
 
 class SuratPernyataanAktaBarcodeNomorSamaController extends Controller
@@ -12,6 +13,13 @@ class SuratPernyataanAktaBarcodeNomorSamaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(private NomorSuratService $svc) {}
+
+    protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
+    {
+        $this->svc->maybeAssignNomorSurat($suratOrNull, $payload, 'aktabarcode');
+    }
     public function index()
     {
         return view('surat.surat_pernyataan_akta_barcode_nomor_sama');

@@ -7,60 +7,60 @@ use Illuminate\Support\Facades\Auth;
 
 class SesiController extends Controller
 {
-    function index()
+    public function index()
     {
         if (Auth::check()) {
-            return redirect('dashboard');
+            return redirect()->route('dashboard');
         }
 
         return view('login');
     }
 
-    function error()
+    public function error()
     {
         return view('errorsrole');
     }
 
-    function maintance()
+    public function maintance()
     {
         return view('maintance');
     }
 
-    function login(Request $request)
+    public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required',
-            'password'=> 'required'
-        ],[
-            'email.required'=> 'Email wajib diisi',
-            'password.required'=> 'Password wajib diisi'
+            'email'    => 'required|email',
+            'password' => 'required',
+        ], [
+            'email.required' => 'Email wajib diisi',
+            'email.email'    => 'Format email tidak valid',
+            'password.required' => 'Password wajib diisi',
         ]);
 
-        $infologin = [
-            'email'=>$request->email,
-            'password'=>$request->password,
-        ];
+        $credentials = $request->only('email', 'password');
 
-        if(Auth::attempt($infologin)){
-            if(Auth::user()->role=='admin'){
-                return redirect('dashboard');
-            }elseif(Auth::user()->role =='operator'){
-                return redirect('dashboard');
-            }elseif(Auth::user()->role =='dasawisma'){
-                return redirect('dashboard');
-            }elseif(Auth::user()->role =='akundemo'){
-                return redirect('dashboard');
-            }
-        } else {
-            return redirect()->back()->withErrors(['email' => 'Username dan password salah']);
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate(); // Security: cegah session fixation
+
+            // Redirect berdasarkan role
+            return match (Auth::user()->role) {
+                'admin', 'operator', 'dasawisma', 'akundemo' => redirect()->route('dashboard'),
+                default => redirect()->route('dashboard'), // fallback
+            };
         }
+
+        // Jika gagal login
+        return redirect()->back()
+            ->withInput()                    // agar old('email') tetap terisi
+            ->withErrors(['login' => 'Email atau password salah.']);
     }
 
-    function logout()
+    public function logout()
     {
-        if (Auth::check()) {
-            Auth::logout(); // Lakukan logout pengguna
-        }
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
         return redirect('/');
     }
 }

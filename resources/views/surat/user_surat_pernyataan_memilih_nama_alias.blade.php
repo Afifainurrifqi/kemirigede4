@@ -117,7 +117,7 @@
             <div class="header-content position-relative d-flex align-items-center justify-content-between">
                 <!-- Back Button -->
                 <div class="back-button">
-                   <a href={{ route('surat.pengajuan_surat') }}>
+                    <a href={{ route('surat.pengajuan_surat') }}>
                         <i class="bi bi-arrow-left-short"></i>
                     </a>
                 </div>
@@ -149,78 +149,78 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                  <form action="{{ route('surat.usernamalias.store') }}" method="POST">
-                    @csrf
+                    <form action="{{ route('surat.usernamalias.store') }}" method="POST">
+                        @csrf
 
-                    <div class="mb-3">
-                        <label for="nama" class="form-label">Nama</label>
-                        <input type="text" name="nama" id="nama" class="form-control" required
-                            value="{{ old('nama') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" name="nama" id="nama" class="form-control" required
+                                value="{{ old('nama') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="nik" class="form-label">NIK</label>
-                        <input type="text" name="nik" id="nik" class="form-control" required
-                            value="{{ old('nik') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="nik" class="form-label">NIK</label>
+                            <input type="text" name="nik" id="nik" class="form-control" required
+                                value="{{ old('nik') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="alamat" class="form-label">Alamat</label>
-                        <textarea name="alamat" id="alamat" class="form-control" rows="3" required>{{ old('alamat') }}</textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label for="alamat" class="form-label">Alamat</label>
+                            <textarea name="alamat" id="alamat" class="form-control" rows="3" required>{{ old('alamat') }}</textarea>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="nama_pemilih" class="form-label">Nama Pemilih</label>
-                        <input type="text" name="nama_pemilih" id="nama_pemilih" class="form-control" required
-                            value="{{ old('nama_pemilih') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="nama_pemilih" class="form-label">Nama Pemilih</label>
+                            <input type="text" name="nama_pemilih" id="nama_pemilih" class="form-control"
+                                required value="{{ old('nama_pemilih') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="no_akta_kelahiran" class="form-label">No. Akta Kelahiran</label>
-                        <input type="text" name="no_akta_kelahiran" id="no_akta_kelahiran" class="form-control"
-                            value="{{ old('no_akta_kelahiran') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="no_akta_kelahiran" class="form-label">No. Akta Kelahiran</label>
+                            <input type="text" name="no_akta_kelahiran" id="no_akta_kelahiran"
+                                class="form-control" value="{{ old('no_akta_kelahiran') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="nama_orang_tua" class="form-label">Nama Orang Tua (Ayah/Ibu)</label>
-                        <input type="text" name="nama_orang_tua" id="nama_orang_tua" class="form-control"
-                            value="{{ old('nama_orang_tua') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="nama_orang_tua" class="form-label">Nama Orang Tua (Ayah/Ibu)</label>
+                            <input type="text" name="nama_orang_tua" id="nama_orang_tua" class="form-control"
+                                value="{{ old('nama_orang_tua') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="alias" class="form-label">Alias</label>
-                        <input type="text" name="alias" id="alias" class="form-control"
-                            value="{{ old('alias') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="alias" class="form-label">Alias</label>
+                            <input type="text" name="alias" id="alias" class="form-control"
+                                value="{{ old('alias') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="data_alias_dihapus" class="form-label">Data Alias yang Dihapus</label>
-                        <input type="text" name="data_alias_dihapus" id="data_alias_dihapus" class="form-control"
-                            value="{{ old('data_alias_dihapus') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="data_alias_dihapus" class="form-label">Data Alias yang Dihapus</label>
+                            <input type="text" name="data_alias_dihapus" id="data_alias_dihapus"
+                                class="form-control" value="{{ old('data_alias_dihapus') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="berdasarkan" class="form-label">Berdasarkan</label>
-                        <textarea name="berdasarkan" id="berdasarkan" class="form-control" rows="2">{{ old('berdasarkan') }}</textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label for="berdasarkan" class="form-label">Berdasarkan</label>
+                            <textarea name="berdasarkan" id="berdasarkan" class="form-control" rows="2">{{ old('berdasarkan') }}</textarea>
+                        </div>
 
-                    {{-- Status Surat (hidden, default Pending) --}}
-                    <input type="hidden" name="status_surat"
-                        value="{{ old('status_surat', $surat->status_surat ?? 'Pending') }}">
+                        {{-- Status Surat (hidden, default Pending) --}}
+                        <input type="hidden" name="status_surat"
+                            value="{{ old('status_surat', $surat->status_surat ?? 'Pending') }}">
 
-                    {{-- Status Verifikasi (hidden, default Belum Verifikasi) --}}
-                    <input type="hidden" name="status_verif"
-                        value="{{ old('status_verif', $surat->status_verif ?? 'Belum Verifikasi') }}">
+                        {{-- Status Verifikasi (hidden, default Belum Verifikasi) --}}
+                        <input type="hidden" name="status_verif"
+                            value="{{ old('status_verif', $surat->status_verif ?? 'Belum Verifikasi') }}">
 
 
-                    <div class="mb-3">
-                        <label for="nowa" class="form-label">No WhatsApp</label>
-                        <input type="text" name="nowa" id="nowa" class="form-control" required
-                            value="{{ old('nowa') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="nowa" class="form-label">No WhatsApp</label>
+                            <input type="text" name="nowa" id="nowa" class="form-control" required
+                                value="{{ old('nowa') }}">
+                        </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Kirim</button>
-                </form>
+                        <button type="submit" class="btn btn-primary mt-3">Kirim</button>
+                    </form>
 
                     <!-- Footer Nav -->
                     <div class="footer-nav-area" id="footerNav">
@@ -229,10 +229,10 @@
                             <div class="footer-nav position-relative">
                                 <ul class="h-100 d-flex align-items-center justify-content-between ps-0">
                                     <li class="active">
-                                         <a href={{ route('surat.pengajuan_surat') }}>
-                                <i class="bi bi-house"></i>
-                                <span>Beranda</span>
-                            </a>
+                                        <a href={{ route('surat.pengajuan_surat') }}>
+                                            <i class="bi bi-house"></i>
+                                            <span>Beranda</span>
+                                        </a>
                                     </li>
 
 
@@ -260,6 +260,30 @@
                     <script src="{{ asset('assets4/dist/js/dark-rtl.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
+                    <script>
+                        function autofillData(nikFieldId) {
+                            const nik = document.getElementById(nikFieldId).value.trim();
+                            if (nik.length < 10) return;
+
+                            fetch(`/datapenduduk/lookup/${nik}`)
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        const d = result.data;
+                                        document.getElementById('nama').value = d.nama || '';
+                                        document.getElementById('alamat').value = d.alamat || '';
+                                    } else {
+                                        alert(result.message || 'NIK tidak ditemukan');
+                                    }
+                                })
+                                .catch(() => alert('Gagal mengambil data'));
+                        }
+
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const nikInput = document.getElementById('nik');
+                            if (nikInput) nikInput.addEventListener('blur', () => autofillData('nik'));
+                        });
+                    </script>
 </body>
 
 </html>

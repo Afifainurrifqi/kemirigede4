@@ -61,6 +61,11 @@
                         {{-- YANG BERTANDA TANGAN --}}
                         <h5 class="mb-3">Yang Bertanda Tangan</h5>
                         <div class="mb-3">
+                            <label class="form-label" for="no_ktp">NIK</label>
+                            <input type="text" id="no_ktp" name="no_ktp" class="form-control" required
+                                value="{{ old('no_ktp') }}">
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="nama_lengkap">Nama Lengkap</label>
                             <input type="text" id="nama_lengkap" name="nama_lengkap" class="form-control" required
                                 value="{{ old('nama_lengkap') }}">
@@ -145,11 +150,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="no_ktp">No KTP</label>
-                            <input type="text" id="no_ktp" name="no_ktp" class="form-control" required
-                                value="{{ old('no_ktp') }}">
-                        </div>
+
                         <div class="mb-3">
                             <label class="form-label" for="status">Status</label>
                             <select id="status" name="status" class="form-control" required>
@@ -169,6 +170,11 @@
 
                         {{-- KETERANGAN ISTRI --}}
                         <h5 class="mb-3">Keterangan Istri</h5>
+                        <div class="mb-3">
+                            <label class="form-label" for="no_ktp_istri">No KTP</label>
+                            <input type="text" id="no_ktp_istri" name="no_ktp_istri" class="form-control"
+                                required value="{{ old('no_ktp_istri') }}">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label" for="nama_istri">Nama Lengkap</label>
                             <input type="text" id="nama_istri" name="nama_istri" class="form-control" required
@@ -266,11 +272,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="no_ktp_istri">No KTP</label>
-                            <input type="text" id="no_ktp_istri" name="no_ktp_istri" class="form-control"
-                                required value="{{ old('no_ktp_istri') }}">
-                        </div>
+
                         <div class="mb-3">
                             <label class="form-label" for="alamat_istri">Alamat</label>
                             <textarea id="alamat_istri" name="alamat_istri" class="form-control" rows="2" required>{{ old('alamat_istri') }}</textarea>
@@ -383,4 +385,97 @@
         jumlahSaksi.addEventListener('input', () => renderInputs(saksiWrapper, jumlahSaksi.value, 'nama_saksi',
             'Nama Saksi', []));
     })();
+</script>
+
+<script>
+    function setValueIfExists(id, value) {
+        const element = document.getElementById(id);
+        if (element && value !== undefined && value !== null && value !== '') {
+            element.value = value;
+        }
+    }
+
+    function setSelectIfExists(id, value) {
+        const element = document.getElementById(id);
+        if (!element || value === undefined || value === null || value === '') return;
+
+        const options = Array.from(element.options);
+        const matched = options.find(option =>
+            option.value.toLowerCase() === String(value).toLowerCase()
+        );
+
+        if (matched) {
+            element.value = matched.value;
+        }
+    }
+
+    function formatTanggal(value) {
+        if (!value) return '';
+        return String(value).substring(0, 10);
+    }
+
+    function autofillAhliWarisUtama() {
+        const nikInput = document.getElementById('no_ktp');
+        if (!nikInput) return;
+
+        const nik = nikInput.value.trim();
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    const d = result.data;
+
+                    setValueIfExists('nama_lengkap', d.nama);
+                    setValueIfExists('tempat_lahir', d.tempat_lahir);
+                    setValueIfExists('tanggal_lahir', formatTanggal(d.tanggal_lahir));
+                    setValueIfExists('alamat', d.alamat);
+
+                    setSelectIfExists('agama', d.agama);
+                    setSelectIfExists('pekerjaan', d.pekerjaan);
+                    setSelectIfExists('status', d.status_perkawinan || d.status);
+                }
+            })
+            .catch(error => console.log('Autofill ahli waris utama error:', error));
+    }
+
+    function autofillAhliWarisIstri() {
+        const nikInput = document.getElementById('no_ktp_istri');
+        if (!nikInput) return;
+
+        const nik = nikInput.value.trim();
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    const d = result.data;
+
+                    setValueIfExists('nama_istri', d.nama);
+                    setValueIfExists('tempat_lahir_istri', d.tempat_lahir);
+                    setValueIfExists('tanggal_lahir_istri', formatTanggal(d.tanggal_lahir));
+                    setValueIfExists('alamat_istri', d.alamat);
+
+                    setSelectIfExists('agama_istri', d.agama);
+                    setSelectIfExists('pekerjaan_istri', d.pekerjaan);
+                    setSelectIfExists('status_istri', d.status_perkawinan || d.status);
+                }
+            })
+            .catch(error => console.log('Autofill ahli waris istri error:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const noKtpUtama = document.getElementById('no_ktp');
+        const noKtpIstri = document.getElementById('no_ktp_istri');
+
+        if (noKtpUtama) {
+            noKtpUtama.addEventListener('blur', autofillAhliWarisUtama);
+        }
+
+        if (noKtpIstri) {
+            noKtpIstri.addEventListener('blur', autofillAhliWarisIstri);
+        }
+    });
 </script>

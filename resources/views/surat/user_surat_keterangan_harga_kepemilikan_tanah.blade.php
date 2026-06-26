@@ -39,7 +39,7 @@
                     </a>
                 </div>
                 <div class="page-heading">
-                    <h6 class="mb-0">Form Surat Keterangan Tidak Mampu</h6>
+
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
     <div class="page-content-wrapper py-3">
         <div class="container">
             <div class="element-heading">
-                <h6>Buat Pengajuan Surat Keterangan Tidak Mampu</h6>
+
             </div>
         </div>
 
