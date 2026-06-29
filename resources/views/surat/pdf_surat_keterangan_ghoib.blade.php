@@ -14,49 +14,74 @@
             font-size: 11.5pt;
             line-height: 1.4;
             color: #000;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Kop Surat Resmi Desa */
-        .kop-table {
+        /* KOP SURAT FIX */
+        .kop-desa-container {
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .kop-desa-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .kop-logo {
-            width: 13%;
+        .kop-desa-logo {
+            width: 16%;
             text-align: center;
             vertical-align: middle;
         }
 
-        .kop-logo img {
-            width: 68px;
+        .kop-desa-logo img {
+            width: 105px;
             height: auto;
         }
 
-        .kop-text {
+        .kop-desa-text {
+            width: 68%;
             text-align: center;
             vertical-align: middle;
+            line-height: 1.15;
         }
 
-        .kop-text strong {
-            font-size: 13pt;
-            line-height: 1.2;
-            display: block;
+        .kop-desa-1 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
         }
 
-        .kop-text small {
-            font-size: 9pt;
-            display: block;
-            margin-top: 3px;
+        .kop-desa-2 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
         }
 
-        .kop-garis {
+        .kop-desa-3 {
+            font-size: 17pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-alamat {
+            font-size: 11pt;
+            margin-top: 2px;
+        }
+
+        .kop-desa-kontak {
+            font-size: 10pt;
+        }
+
+        .kop-desa-garis {
             border: none;
-            border-top: 3px double #000;
-            margin: 7px 0 15px 0;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 6px 0 12px 0;
         }
 
-        /* Judul Surat */
         .judul {
             text-align: center;
             font-weight: bold;
@@ -86,7 +111,6 @@
             text-indent: 0px;
         }
 
-        /* Tabel Data Penduduk */
         table.data {
             width: 100%;
             border-collapse: collapse;
@@ -110,7 +134,6 @@
             text-transform: uppercase;
         }
 
-        /* Tanda Tangan Model Baru Sejajar */
         .ttd-table {
             width: 100%;
             margin-top: 30px;
@@ -158,62 +181,90 @@
             display: block;
             line-height: 1.2;
         }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 6px 0 12px 0;
+            }
+        }
     </style>
 </head>
 
 <body>
 @php
     $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+
     $tanggalPernyataan = !empty($data->tanggal_pernyataan)
         ? \Carbon\Carbon::parse($data->tanggal_pernyataan)->translatedFormat('d F Y')
         : '................................';
+
     $tanggalHilang = !empty($data->tanggal_hilang)
         ? \Carbon\Carbon::parse($data->tanggal_hilang)->translatedFormat('d F Y')
         : '................................';
+
+    $tanggalLahir = !empty($data->tanggal_lahir)
+        ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+        : '';
 @endphp
 
-<table class="kop-table">
-    <tr>
-        <td class="kop-logo">
-            <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
-        </td>
+<!-- KOP SURAT -->
+<div class="kop-desa-container">
+    <table class="kop-desa-table">
+        <tr>
+            <td class="kop-desa-logo">
+                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+            </td>
 
-        <td class="kop-text">
-            <strong>PEMERINTAH KABUPATEN BLITAR</strong>
-            <strong>KECAMATAN KEMIRIGEDE</strong>
-            <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong>
-            <small>
-                Jln. Merdeka No. 74 Telp. 082139324445<br>
-                Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
-            </small>
-        </td>
+            <td class="kop-desa-text">
+                <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                <div class="kop-desa-kontak">
+                    email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                </div>
+            </td>
 
-        <td class="kop-logo">
-            <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
-        </td>
-    </tr>
-</table>
+            <td class="kop-desa-logo">
+                <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+            </td>
+        </tr>
+    </table>
 
-<hr class="kop-garis">
+    <hr class="kop-desa-garis">
+</div>
 
 <div class="judul">SURAT KETERANGAN GHOIB</div>
+
 <div class="nomor">
     Nomor : {{ $data->nomor_surat ?? '145/ /409.41.2/' . now('Asia/Jakarta')->year }}
 </div>
 
 <div class="isi">
-    <p class="normal">Berdasarkan surat Pernyataan pada tanggal <strong>{{ $tanggalPernyataan }}</strong> yang menyatakan dengan sebenarnya bahwa :</p>
+    <p class="normal">
+        Berdasarkan surat Pernyataan pada tanggal <strong>{{ $tanggalPernyataan }}</strong>
+        yang menyatakan dengan sebenarnya bahwa :
+    </p>
 
     <table class="data">
         <tr>
             <td>Nama</td>
             <td>:</td>
-            <td class="text-uppercase" style="font-weight: bold;">{{ $data->nama_pemohon ?? '...........................................' }}</td>
+            <td class="text-uppercase" style="font-weight: bold;">
+                {{ $data->nama_pemohon ?? '...........................................' }}
+            </td>
         </tr>
         <tr>
             <td>Tempat, Tanggal Lahir</td>
             <td>:</td>
-            <td>{{ $data->tempat_lahir ?? '' }}{{ $data->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') : '' }}</td>
+            <td>
+                {{ $data->tempat_lahir ?? '' }}{{ !empty($tanggalLahir) ? ', ' . $tanggalLahir : '' }}
+            </td>
         </tr>
         <tr>
             <td>Jenis Kelamin</td>
@@ -248,11 +299,16 @@
     </table>
 
     <p>
-        Orang tersebut diatas benar-benar penduduk Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar, benar-benar menyatakan bahwa suaminya yang Bernama <strong class="text-uppercase">{{ $data->nama_suami_istri ?? '................................' }}</strong> telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.
+        Orang tersebut diatas benar-benar penduduk Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar,
+        benar-benar menyatakan bahwa suaminya yang Bernama
+        <strong class="text-uppercase">{{ $data->nama_suami_istri ?? '................................' }}</strong>
+        telah pergi meninggalkan keluarga sejak tanggal {{ $tanggalHilang }} dan sekarang tidak diketahui
+        alamatnya dengan jelas dan pasti diwilayah Republik Indonesia.
     </p>
 
     <p>
-        Selanjutnya surat keterangan ini dipergunakan untuk melengkapi persyaratan <strong>{{ $data->keperluan ?? 'Pengajuan Perceraian' }}</strong>.
+        Selanjutnya surat keterangan ini dipergunakan untuk melengkapi persyaratan
+        <strong>{{ $data->keperluan ?? 'Pengajuan Perceraian' }}</strong>.
     </p>
 
     <p class="normal">
@@ -263,7 +319,7 @@
 <table class="ttd-table">
     <tr>
         <td></td>
-        <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
+        <td>Blitar, {{ $tanggalSurat }}</td>
     </tr>
     <tr>
         <td><strong>Pemegang Surat</strong></td>
@@ -284,8 +340,8 @@
             <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
 
             <div class="qr-section">
-                <img src="{{ public_path('assets/images/barcode_surat.png') }}" alt="QR Code">
-                <br><small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
+                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
             </div>
         </td>
     </tr>

@@ -7,14 +7,16 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 1.25cm 1.55cm 1cm 1.55cm;
+            margin: 1cm 1.45cm 0.9cm 1.45cm;
         }
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 11pt;
-            line-height: 1.22;
+            font-size: 10.8pt;
+            line-height: 1.18;
             color: #000;
+            margin: 0;
+            padding: 0;
         }
 
         p {
@@ -22,102 +24,116 @@
             padding: 0;
         }
 
-        /* ================= KOP SURAT ================= */
-        .kop-table {
-            width: 100%;
+        table {
             border-collapse: collapse;
-            margin-bottom: 4px;
         }
 
-        .kop-table td {
-            padding: 0;
+        /* KOP SURAT FIX */
+        .kop-desa-container {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .kop-desa-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .kop-desa-logo {
+            width: 16%;
+            text-align: center;
             vertical-align: middle;
         }
 
-        .kop-logo {
-            width: 17%;
-            text-align: center;
-        }
-
-        .kop-logo img {
-            width: 88px;
+        .kop-desa-logo img {
+            width: 98px;
             height: auto;
         }
 
-        .kop-text {
-            width: 66%;
+        .kop-desa-text {
+            width: 68%;
             text-align: center;
+            vertical-align: middle;
             line-height: 1.08;
         }
 
-        .kop-text .kabupaten {
-            font-size: 16pt;
+        .kop-desa-1 {
+            font-size: 14.5pt;
             font-weight: normal;
+            text-transform: uppercase;
         }
 
-        .kop-text .kecamatan {
-            font-size: 16pt;
+        .kop-desa-2 {
+            font-size: 14.5pt;
             font-weight: normal;
+            text-transform: uppercase;
         }
 
-        .kop-text .desa {
-            font-size: 18pt;
+        .kop-desa-3 {
+            font-size: 16.5pt;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
-        .kop-text .kontak {
-            font-size: 9.8pt;
-            margin-top: 2px;
+        .kop-desa-alamat {
+            font-size: 10pt;
+            margin-top: 1px;
         }
 
-        .garis-kop {
+        .kop-desa-kontak {
+            font-size: 8.8pt;
+        }
+
+        .kop-desa-garis {
             border: none;
-            border-top: 2.5px solid #000;
-            margin: 5px 0 18px 0;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 5px 0 10px 0;
         }
 
-        /* ================= JUDUL ================= */
         .judul {
             text-align: center;
             font-weight: bold;
-            font-size: 12.5pt;
+            font-size: 12.8pt;
             text-decoration: underline;
             margin: 0 0 3px 0;
         }
 
         .nomor {
             text-align: center;
-            font-size: 11.2pt;
-            margin-bottom: 18px;
+            font-size: 10.8pt;
+            margin-bottom: 13px;
         }
 
-        /* ================= ISI SURAT ================= */
         .pembuka {
             text-align: left;
             margin-bottom: 3px;
+            line-height: 1.18;
         }
 
         table.data {
-            width: 86%;
-            margin-left: 50px;
+            width: 88%;
+            margin-left: 45px;
             border-collapse: collapse;
-            margin-top: 8px;
+            margin-top: 7px;
             margin-bottom: 8px;
         }
 
         table.data td {
-            padding: 1px 0;
+            padding: 1.8px 0;
             vertical-align: top;
-            line-height: 1.2;
+            line-height: 1.18;
         }
 
         table.data tr.section-row td {
-            padding-top: 10px;
-            padding-bottom: 5px;
+            padding-top: 8px;
+            padding-bottom: 4px;
+            font-weight: bold;
         }
 
         .label {
-            width: 190px;
+            width: 180px;
         }
 
         .colon {
@@ -126,27 +142,26 @@
         }
 
         .isi-kuasa {
-            margin-top: 10px;
+            margin-top: 12px;
             text-align: justify;
-            line-height: 1.25;
+            line-height: 1.2;
         }
 
         .penutup {
             margin-top: 10px;
             text-align: justify;
             text-indent: 35px;
-            line-height: 1.25;
+            line-height: 1.2;
         }
 
-        /* ================= TANDA TANGAN ================= */
         .ttd-wrapper {
             page-break-inside: avoid;
-            margin-top: 12px;
+            margin-top: 24px;
         }
 
         .tanggal {
             text-align: right;
-            padding-right: 75px;
+            padding-right: 68px;
             margin-bottom: 8px;
         }
 
@@ -163,239 +178,272 @@
         }
 
         .jabatan-ttd {
-            margin-bottom: 55px;
+            margin-bottom: 48px;
         }
 
         .nama-pihak {
             font-weight: bold;
             text-decoration: underline;
+            font-size: 10.5pt;
         }
 
         .mengetahui {
             text-align: center;
-            margin-top: 8px;
+            margin-top: 14px;
             page-break-inside: avoid;
         }
 
         .mengetahui p {
             text-align: center;
+            line-height: 1.12;
         }
 
         .ttd-img-wrapper {
-            height: 58px;
-            margin-top: 2px;
+            height: 55px;
+            margin-top: 3px;
             margin-bottom: 0;
             text-align: center;
         }
 
         .ttd-img {
-            width: 155px;
+            width: 145px;
             height: auto;
         }
 
         .nama-kades {
             font-weight: bold;
             text-decoration: underline;
-            margin-top: -3px;
+            margin-top: -2px;
+            font-size: 10.3pt;
         }
 
         .barcode {
             text-align: center;
-            margin-top: 4px;
-            font-size: 7.5pt;
+            margin-top: 5px;
+            font-size: 7.2pt;
+            line-height: 1.08;
         }
 
         .barcode img {
-            width: 72px;
+            width: 68px;
             height: auto;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 5px 0 10px 0;
+            }
+
+            table,
+            tr,
+            td,
+            p,
+            div {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
 
 <body>
+@php
+    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
 
-    <!-- KOP -->
-    <table class="kop-table">
+    $tanggalLahirPihak1 = !empty($data->tanggal_lahir_pihak1)
+        ? \Carbon\Carbon::parse($data->tanggal_lahir_pihak1)->format('d-m-Y')
+        : '...........................................';
+
+    $tanggalLahirPihak2 = !empty($data->tanggal_lahir_pihak2)
+        ? \Carbon\Carbon::parse($data->tanggal_lahir_pihak2)->format('d-m-Y')
+        : '...........................................';
+@endphp
+
+<!-- KOP SURAT -->
+<div class="kop-desa-container">
+    <table class="kop-desa-table">
         <tr>
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten">
+            <td class="kop-desa-logo">
+                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
             </td>
 
-            <td class="kop-text">
-                <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
-                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
-                <div class="kontak">
-                    Jln. Merdeka No. 74 Telp. 082139324445<br>
-                    email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id
+            <td class="kop-desa-text">
+                <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                <div class="kop-desa-kontak">
+                    email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
                 </div>
             </td>
 
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
+            <td class="kop-desa-logo">
+                <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
             </td>
         </tr>
     </table>
 
-    <hr class="garis-kop">
+    <hr class="kop-desa-garis">
+</div>
 
-    <!-- JUDUL -->
-    <div class="judul">SURAT KUASA</div>
+<div class="judul">SURAT KUASA</div>
 
-    <p class="nomor">
-        No : {{ $data->nomor_surat ?? '470 / --- / 409.42.1 / ' . now()->year }}
+<p class="nomor">
+    No : {{ $data->nomor_surat ?? '470 / --- / 409.42.1 / ' . now('Asia/Jakarta')->year }}
+</p>
+
+<p class="pembuka">
+    Yang bertanda tangan dibawah ini Kepala Desa KEMIRIGEDE Kec.KEMIRIGEDE Kab.Blitar
+</p>
+<p class="pembuka">
+    Menerangkan dengan sebenarnya bahwa :
+</p>
+
+<table class="data">
+    <tr class="section-row">
+        <td colspan="3">Pihak I :</td>
+    </tr>
+
+    <tr>
+        <td class="label">Nama Lengkap</td>
+        <td class="colon">:</td>
+        <td>{{ $data->nama_pihak1 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Jenis kelamin</td>
+        <td class="colon">:</td>
+        <td>{{ $data->jenis_kelamin_pihak1 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Tempat tanggal lahir</td>
+        <td class="colon">:</td>
+        <td>{{ $data->tempat_lahir_pihak1 ?? '....................' }}, {{ $tanggalLahirPihak1 }}</td>
+    </tr>
+    <tr>
+        <td class="label">Agama</td>
+        <td class="colon">:</td>
+        <td>{{ $data->agama_pihak1 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Status</td>
+        <td class="colon">:</td>
+        <td>{{ $data->status_pihak1 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Nik</td>
+        <td class="colon">:</td>
+        <td>{{ $data->nik_pihak1 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Pekerjaan</td>
+        <td class="colon">:</td>
+        <td>{{ $data->pekerjaan_pihak1 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Alamat</td>
+        <td class="colon">:</td>
+        <td>{{ $data->alamat_pihak1 ?? '...........................................' }}</td>
+    </tr>
+
+    <tr class="section-row">
+        <td colspan="3">Pihak II :</td>
+    </tr>
+
+    <tr>
+        <td class="label">Nama Lengkap</td>
+        <td class="colon">:</td>
+        <td>{{ $data->nama_pihak2 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Jenis kelamin</td>
+        <td class="colon">:</td>
+        <td>{{ $data->jenis_kelamin_pihak2 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Tempat tanggal lahir</td>
+        <td class="colon">:</td>
+        <td>{{ $data->tempat_lahir_pihak2 ?? '....................' }}, {{ $tanggalLahirPihak2 }}</td>
+    </tr>
+    <tr>
+        <td class="label">Agama</td>
+        <td class="colon">:</td>
+        <td>{{ $data->agama_pihak2 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Status</td>
+        <td class="colon">:</td>
+        <td>{{ $data->status_pihak2 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Nik</td>
+        <td class="colon">:</td>
+        <td>{{ $data->nik_pihak2 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Pekerjaan</td>
+        <td class="colon">:</td>
+        <td>{{ $data->pekerjaan_pihak2 ?? '...........................................' }}</td>
+    </tr>
+    <tr>
+        <td class="label">Alamat</td>
+        <td class="colon">:</td>
+        <td>{{ $data->alamat_pihak2 ?? '...........................................' }}</td>
+    </tr>
+</table>
+
+<p class="isi-kuasa">
+    Pihak I telah memberikan kuasa kepada Pihak II untuk
+    <strong>{{ $data->keterangan_kuasa ?? '...........................................' }}</strong>.
+</p>
+
+<p class="penutup">
+    Demikian surat kuasa ini di buat atas dasar yang sebenarnya untuk menjadikan periksa dan guna seperlunya.
+</p>
+
+<div class="ttd-wrapper">
+    <p class="tanggal">
+        Blitar, {{ $tanggalSurat }}
     </p>
 
-    <!-- PEMBUKA -->
-    <p class="pembuka">
-        Yang bertanda tangan dibawah ini Kepala Desa KEMIRIGEDE Kec.KEMIRIGEDE Kab.Blitar
-    </p>
-    <p class="pembuka">
-        Menerangkan dengan sebenarnya bahwa :
-    </p>
+    <table class="ttd-table">
+        <tr>
+            <td>
+                <p class="jabatan-ttd">Pemberi Kuasa</p>
+                <p class="nama-pihak">
+                    {{ strtoupper($data->nama_pihak1 ?? '...........................................') }}
+                </p>
+            </td>
 
-    <!-- DATA PIHAK -->
-    <table class="data">
-        <tr class="section-row">
-            <td colspan="3">Pihak I :</td>
-        </tr>
-
-        <tr>
-            <td class="label">Nama Lengkap</td>
-            <td class="colon">:</td>
-            <td>{{ $data->nama_pihak1 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Jenis kelamin</td>
-            <td class="colon">:</td>
-            <td>{{ $data->jenis_kelamin_pihak1 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Tempat tanggal lahir</td>
-            <td class="colon">:</td>
-            <td>{{ $data->tempat_lahir_pihak1 }}, {{ \Carbon\Carbon::parse($data->tanggal_lahir_pihak1)->format('d-m-Y') }}</td>
-        </tr>
-        <tr>
-            <td class="label">Agama</td>
-            <td class="colon">:</td>
-            <td>{{ $data->agama_pihak1 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Status</td>
-            <td class="colon">:</td>
-            <td>{{ $data->status_pihak1 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Nik</td>
-            <td class="colon">:</td>
-            <td>{{ $data->nik_pihak1 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Pekerjaan</td>
-            <td class="colon">:</td>
-            <td>{{ $data->pekerjaan_pihak1 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Alamat</td>
-            <td class="colon">:</td>
-            <td>{{ $data->alamat_pihak1 }}</td>
-        </tr>
-
-        <tr class="section-row">
-            <td colspan="3">Pihak II :</td>
-        </tr>
-
-        <tr>
-            <td class="label">Nama Lengkap</td>
-            <td class="colon">:</td>
-            <td>{{ $data->nama_pihak2 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Jenis kelamin</td>
-            <td class="colon">:</td>
-            <td>{{ $data->jenis_kelamin_pihak2 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Tempat tanggal lahir</td>
-            <td class="colon">:</td>
-            <td>{{ $data->tempat_lahir_pihak2 }}, {{ \Carbon\Carbon::parse($data->tanggal_lahir_pihak2)->format('d-m-Y') }}</td>
-        </tr>
-        <tr>
-            <td class="label">Agama</td>
-            <td class="colon">:</td>
-            <td>{{ $data->agama_pihak2 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Status</td>
-            <td class="colon">:</td>
-            <td>{{ $data->status_pihak2 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Nik</td>
-            <td class="colon">:</td>
-            <td>{{ $data->nik_pihak2 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Pekerjaan</td>
-            <td class="colon">:</td>
-            <td>{{ $data->pekerjaan_pihak2 }}</td>
-        </tr>
-        <tr>
-            <td class="label">Alamat</td>
-            <td class="colon">:</td>
-            <td>{{ $data->alamat_pihak2 }}</td>
+            <td>
+                <p class="jabatan-ttd">Penerima Kuasa</p>
+                <p class="nama-pihak">
+                    {{ strtoupper($data->nama_pihak2 ?? '...........................................') }}
+                </p>
+            </td>
         </tr>
     </table>
 
-    <!-- ISI KUASA -->
-    <p class="isi-kuasa">
-        Pihak I telah memberikan kuasa kepada Pihak II untuk
-        <strong>{{ $data->keterangan_kuasa }}</strong>.
-    </p>
+    <div class="mengetahui">
+        <p>Mengetahui</p>
+        <p>Kepala Desa KEMIRIGEDE</p>
 
-    <p class="penutup">
-        Demikian surat kuasa ini di buat atas dasar yang sebenarnya untuk menjadikan periksa dan guna seperlunya.
-    </p>
-
-    <!-- TANDA TANGAN -->
-    <div class="ttd-wrapper">
-
-        <p class="tanggal">
-            KEMIRIGEDE, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}
-        </p>
-
-        <table class="ttd-table">
-            <tr>
-                <td>
-                    <p class="jabatan-ttd">Pemberi Kuasa</p>
-                    <p class="nama-pihak">{{ strtoupper($data->nama_pihak1) }}</p>
-                </td>
-
-                <td>
-                    <p class="jabatan-ttd">Penerima Kuasa</p>
-                    <p class="nama-pihak">{{ strtoupper($data->nama_pihak2) }}</p>
-                </td>
-            </tr>
-        </table>
-
-        <div class="mengetahui">
-            <p>Mengetahui</p>
-            <p>Kepala Desa KEMIRIGEDE</p>
-
-            <div class="ttd-img-wrapper">
-                <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
-            </div>
-
-            <p class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</p>
-
-            <div class="barcode">
-                <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
-                <br>
-                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+        <div class="ttd-img-wrapper">
+            <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
         </div>
 
+        <p class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</p>
+
+        <div class="barcode">
+            <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
+            <br>
+            <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+        </div>
     </div>
+</div>
 
 </body>
 </html>

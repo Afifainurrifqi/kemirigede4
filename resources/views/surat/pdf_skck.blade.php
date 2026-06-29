@@ -14,48 +14,72 @@
             font-size: 11.5pt;
             line-height: 1.35;
             color: #000;
+            margin: 0;
+            padding: 0;
         }
 
-        .kop-container {
+        /* KOP SURAT FIX */
+        .kop-desa-container {
             width: 100%;
-            margin-bottom: 4px;
+            margin-bottom: 14px;
         }
 
-        .kop-table {
+        .kop-desa-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .kop-logo {
-            width: 13%;
+        .kop-desa-logo {
+            width: 16%;
             text-align: center;
-            vertical-align: top;
+            vertical-align: middle;
         }
 
-        .kop-logo img {
-            width: 68px;
+        .kop-desa-logo img {
+            width: 105px;
             height: auto;
         }
 
-        .kop-text {
+        .kop-desa-text {
+            width: 68%;
             text-align: center;
-            vertical-align: top;
+            vertical-align: middle;
+            line-height: 1.15;
         }
 
-        .kop-text strong {
-            font-size: 12.5pt;
-            line-height: 1.2;
+        .kop-desa-1 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
         }
 
-        .kop-text small {
-            font-size: 8.8pt;
-            line-height: 1.1;
+        .kop-desa-2 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
         }
 
-        .kop-garis {
+        .kop-desa-3 {
+            font-size: 17pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-alamat {
+            font-size: 11pt;
+            margin-top: 2px;
+        }
+
+        .kop-desa-kontak {
+            font-size: 10pt;
+        }
+
+        .kop-desa-garis {
             border: none;
-            border-top: 2.5px solid #000;
-            margin: 7px 0 12px 0;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 6px 0 12px 0;
         }
 
         .judul-surat {
@@ -82,7 +106,7 @@
         table.data {
             width: 100%;
             border-collapse: collapse;
-            margin: 6px 0 10px 25px;
+            margin: 8px 0 12px 22px;
         }
 
         table.data td {
@@ -91,7 +115,7 @@
         }
 
         table.data td:first-child {
-            width: 165px;
+            width: 170px;
         }
 
         table.data td:nth-child(2) {
@@ -101,13 +125,17 @@
         .ttd-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 30px;
+            margin-top: 26px;
         }
 
         .ttd-table td {
             width: 50%;
             text-align: center;
             vertical-align: top;
+        }
+
+        .space-ttd {
+            height: 72px;
         }
 
         .ttd-img-wrapper {
@@ -147,7 +175,23 @@
         .kapolsek {
             text-align: center;
             font-weight: bold;
-            margin-top: 22px;
+            margin-top: 26px;
+        }
+
+        .kapolsek-line {
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 6px 0 12px 0;
+            }
         }
     </style>
 </head>
@@ -162,30 +206,30 @@
     @endphp
 
     {{-- KOP SURAT --}}
-    <div class="kop-container">
-        <table class="kop-table">
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
             <tr>
-                <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
                 </td>
 
-                <td class="kop-text">
-                    <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                    <strong>KECAMATAN KEMIRIGEDE</strong><br>
-                    <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
-                    <small>
-                        Jln. Merdeka No. 74 Telp. 082139324445<br>
-                        Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
-                    </small>
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
                 </td>
 
-                <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
 
-        <hr class="kop-garis">
+        <hr class="kop-desa-garis">
     </div>
 
     <div class="judul-surat">
@@ -199,7 +243,7 @@
     <div class="isi">
         <p>
             Yang bertanda tangan dibawah ini Kepala Desa KEMIRIGEDE, Kec. KEMIRIGEDE,
-            Kab. Blitar, menerangkan bahwa:
+            Kab. Blitar, menerangkan bahwa :
         </p>
 
         <table class="data">
@@ -209,7 +253,7 @@
                 <td>{{ strtoupper($surat->nama ?? '...........................................') }}</td>
             </tr>
             <tr>
-                <td>Tempat Tanggal Lahir</td>
+                <td>Tempat Tanggal lahir</td>
                 <td>:</td>
                 <td>{{ $surat->tempat_lahir ?? '....................' }}, {{ $tanggalLahir }}</td>
             </tr>
@@ -257,12 +301,12 @@
 
         <p>
             Orang tersebut diatas adalah benar-benar penduduk Desa KEMIRIGEDE dan sepanjang
-            pengetahuan dan pengamatan kami belum pernah melakukan pelanggaran kejahatan,
-            pelanggaran polisi, selalu taat dan patuh pada peraturan pemerintah yang berlaku.
+            pengetahuan dan pengamatan kami belum pernah melakukan Pelanggaran Kejahatan,
+            pelanggaran polisi, selalu taat dan patuh pada Peraturan Pemerintah yang berlaku.
         </p>
 
         <p>
-            Surat Keterangan ini diberikan untuk
+            Surat Keterangan ini di berikan untuk
             <strong>{{ $surat->keperuntukan ?? '...........................................' }}</strong>.
         </p>
 
@@ -278,22 +322,23 @@
             <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
         </tr>
         <tr>
-            <td>Pemegang Surat</td>
+            <td>Pemegang surat</td>
             <td><strong>Kepala Desa KEMIRIGEDE</strong></td>
         </tr>
         <tr>
             <td>
-                <div style="height: 63px;"></div>
+                <div class="space-ttd"></div>
                 <div class="nama-ttd">
                     {{ strtoupper($surat->nama ?? '...........................................') }}
                 </div>
             </td>
+
             <td>
                 <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div>
 
-                <div class="nama-ttd">MOH. HAMID ALMAULUDI, S.Pd.I</div>
+                <div class="nama-ttd">MOH. HAMID ALMAULUDI S.Pd.I</div>
 
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
@@ -305,6 +350,10 @@
 
     <div class="kapolsek">
         KAPOLSEK KEMIRIGEDE
+    </div>
+
+    <div class="kapolsek-line">
+        ___________________
     </div>
 </body>
 </html>

@@ -4,17 +4,84 @@
     <meta charset="UTF-8">
     <title>Surat Keterangan Kehilangan</title>
     <style>
-        @page { margin: 1.3cm 1.8cm 1.3cm 1.8cm; }
-        body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.35; color: #000; }
+        @page {
+            margin: 1.3cm 1.8cm 1.3cm 1.8cm;
+        }
 
-        .kop-container { width: 100%; }
-        .kop-table { width: 100%; border-collapse: collapse; }
-        .kop-logo { width: 15%; text-align: center; }
-        .kop-logo img { width: 78px; height: auto; }
-        .kop-text { text-align: center; }
-        .kop-text strong { font-size: 12.5pt; line-height: 1.2; }
-        .kop-text small { font-size: 9.3pt; line-height: 1.1; }
-        .kop-garis { border: none; border-top: 2.5px solid #000; margin: 6px 0 12px 0; }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11.5pt;
+            line-height: 1.35;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* KOP SURAT */
+        .kop-container {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .kop-logo {
+            width: 16%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .kop-logo img {
+            width: 105px;
+            height: auto;
+        }
+
+        .kop-text {
+            width: 68%;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 1.15;
+        }
+
+        .kop-text .kop-baris-1 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-text .kop-baris-2 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-text .kop-baris-3 {
+            font-size: 17pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .kop-text .kop-alamat {
+            font-size: 11pt;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        .kop-text .kop-kontak {
+            font-size: 10pt;
+            font-weight: normal;
+        }
+
+        .kop-garis {
+            border: none;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 6px 0 12px 0;
+        }
 
         .judul-surat {
             text-align: center;
@@ -40,10 +107,12 @@
             border-collapse: collapse;
             margin: 6px 0 12px 0;
         }
+
         table.data td {
             padding: 3px 6px;
             vertical-align: top;
         }
+
         table.data td:first-child {
             width: 160px;
             font-weight: bold;
@@ -53,34 +122,52 @@
             width: 100%;
             margin-top: 30px;
         }
+
         .ttd-right {
             width: 48%;
             float: right;
             text-align: center;
         }
+
         .ttd-right p {
             margin: 3px 0;
         }
+
         .ttd-img-wrapper {
             margin: 8px 0;
             text-align: center;
         }
+
         .ttd-img {
             width: 160px;
             height: auto;
         }
+
         .barcode {
             margin-top: 8px;
             text-align: center;
         }
+
         .barcode img {
             width: 85px;
             height: auto;
         }
+
         .barcode small {
             font-size: 7.8pt;
             display: block;
             margin-top: 3px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-garis {
+                margin: 6px 0 12px 0;
+            }
         }
     </style>
 </head>
@@ -91,20 +178,25 @@
         <table class="kop-table">
             <tr>
                 <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Blitar">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
                 </td>
+
                 <td class="kop-text">
-                    <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                    <strong>KECAMATAN KEMIRIGEDE</strong><br>
-                    <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
-                    <small>Jln. Merdeka No. 74 Telp. 082139324445<br>
-                    Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id</small>
+                    <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-baris-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
                 </td>
+
                 <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
+
         <hr class="kop-garis">
     </div>
 
@@ -120,25 +212,60 @@
 
     <!-- ISI -->
     <p class="tulisan">
-        Yang bertanda tangan di bawah ini, Kepala Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE, Kabupaten Blitar, menerangkan dengan sebenarnya bahwa:
+        Yang bertanda tangan di bawah ini, Kepala Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE, Kabupaten Blitar,
+        menerangkan dengan sebenarnya bahwa:
     </p>
 
     <table class="data">
-        <tr><td>Nama Lengkap</td><td>: {{ $data->nama_pelapor ?? '...........................................' }}</td></tr>
-        <tr><td>NIK</td><td>: {{ $data->nik_pelapor ?? '...........................................' }}</td></tr>
-        <tr><td>Tempat, Tanggal Lahir</td><td>: {{ $data->tempat_lahir_pelapor ?? '' }}, {{ isset($data->tanggal_lahir_pelapor) ? \Carbon\Carbon::parse($data->tanggal_lahir_pelapor)->translatedFormat('d F Y') : '...........................................' }}</td></tr>
-        <tr><td>Jenis Kelamin</td><td>: {{ $data->jenis_kelamin_pelapor ?? '...........................................' }}</td></tr>
-        <tr><td>Agama</td><td>: {{ $data->agama_pelapor ?? '...........................................' }}</td></tr>
-        <tr><td>Status Perkawinan</td><td>: {{ $data->status_pelapor ?? '...........................................' }}</td></tr>
-        <tr><td>Pekerjaan</td><td>: {{ $data->pekerjaan_pelapor ?? '...........................................' }}</td></tr>
-        <tr><td>Alamat</td><td>: {{ $data->alamat_pelapor ?? '...........................................' }}</td></tr>
+        <tr>
+            <td>Nama Lengkap</td>
+            <td>: {{ $data->nama_pelapor ?? '...........................................' }}</td>
+        </tr>
+        <tr>
+            <td>NIK</td>
+            <td>: {{ $data->nik_pelapor ?? '...........................................' }}</td>
+        </tr>
+        <tr>
+            <td>Tempat, Tanggal Lahir</td>
+            <td>
+                : {{ $data->tempat_lahir_pelapor ?? '' }},
+                {{ !empty($data->tanggal_lahir_pelapor)
+                    ? \Carbon\Carbon::parse($data->tanggal_lahir_pelapor)->translatedFormat('d F Y')
+                    : '...........................................' }}
+            </td>
+        </tr>
+        <tr>
+            <td>Jenis Kelamin</td>
+            <td>: {{ $data->jenis_kelamin_pelapor ?? '...........................................' }}</td>
+        </tr>
+        <tr>
+            <td>Agama</td>
+            <td>: {{ $data->agama_pelapor ?? '...........................................' }}</td>
+        </tr>
+        <tr>
+            <td>Status Perkawinan</td>
+            <td>: {{ $data->status_pelapor ?? '...........................................' }}</td>
+        </tr>
+        <tr>
+            <td>Pekerjaan</td>
+            <td>: {{ $data->pekerjaan_pelapor ?? '...........................................' }}</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>: {{ $data->alamat_pelapor ?? '...........................................' }}</td>
+        </tr>
     </table>
 
     <p class="tulisan">
         Telah kehilangan <strong>{{ $data->jenis_kehilangan ?? '...........................................' }}</strong>
         atas nama <strong>{{ $data->atas_nama ?? '...........................................' }}</strong>
         dengan keterangan <strong>{{ $data->berisi ?? '...........................................' }}</strong>
-        pada tanggal <strong>{{ isset($data->tanggal_kehilangan) ? \Carbon\Carbon::parse($data->tanggal_kehilangan)->translatedFormat('d F Y') : '...........................................' }}</strong>,
+        pada tanggal
+        <strong>
+            {{ !empty($data->tanggal_kehilangan)
+                ? \Carbon\Carbon::parse($data->tanggal_kehilangan)->translatedFormat('d F Y')
+                : '...........................................' }}
+        </strong>,
         hilang saat <strong>{{ $data->hilang_saat ?? '...........................................' }}</strong>.
     </p>
 
@@ -149,7 +276,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper">
         <div class="ttd-right">
-            <p>KEMIRIGEDE, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
             <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
 
             <div class="ttd-img-wrapper">

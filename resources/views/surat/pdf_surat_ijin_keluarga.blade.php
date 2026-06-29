@@ -15,77 +15,78 @@
             font-size: 10.5pt;
             color: #000;
             line-height: 1.22;
+            margin: 0;
+            padding: 0;
         }
 
-        .kop {
+        /* KOP SURAT FIX */
+        .kop-desa-container {
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
-        .kop-table {
+        .kop-desa-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .kop-table td {
+        .kop-desa-table td {
             vertical-align: middle;
             padding: 0;
-        }
-
-        .kop-logo-left {
-            width: 17%;
-            text-align: left;
-        }
-
-        .kop-logo-right {
-            width: 17%;
-            text-align: right;
-        }
-
-        .kop-logo-left img {
-            width: 76px;
-            height: auto;
-        }
-
-        .kop-logo-right img {
-            width: 74px;
-            height: auto;
-        }
-
-        .kop-text {
-            width: 66%;
-            text-align: center;
-            line-height: 1.02;
-        }
-
-        .kop-text .baris-1 {
-            font-size: 13.5pt;
-            font-weight: normal;
-        }
-
-        .kop-text .baris-2 {
-            font-size: 13pt;
-            font-weight: normal;
-        }
-
-        .kop-text .baris-3 {
-            font-size: 15.5pt;
-            font-weight: bold;
-        }
-
-        .kop-text .alamat {
-            font-size: 9.5pt;
-        }
-
-        .kop-text .kontak {
-            font-size: 8pt;
-        }
-
-        .kop-garis {
             border: none;
-            border-top: 2.3px solid #000;
-            margin-top: 4px;
-            margin-bottom: 6px;
+        }
+
+        .kop-desa-logo {
+            width: 16%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .kop-desa-logo img {
+            width: 95px;
+            height: auto;
+        }
+
+        .kop-desa-text {
+            width: 68%;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 1.08;
+        }
+
+        .kop-desa-1 {
+            font-size: 14pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-2 {
+            font-size: 14pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-3 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-alamat {
+            font-size: 10pt;
+            margin-top: 1px;
+        }
+
+        .kop-desa-kontak {
+            font-size: 8.5pt;
+        }
+
+        .kop-desa-garis {
+            border: none;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 5px 0 7px 0;
         }
 
         .judul {
@@ -164,7 +165,6 @@
             margin-bottom: 12px;
         }
 
-        /* TTD 3 KOLOM AGAR TETAP 1 HALAMAN */
         .ttd-table {
             width: 100%;
             border-collapse: collapse;
@@ -196,6 +196,18 @@
             height: 54px;
         }
 
+        .ttd-img-wrapper {
+            height: 54px;
+            margin: 2px auto 0 auto;
+            text-align: center;
+        }
+
+        .ttd-img {
+            width: 125px;
+            height: auto;
+            max-height: 54px;
+        }
+
         .ttd-name {
             display: block;
             max-width: 100%;
@@ -218,6 +230,17 @@
             line-height: 1.15;
             white-space: normal;
         }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 5px 0 7px 0;
+            }
+        }
     </style>
 </head>
 
@@ -238,30 +261,31 @@
             : '-';
     @endphp
 
-    <div class="kop">
-        <table class="kop-table">
+    <!-- KOP SURAT -->
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
             <tr>
-                <td class="kop-logo-left">
+                <td class="kop-desa-logo">
                     <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
                 </td>
 
-                <td class="kop-text">
-                    <div class="baris-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="baris-2">KECAMATAN KEMIRIGEDE</div>
-                    <div class="baris-3">KANTOR KEPALA DESA KEMIRIGEDE</div>
-                    <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                    <div class="kontak">
-                        email : KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
                     </div>
                 </td>
 
-                <td class="kop-logo-right">
-                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
 
-        <hr class="kop-garis">
+        <hr class="kop-desa-garis">
     </div>
 
     <div class="judul">SURAT&nbsp;&nbsp;IJIN&nbsp;&nbsp;KELUARGA</div>
@@ -372,7 +396,7 @@
     <br>
 
     <div class="tanggal">
-        KEMIRIGEDE , {{ $tanggalSurat }}
+        Blitar, {{ $tanggalSurat }}
     </div>
 
     <table class="ttd-table">
@@ -388,7 +412,11 @@
             <td>
                 <div class="ttd-label">Mengetahui :</div>
                 <div class="ttd-jabatan">Kepala Desa KEMIRIGEDE</div>
-                <div class="ttd-space"><br></div>
+
+                <div class="ttd-img-wrapper">
+                    <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
+                </div>
+
                 <div class="nama-kades">MOH. HAMID ALMAULUDI</div>
             </td>
 

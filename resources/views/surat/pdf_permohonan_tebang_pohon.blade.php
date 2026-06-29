@@ -17,6 +17,7 @@
 
         body {
             margin: 0;
+            padding: 0;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 10.8pt;
             line-height: 1.28;
@@ -28,63 +29,84 @@
             padding: 0;
         }
 
-        /* ================= KOP SURAT ================= */
-        .kop-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 4px solid #000;
+        }
+
+        td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        /* KOP SURAT FIX */
+        .kop-desa-container {
+            width: 100%;
             margin-bottom: 12px;
         }
 
-        .kop-logo {
-            width: 13%;
+        .kop-desa-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .kop-desa-table td {
+            padding: 0;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .kop-desa-logo {
+            width: 16%;
             text-align: center;
             vertical-align: middle;
         }
 
-        .kop-logo img {
-            width: 72px;
+        .kop-desa-logo img {
+            width: 95px;
             height: auto;
         }
 
-        .kop-text {
-            width: 74%;
+        .kop-desa-text {
+            width: 68%;
             text-align: center;
             vertical-align: middle;
-            line-height: 1.03;
-            padding-bottom: 3px;
+            line-height: 1.08;
         }
 
-        .kop-text .kabupaten {
-            font-size: 13pt;
-            font-weight: bold;
+        .kop-desa-1 {
+            font-size: 14pt;
+            font-weight: normal;
             text-transform: uppercase;
-            margin: 0;
         }
 
-        .kop-text .kecamatan {
-            font-size: 12.5pt;
-            font-weight: bold;
+        .kop-desa-2 {
+            font-size: 14pt;
+            font-weight: normal;
             text-transform: uppercase;
-            margin: 0;
         }
 
-        .kop-text .desa {
+        .kop-desa-3 {
             font-size: 16pt;
             font-weight: bold;
             text-transform: uppercase;
-            margin: 0;
-            letter-spacing: 0.2px;
         }
 
-        .kop-text .alamat {
-            font-size: 9.5pt;
+        .kop-desa-alamat {
+            font-size: 10pt;
             margin-top: 1px;
         }
 
-        .kop-text .kontak {
-            font-size: 7.7pt;
-            margin-top: 1px;
+        .kop-desa-kontak {
+            font-size: 8.5pt;
+        }
+
+        .kop-desa-garis {
+            border: none;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 5px 0 12px 0;
         }
 
         /* ================= META SURAT ================= */
@@ -229,6 +251,17 @@
             font-size: 7pt;
             color: #444;
         }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 5px 0 12px 0;
+            }
+        }
     </style>
 </head>
 
@@ -263,42 +296,36 @@
             $alasanList = $alasanDefault;
         }
 
-        $logoKabupaten = file_exists(public_path('assets/images/blitar.jpg'))
-            ? public_path('assets/images/blitar.jpg')
-            : public_path('assets/images/logo-blitar.png');
-
-        $logoDesa = file_exists(public_path('assets/images/KEMIRIGEDE.png'))
-            ? public_path('assets/images/KEMIRIGEDE.png')
-            : public_path('assets/images/logo-desa-KEMIRIGEDE.png');
-
         $ttdKades = public_path('assets/images/ttd.png');
-        $barcodeSurat = public_path('assets/images/barcode_surat.png');
+        $barcodeSurat = public_path('assets/images/barcode.png');
     @endphp
 
     {{-- KOP SURAT --}}
-    <table class="kop-table">
-        <tr>
-            <td class="kop-logo">
-                @if (file_exists($logoKabupaten))
-                    <img src="{{ $logoKabupaten }}" alt="Logo Kabupaten Blitar">
-                @endif
-            </td>
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
+            <tr>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-            <td class="kop-text">
-                <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
-                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
-                <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="kontak">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
-            </td>
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
 
-            <td class="kop-logo">
-                @if (file_exists($logoDesa))
-                    <img src="{{ $logoDesa }}" alt="Logo Desa KEMIRIGEDE">
-                @endif
-            </td>
-        </tr>
-    </table>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                </td>
+            </tr>
+        </table>
+
+        <hr class="kop-desa-garis">
+    </div>
 
     {{-- NOMOR DAN PERIHAL --}}
     <table class="meta-table">
@@ -350,7 +377,7 @@
 
         {{-- TANDA TANGAN --}}
         <div class="tanggal">
-            {{ $tanggalSurat }}
+            Blitar, {{ $tanggalSurat }}
         </div>
 
         <table class="ttd-table">

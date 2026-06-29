@@ -33,7 +33,7 @@
         }
 
         .kop-logo img {
-            width: 82px;
+            width: 105px;
             height: auto;
         }
 
@@ -46,13 +46,13 @@
 
         .kop-text .kop-baris-1 {
             font-size: 15pt;
-            font-weight: bold;
+            font-weight: light;
             text-transform: uppercase;
         }
 
         .kop-text .kop-baris-2 {
             font-size: 15pt;
-            font-weight: bold;
+            font-weight: light;
             text-transform: uppercase;
         }
 
@@ -188,12 +188,12 @@
                     <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-kontak">
-                        email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
                     </div>
                 </td>
 
                 <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td>
             </tr>
         </table>
@@ -286,8 +286,6 @@
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
             </div>
-
-            <br>
 
             <p><strong><u>{{ $data->nama_pelapor ?? '...........................................' }}</u></strong></p>
 

@@ -16,6 +16,8 @@
             font-size: 11pt;
             line-height: 1.25;
             color: #000;
+            margin: 0;
+            padding: 0;
         }
 
         p {
@@ -23,34 +25,85 @@
             text-align: justify;
         }
 
-        /* ================= KOP SURAT ================= */
-        .kop {
-            text-align: center;
-            margin-bottom: 4px;
-            line-height: 1.2;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .kop .baris-1,
-        .kop .baris-2 {
+        td,
+        th {
+            vertical-align: top;
+        }
+
+        /* KOP SURAT FIX */
+        .kop-desa-container {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .kop-desa-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .kop-desa-table td {
+            padding: 0;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .kop-desa-logo {
+            width: 16%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .kop-desa-logo img {
+            width: 95px;
+            height: auto;
+        }
+
+        .kop-desa-text {
+            width: 68%;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 1.08;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .kop-desa-1 {
             font-size: 14pt;
-            font-weight: bold;
+            font-weight: normal;
             text-transform: uppercase;
         }
 
-        .kop .baris-3 {
+        .kop-desa-2 {
+            font-size: 14pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-3 {
             font-size: 16pt;
             font-weight: bold;
             text-transform: uppercase;
         }
 
-        .kop small {
-            font-size: 9.5pt;
+        .kop-desa-alamat {
+            font-size: 10pt;
+            margin-top: 1px;
         }
 
-        .garis-kop {
-            border: 0;
-            border-top: 3px double #000;
-            margin: 6px 0 10px 0;
+        .kop-desa-kontak {
+            font-size: 8.5pt;
+        }
+
+        .kop-desa-garis {
+            border: none;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 5px 0 10px 0;
         }
 
         /* ================= JUDUL ================= */
@@ -208,23 +261,48 @@
             font-weight: bold;
             text-decoration: underline;
         }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 5px 0 10px 0;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     {{-- KOP SURAT --}}
-    <div class="kop">
-        <div class="baris-1">PEMERINTAH KABUPATEN BLITAR</div>
-        <div class="baris-2">KECAMATAN KEMIRIGEDE</div>
-        <div class="baris-3">KANTOR KEPALA DESA KEMIRIGEDE</div>
-        <small>
-            Jln. Merdeka No. 74 Telp. 082139324445<br>
-            email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitar.kab.desa.id
-        </small>
-    </div>
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
+            <tr>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-    <hr class="garis-kop">
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
+
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                </td>
+            </tr>
+        </table>
+
+        <hr class="kop-desa-garis">
+    </div>
 
     {{-- JUDUL --}}
     <div class="judul">SURAT REKOMENDASI PEMBELIAN BBM JENIS TERTENTU</div>
@@ -418,7 +496,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <p>KEMIRIGEDE, {{ now()->translatedFormat('d F Y') }}</p>
+                    <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
                 </td>
             </tr>
 

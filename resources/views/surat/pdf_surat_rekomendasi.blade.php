@@ -34,64 +34,74 @@
             padding: 0;
         }
 
-        /* =========================
-           KOP SURAT
-        ========================= */
-        .kop-table {
+        /* KOP SURAT FIX */
+        .kop-desa-container {
             width: 100%;
-            border-collapse: collapse;
-            border-bottom: 3px solid #000;
-            padding-bottom: 6px;
             margin-bottom: 38px;
         }
 
-        .kop-logo {
-            width: 18%;
+        .kop-desa-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .kop-desa-table td {
+            padding: 0;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .kop-desa-logo {
+            width: 16%;
             text-align: center;
             vertical-align: middle;
         }
 
-        .kop-logo img {
-            width: 88px;
+        .kop-desa-logo img {
+            width: 105px;
             height: auto;
         }
 
-        .kop-text {
-            width: 64%;
+        .kop-desa-text {
+            width: 68%;
             text-align: center;
             vertical-align: middle;
-            font-family: Arial, Helvetica, sans-serif;
-            line-height: 1.08;
+            line-height: 1.15;
         }
 
-        .kop-text .kabupaten {
+        .kop-desa-1 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-2 {
+            font-size: 15pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-3 {
             font-size: 17pt;
-            font-weight: normal;
-            text-transform: uppercase;
-        }
-
-        .kop-text .kecamatan {
-            font-size: 16pt;
-            font-weight: normal;
-            text-transform: uppercase;
-        }
-
-        .kop-text .desa {
-            font-size: 20pt;
             font-weight: bold;
             text-transform: uppercase;
         }
 
-        .kop-text .kontak {
+        .kop-desa-alamat {
             font-size: 11pt;
-            font-weight: normal;
             margin-top: 2px;
-            line-height: 1.05;
         }
 
-        .kop-text .email {
-            font-size: 9.5pt;
-            font-weight: normal;
+        .kop-desa-kontak {
+            font-size: 10pt;
+        }
+
+        .kop-desa-garis {
+            border: none;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 6px 0 0 0;
         }
 
         /* =========================
@@ -208,7 +218,7 @@
         }
 
         /* =========================
-           TANDA TANGAN SESUAI PDF + TTD.PNG KADES
+           TANDA TANGAN
         ========================= */
         .ttd-table {
             width: 100%;
@@ -267,6 +277,17 @@
             text-decoration: underline;
             line-height: 1.25;
         }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 6px 0 0 0;
+            }
+        }
     </style>
 </head>
 
@@ -319,25 +340,31 @@
 @endphp
 
     <!-- KOP SURAT -->
-    <table class="kop-table">
-        <tr>
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten">
-            </td>
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
+            <tr>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-            <td class="kop-text">
-                <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
-                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
-                <div class="kontak">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="email">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
-            </td>
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
 
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
-            </td>
-        </tr>
-    </table>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                </td>
+            </tr>
+        </table>
+
+        <hr class="kop-desa-garis">
+    </div>
 
     <!-- NOMOR, PERIHAL, DAN TUJUAN -->
     <table class="header-surat">
@@ -422,12 +449,11 @@
         Demikian surat rekomendasi ini dibuat untuk menjadikan maklum dan terimakasih atas kerjasamanya.
     </p>
 
-    <!-- TANDA TANGAN SESUAI PDF + TTD KADES -->
+    <!-- TANDA TANGAN -->
     <table class="ttd-table">
         <tr>
-            <!-- KOLOM PEMOHON -->
             <td class="ttd-left">
-                <p style="visibility: hidden;">KEMIRIGEDE, {{ $tanggalSurat }}</p>
+                <p style="visibility: hidden;">Blitar, {{ $tanggalSurat }}</p>
                 <p>Pemohon</p>
 
                 <div class="space-pemohon"></div>
@@ -435,9 +461,8 @@
                 <p class="nama-pemohon">{{ $namaPemohon }}</p>
             </td>
 
-            <!-- KOLOM KEPALA DESA -->
             <td class="ttd-right">
-                <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
+                <p>Blitar, {{ $tanggalSurat }}</p>
                 <p>Mengetahui</p>
                 <p>Kepala Desa KEMIRIGEDE</p>
 

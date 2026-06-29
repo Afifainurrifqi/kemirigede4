@@ -34,61 +34,74 @@
             padding: 0;
         }
 
-        /* =========================
-           KOP SURAT
-        ========================= */
-        .kop-table {
+        /* KOP SURAT FIX */
+        .kop-desa-container {
             width: 100%;
-            border-collapse: collapse;
-            border-bottom: 3px solid #000;
-            padding-bottom: 4px;
             margin-bottom: 8px;
         }
 
-        .kop-logo {
-            width: 18%;
+        .kop-desa-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .kop-desa-table td {
+            padding: 0;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .kop-desa-logo {
+            width: 16%;
             text-align: center;
             vertical-align: middle;
         }
 
-        .kop-logo img {
-            width: 78px;
+        .kop-desa-logo img {
+            width: 95px;
             height: auto;
         }
 
-        .kop-text {
-            width: 64%;
+        .kop-desa-text {
+            width: 68%;
             text-align: center;
             vertical-align: middle;
-            line-height: 1.05;
+            line-height: 1.08;
         }
 
-        .kop-text .kabupaten {
-            font-size: 15pt;
-            font-weight: normal;
-            text-transform: uppercase;
-        }
-
-        .kop-text .kecamatan {
+        .kop-desa-1 {
             font-size: 14pt;
             font-weight: normal;
             text-transform: uppercase;
         }
 
-        .kop-text .desa {
-            font-size: 18pt;
+        .kop-desa-2 {
+            font-size: 14pt;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .kop-desa-3 {
+            font-size: 16pt;
             font-weight: bold;
             text-transform: uppercase;
         }
 
-        .kop-text .alamat {
+        .kop-desa-alamat {
             font-size: 10pt;
-            font-weight: bold;
+            margin-top: 1px;
         }
 
-        .kop-text .email {
-            font-size: 8.4pt;
-            font-weight: normal;
+        .kop-desa-kontak {
+            font-size: 8.5pt;
+        }
+
+        .kop-desa-garis {
+            border: none;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
+            height: 3px;
+            margin: 5px 0 8px 0;
         }
 
         /* =========================
@@ -327,6 +340,17 @@
         .nama-ttd {
             font-weight: normal;
         }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .kop-desa-garis {
+                margin: 5px 0 8px 0;
+            }
+        }
     </style>
 </head>
 
@@ -375,25 +399,31 @@
 @endphp
 
     <!-- KOP SURAT -->
-    <table class="kop-table">
-        <tr>
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten">
-            </td>
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
+            <tr>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-            <td class="kop-text">
-                <div class="kabupaten">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kecamatan">KECAMATAN KEMIRIGEDE</div>
-                <div class="desa">KANTOR KEPALA DESA KEMIRIGEDE</div>
-                <div class="alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="email">email :KEMIRIGEDEberkelas@gmail.com / website : KEMIRIGEDE-blitarkab.desa.id</div>
-            </td>
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
 
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa">
-            </td>
-        </tr>
-    </table>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                </td>
+            </tr>
+        </table>
+
+        <hr class="kop-desa-garis">
+    </div>
 
     <!-- LAMPIRAN -->
     <table class="lampiran">
@@ -588,7 +618,7 @@
             </td>
 
             <td class="ttd-cell">
-                <p>KEMIRIGEDE, &nbsp;&nbsp;&nbsp; {{ $bulanTahunSurat }}</p>
+                <p>Blitar, &nbsp;&nbsp;&nbsp; {{ $bulanTahunSurat }}</p>
                 <p>Pemilik Hutan HAK</p>
 
                 <div class="ttd-space"></div>
