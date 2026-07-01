@@ -1021,7 +1021,7 @@ class SuratmasukController extends Controller
             $data = surat_keterangan_kehilangan::findOrFail($id);
             $pdf = Pdf::loadView('surat.pdfsuratketerangankehilangan', compact('data'))
                 ->setPaper('A4');
-            return $pdf->download('pdfsuratketerangankehilangan' . $data->nama_pelapor . '.pdf');
+            return $pdf->download('pdfsuratketerangankehilangan' . $data->nama_pelapor . '.word');
         }
 
         if ($jenis === 'suratpernyataantidakbisamelampirkanktpkematian') {
