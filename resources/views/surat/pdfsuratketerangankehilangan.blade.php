@@ -283,7 +283,8 @@
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
             </div> --}}
 
-            <br><br>
+            <br><br><br><br>
+
 
             <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
 
