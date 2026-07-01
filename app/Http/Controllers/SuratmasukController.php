@@ -1017,11 +1017,12 @@ class SuratmasukController extends Controller
             $filename = Str::slug($data->nama ?? 'dokumen', '_');
             return $pdf->download('pdf_pernyataan_perubahan_data_pendidikan_' . $filename . '.pdf');
         }
+
         if ($jenis === 'suratketerangankehilangan') {
             $data = surat_keterangan_kehilangan::findOrFail($id);
             $pdf = Pdf::loadView('surat.pdfsuratketerangankehilangan', compact('data'))
                 ->setPaper('A4');
-            return $pdf->download('pdfsuratketerangankehilangan' . $data->nama_pelapor . '.word');
+            return $pdf->download('pdfsuratketerangankehilangan' . $data->nama_pelapor . '.pdf');
         }
 
         if ($jenis === 'suratpernyataantidakbisamelampirkanktpkematian') {
