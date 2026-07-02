@@ -211,9 +211,9 @@
                     </div>
                 </td>
 
-                <td class="kop-logo">
+               {{-- <td class="kop-logo">
                     <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-                </td>
+                </td> --}}
             </tr>
         </table>
 

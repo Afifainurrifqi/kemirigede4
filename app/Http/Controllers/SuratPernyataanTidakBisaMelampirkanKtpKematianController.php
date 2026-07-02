@@ -109,7 +109,7 @@ class SuratPernyataanTidakBisaMelampirkanKtpKematianController extends Controlle
     /** Assign nomor kalau eligible (Di terima + Terverifikasi) dan belum punya nomor */
     protected function maybeAssignNomorSurat($modelOrNull, array &$payload): void
     {
-        $this->svc->maybeAssignNomorSurat($modelOrNull, $payload, 'spktp');   // ← tambahkan 'spktp'
+        $this->svc->maybeAssignNomorSurat($modelOrNull, $payload, $this->jenisCounter);
     }
 
     /** USER store (status default Pending/Belum Verifikasi) */

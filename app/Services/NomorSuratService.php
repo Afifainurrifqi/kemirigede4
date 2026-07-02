@@ -9,13 +9,12 @@ class NomorSuratService
 {
     /**
      * Mapping prefix nomor per jenis surat.
-     * Silakan ubah sesuai kebutuhanmu.
      */
     protected array $prefixMap = [
-        'sktm'      => 475, // Surat Keterangan Tidak Mampu
-        'spktp'     => 300, // Surat Pernyataan Tidak Bisa Melampirkan KTP Kematian
-        'numpangkk' => 400, // Surat Pernyataan Numpang KK
-        'alias'     => 410,
+        'sktm'       => 475, // Surat Keterangan Tidak Mampu
+        'spktp'      => 300, // Surat Pernyataan Tidak Bisa Melampirkan KTP Kematian
+        'numpangkk'  => 400, // Surat Pernyataan Numpang KK
+        'alias'      => 410,
         'alias_ortu' => 411,
         'jaminan'    => 420,
         'kehilangan' => 430,
@@ -23,12 +22,9 @@ class NomorSuratService
 
     /**
      * Section code per jenis (opsional).
-     * Jika tidak didefinisikan, dipakai 'default'.
      */
     protected array $sectionMap = [
         'default'   => '409.41.2',
-        // 'spktp'   => '409.41.9', // contoh jika ada perbedaan
-        // 'numpangkk'=> '409.41.7',
     ];
 
     /**
@@ -41,7 +37,6 @@ class NomorSuratService
 
     /**
      * Set seed (nilai awal) untuk counter per jenis & tahun.
-     * Contoh: setSeedFor('spktp', 2025, 207, true)
      */
     public function setSeedFor(string $jenis, int $tahun, int $startAt, bool $force = false): void
     {
@@ -98,7 +93,6 @@ class NomorSuratService
 
     /**
      * Format nomor untuk jenis tertentu.
-     * Contoh hasil: "475 / 001 / 409.41.2 / 2025"
      */
     public function formatForJenis(string $jenis, int $urut, int $tahun): string
     {
@@ -111,7 +105,6 @@ class NomorSuratService
 
     /**
      * Helper ringkas: langsung issue nomor (ambil urut + format) untuk jenis & tahun.
-     * Return: ['urut' => int, 'tahun' => int, 'nomor_surat' => string]
      */
     public function issue(string $jenis, ?int $tahun = null): array
     {
@@ -125,49 +118,53 @@ class NomorSuratService
         ];
     }
 
-    /* ======================
-     *  API Lama (back-compat)
-     *  ====================== */
-
     /**
-     * Back-compat: set seed untuk SKTM.
+     * METHOD BARU (FINAL FIX): Otomatis pasang nomor surat jika disetujui admin
      */
+    public function maybeAssignNomorSurat($modelOrNull, array &$payload, string $jenis): void
+    {
+        $statusSurat = $payload['status_surat'] ?? ($modelOrNull ? $modelOrNull->status_surat : null);
+        $statusVerif = $payload['status_verif'] ?? ($modelOrNull ? $modelOrNull->status_verif : null);
+
+        $eligible = ($statusSurat === 'Di terima' && $statusVerif === 'Terverifikasi');
+
+        if ($eligible) {
+            $sudahAdaNomor = $modelOrNull && !empty($modelOrNull->nomor_surat);
+
+            if (!$sudahAdaNomor) {
+                $res = $this->issue($jenis);
+
+                $payload['no_urut']      = $res['urut'];
+                $payload['tahun_surat']  = $res['tahun'];
+                $payload['nomor_surat']  = $res['nomor_surat'];
+            }
+        }
+    }
+
+    /* ======================
+     * API Lama (back-compat)
+     * ====================== */
+
     public function setSeed(int $tahun, int $startAt, bool $force = false): void
     {
         $this->setSeedFor('sktm', $tahun, $startAt, $force);
     }
 
-    /**
-     * Back-compat: ambil urut untuk SKTM.
-     */
     public function next(int $tahun): int
     {
         return $this->nextFor('sktm', $tahun);
     }
 
-    /**
-     * Back-compat: format untuk SKTM.
-     */
     public function format(int $urut, int $tahun): string
     {
         return $this->formatForJenis('sktm', $urut, $tahun);
     }
 
-    /* ======================
-     *  (Opsional) Setter dinamis
-     *  ====================== */
-
-    /**
-     * (Opsional) Set/override prefix untuk jenis tertentu saat runtime.
-     */
     public function setPrefix(string $jenis, int $prefix): void
     {
         $this->prefixMap[$jenis] = $prefix;
     }
 
-    /**
-     * (Opsional) Set/override section code untuk jenis tertentu saat runtime.
-     */
     public function setSection(string $jenis, string $section): void
     {
         $this->sectionMap[$jenis] = $section;

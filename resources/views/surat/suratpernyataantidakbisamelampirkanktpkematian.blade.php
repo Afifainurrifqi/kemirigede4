@@ -121,14 +121,34 @@
                             value="{{ old('nowa') }}">
                     </div>
 
-                    <!-- Hidden select untuk status surat dan verif -->
-                    <select name="status_surat" id="status_surat" class="form-select d-none" required>
-                        <option value="Pending" selected>Pending</option>
-                    </select>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="status_surat" class="form-label">Status Surat <span
+                                    class="text-danger">*</span></label>
+                            <select name="status_surat" id="status_surat" class="form-control" required>
+                                <option value="Pending"
+                                    {{ old('status_surat', 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Di cek" {{ old('status_surat') == 'Di cek' ? 'selected' : '' }}>Di cek
+                                </option>
+                                <option value="Di terima" {{ old('status_surat') == 'Di terima' ? 'selected' : '' }}>Di
+                                    terima</option>
+                                <option value="Ditolak" {{ old('status_surat') == 'Ditolak' ? 'selected' : '' }}>Ditolak
+                                </option>
+                            </select>
+                        </div>
 
-                    <select name="status_verif" id="status_verif" class="form-select d-none" required>
-                        <option value="Belum Verifikasi" selected>Belum Verifikasi</option>
-                    </select>
+                        <div class="col-md-6 mb-3">
+                            <label for="status_verif" class="form-label">Status Verifikasi <span
+                                    class="text-danger">*</span></label>
+                            <select name="status_verif" id="status_verif" class="form-control" required>
+                                <option value="Belum Verifikasi"
+                                    {{ old('status_verif', 'Belum Verifikasi') == 'Belum Verifikasi' ? 'selected' : '' }}>
+                                    Belum Verifikasi</option>
+                                <option value="Terverifikasi"
+                                    {{ old('status_verif') == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-primary btn-lg">Simpan</button>
@@ -142,47 +162,47 @@
     </div>
 
 
-      <script>
-            function autofillData(nikFieldId, prefix) {
-                const nik = document.getElementById(nikFieldId).value.trim();
-                if (nik.length < 10) return;
+    <script>
+        function autofillData(nikFieldId, prefix) {
+            const nik = document.getElementById(nikFieldId).value.trim();
+            if (nik.length < 10) return;
 
-                fetch(`/datapenduduk/lookup/${nik}`)
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.success) {
-                            const d = result.data;
+            fetch(`/datapenduduk/lookup/${nik}`)
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        const d = result.data;
 
-                            if (prefix === 'pelapor') {
-                                document.getElementById('nama_pelapor').value = d.nama;
-                                document.getElementById('tempat_lahir_pelapor').value = d.tempat_lahir;
-                                document.getElementById('tanggal_lahir_pelapor').value = d.tanggal_lahir;
-                                document.getElementById('jenis_kelamin_pelapor').value = d.jenis_kelamin;
-                                document.getElementById('pekerjaan_pelapor').value = d.pekerjaan;
-                                document.getElementById('alamat_pelapor').value = d.alamat;
-                            } else if (prefix === 'jenazah') {
-                                document.getElementById('nama_jenazah').value = d.nama;
-                                document.getElementById('tanggal_lahir_jenazah').value = d.tanggal_lahir;
-                                document.getElementById('jenis_kelamin_jenazah').value = d.jenis_kelamin;
-                                document.getElementById('alamat_jenazah').value = d.alamat;
-                            }
-                        } else {
-                            alert(result.message);
+                        if (prefix === 'pelapor') {
+                            document.getElementById('nama_pelapor').value = d.nama;
+                            document.getElementById('tempat_lahir_pelapor').value = d.tempat_lahir;
+                            document.getElementById('tanggal_lahir_pelapor').value = d.tanggal_lahir;
+                            document.getElementById('jenis_kelamin_pelapor').value = d.jenis_kelamin;
+                            document.getElementById('pekerjaan_pelapor').value = d.pekerjaan;
+                            document.getElementById('alamat_pelapor').value = d.alamat;
+                        } else if (prefix === 'jenazah') {
+                            document.getElementById('nama_jenazah').value = d.nama;
+                            document.getElementById('tanggal_lahir_jenazah').value = d.tanggal_lahir;
+                            document.getElementById('jenis_kelamin_jenazah').value = d.jenis_kelamin;
+                            document.getElementById('alamat_jenazah').value = d.alamat;
                         }
-                    })
-                    .catch(() => alert('Gagal mengambil data'));
-            }
+                    } else {
+                        alert(result.message);
+                    }
+                })
+                .catch(() => alert('Gagal mengambil data'));
+        }
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // Autofill Pelapor
-                document.getElementById('nik_pelapor').addEventListener('blur', () => {
-                    autofillData('nik_pelapor', 'pelapor');
-                });
-
-                // Autofill Jenazah
-                document.getElementById('nik_jenazah').addEventListener('blur', () => {
-                    autofillData('nik_jenazah', 'jenazah');
-                });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Autofill Pelapor
+            document.getElementById('nik_pelapor').addEventListener('blur', () => {
+                autofillData('nik_pelapor', 'pelapor');
             });
-        </script>
+
+            // Autofill Jenazah
+            document.getElementById('nik_jenazah').addEventListener('blur', () => {
+                autofillData('nik_jenazah', 'jenazah');
+            });
+        });
+    </script>
 @endsection

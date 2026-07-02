@@ -192,9 +192,9 @@
                     </div>
                 </td>
 
-                <td class="kop-logo">
+               {{-- <td class="kop-logo">
                     <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-                </td>
+                </td> --}}
             </tr>
         </table>
 
@@ -283,16 +283,18 @@
             <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
             <p><strong>Yang membuat pernyataan</strong></p>
 
-            <div class="ttd-img-wrapper">
+            {{-- <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-            </div>
+            </div> --}}
+
+            <br><br><br><br><br>
 
             <p><strong><u>{{ $data->nama_pelapor ?? '...........................................' }}</u></strong></p>
 
-            <div class="barcode">
+            {{-- <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                 <small>Dokumen ini resmi dikeluarkan oleh Pemerintah Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </div>
     </div>
 
