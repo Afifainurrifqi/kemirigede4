@@ -498,7 +498,7 @@
                                                 @elseif ($jenisSurat === 'SuratPernyataanMiskin')
                                                     {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganKematianDesa')
-                                                    {{ $item->NIK ?? '-' }}
+                                                    {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganAhliWaris')
                                                     {{ $item->no_ktp ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKuasa')

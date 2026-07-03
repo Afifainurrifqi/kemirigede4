@@ -289,7 +289,7 @@
 
         $nomorSurat = $data->nomor_surat ?? '005/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/409.41.2/' . $tahunSurat;
 
-        $namaKades = $data->nama_kepala_desa ?? 'MOH. HAMID ALMAULUDI, S.Pd.I';
+        $namaKades = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
 
         $perihal = $data->perihal ?? 'Undangan';
 
@@ -310,7 +310,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -421,7 +421,7 @@
             <td class="ttd-cell">
                 <p>Blitar, {{ $tanggalSurat }}</p>
                 <p>Mengetahui,</p>
-                <p>Kepala Desa KEMIRIGEDE</p>
+                <p>KEPALA DESA KEMIRIGEDE</p>
 
                 <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">

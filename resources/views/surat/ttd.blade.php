@@ -22,7 +22,7 @@
 <div class="ttd">
     <div class="jabatan">
         KEMIRIGEDE, ..................................<br>
-        Kepala Desa KEMIRIGEDE
+        KEPALA DESA KEMIRIGEDE
     </div>
-    <div class="nama-kades">MOH. HAMID ALMAULUDI S.Pd.I</div>
+    <div class="nama-kades">Hari Purnawan, S.Sos. S.Pd.I</div>
 </div>

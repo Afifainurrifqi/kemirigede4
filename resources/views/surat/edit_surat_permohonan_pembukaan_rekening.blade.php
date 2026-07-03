@@ -35,7 +35,7 @@
                             <div class="mb-3">
                                 <label>Jabatan <span class="text-danger">*</span></label>
                                 <input type="text" name="jabatan" class="form-control"
-                                    value="{{ old('jabatan', $surat->jabatan ?? 'Kepala Desa KEMIRIGEDE') }}" required>
+                                    value="{{ old('jabatan', $surat->jabatan ?? 'KEPALA DESA KEMIRIGEDE') }}" required>
                             </div>
 
                             <div class="mb-3">

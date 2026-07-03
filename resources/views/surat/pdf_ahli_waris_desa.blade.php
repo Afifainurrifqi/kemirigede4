@@ -39,7 +39,7 @@
             </td>
             <td class="kop-text">
                 <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
-                <strong>KECAMATAN KEMIRIGEDE</strong><br>
+                <strong>KECAMATAN KESAMBEN</strong><br>
                 <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                 <small>Jl. Merdeka No. 74 Telp. 082139324445<br>
                 email: KEMIRIGEDEberkelas@gmail.com | website: KEMIRIGEDE-blitarkab.desa.id</small>
@@ -89,9 +89,9 @@
             <td></td>
             <td class="ttd-cell">
                 <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
-                <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
+                <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
                 <br><br>
-                <p class="nama"><u>MOH. HAMID ALMAULUDI, S.Pd.I</u></p>
+                <p class="nama"><u>Hari Purnawan, S.Sos.</u></p>
             </td>
         </tr>
     </table>

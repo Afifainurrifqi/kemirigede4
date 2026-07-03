@@ -204,7 +204,7 @@
 
             <td class="kop-desa-text">
                 <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                 <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                 <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                 <div class="kop-desa-kontak">
@@ -227,7 +227,7 @@
     Nomor : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now()->year }}
 </div>
 
-<p>Yang bertanda tangan di bawah ini Kepala Desa KEMIRIGEDE menerangkan dengan sebenarnya bahwa :</p>
+<p>Yang bertanda tangan di bawah ini KEPALA DESA KEMIRIGEDE menerangkan dengan sebenarnya bahwa :</p>
 
 <table class="data">
     <tr>
@@ -338,7 +338,7 @@
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">
             </div>
 
-            <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
+            <div class="nama-kades">Hari Purnawan, S.Sos.</div>
 
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR">

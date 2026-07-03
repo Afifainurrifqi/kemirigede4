@@ -215,7 +215,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -242,7 +242,7 @@
 
     <div class="isi">
         <p>
-            Yang bertanda tangan dibawah ini Kepala Desa KEMIRIGEDE, Kec. KEMIRIGEDE,
+            Yang bertanda tangan dibawah ini KEPALA DESA KEMIRIGEDE, Kec. KEMIRIGEDE,
             Kab. Blitar, menerangkan bahwa :
         </p>
 
@@ -323,7 +323,7 @@
         </tr>
         <tr>
             <td>Pemegang surat</td>
-            <td><strong>Kepala Desa KEMIRIGEDE</strong></td>
+            <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
         </tr>
         <tr>
             <td>
@@ -338,7 +338,7 @@
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div>
 
-                <div class="nama-ttd">MOH. HAMID ALMAULUDI S.Pd.I</div>
+                <div class="nama-ttd">Hari Purnawan, S.Sos. S.Pd.I</div>
 
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">

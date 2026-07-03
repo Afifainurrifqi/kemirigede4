@@ -114,7 +114,25 @@
         }
 
         table.data td:first-child {
-            width: 160px;
+            width: 165px;
+            font-weight: bold;
+        }
+
+        table.bantuan {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0 12px 0;
+        }
+
+        table.bantuan th,
+        table.bantuan td {
+            border: 1px solid #000;
+            padding: 5px 7px;
+            vertical-align: top;
+        }
+
+        table.bantuan th {
+            text-align: center;
             font-weight: bold;
         }
 
@@ -193,17 +211,19 @@
 
                 <td class="kop-text">
                     <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-baris-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-baris-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-kontak">
-                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                        email : Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
                     </div>
                 </td>
 
-               {{-- <td class="kop-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-                </td> --}}
+                {{--
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa Kemirigede">
+                </td>
+                --}}
             </tr>
         </table>
 
@@ -220,9 +240,60 @@
         Nomor: {{ $data->nomor_surat ?? '475 / --- / 409.41.2 / ' . now()->year }}
     </div>
 
+    @php
+        $bansosMap = [
+            'pkh' => 'PKH',
+            'kip' => 'KIP',
+            'kis' => 'KIS',
+            'bpnt' => 'BPNT',
+            'dtks' => 'ID. DTKS',
+            'blt_dd' => 'BLT DD',
+            'bansos' => 'BANSOS',
+        ];
+
+        $bantuan = $data->bantuan ?? [];
+        $bantuanId = $data->bantuan_id ?? [];
+
+        if ($bantuan instanceof \Illuminate\Support\Collection) {
+            $bantuan = $bantuan->toArray();
+        }
+
+        if ($bantuanId instanceof \Illuminate\Support\Collection) {
+            $bantuanId = $bantuanId->toArray();
+        }
+
+        if (is_string($bantuan)) {
+            $decodedBantuan = json_decode($bantuan, true);
+            $bantuan = is_array($decodedBantuan)
+                ? $decodedBantuan
+                : (!empty($bantuan) ? [$bantuan] : []);
+        }
+
+        if (is_string($bantuanId)) {
+            $decodedBantuanId = json_decode($bantuanId, true);
+            $bantuanId = is_array($decodedBantuanId)
+                ? $decodedBantuanId
+                : [];
+        }
+
+        if (is_object($bantuan)) {
+            $bantuan = (array) $bantuan;
+        }
+
+        if (is_object($bantuanId)) {
+            $bantuanId = (array) $bantuanId;
+        }
+
+        $bantuan = array_values(array_filter((array) $bantuan, function ($item) {
+            return !is_null($item) && $item !== '';
+        }));
+
+        $bantuanId = (array) $bantuanId;
+    @endphp
+
     <!-- ISI -->
     <p class="tulisan">
-        Yang bertanda tangan di bawah ini Kepala Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE,
+        Yang bertanda tangan di bawah ini KEPALA DESA KEMIRIGEDE, Kecamatan Kesamben,
         Kabupaten Blitar, menerangkan dengan sebenarnya bahwa:
     </p>
 
@@ -245,6 +316,10 @@
             </td>
         </tr>
         <tr>
+            <td>Kewarganegaraan</td>
+            <td>: {{ $data->kewarganegaraan ?? '...........................................' }}</td>
+        </tr>
+        <tr>
             <td>Agama</td>
             <td>: {{ $data->agama ?? '...........................................' }}</td>
         </tr>
@@ -263,45 +338,78 @@
     </table>
 
     <p class="tulisan">
-        Bahwa yang bersangkutan tersebut di atas adalah
-        <strong>benar-benar tidak mampu</strong> dan memerlukan bantuan untuk
-        <strong>{{ $data->peruntukan_sktm ?? '...........................................' }}</strong>.
+        Bahwa berdasarkan keterangan yang bersangkutan serta data administrasi yang ada,
+        nama tersebut di atas adalah benar warga Desa Kemirigede yang kondisi sosial ekonominya
+        tergolong kurang mampu/tidak mampu.
     </p>
 
     <p class="tulisan">
-        Keterangan Fungsi Surat:
-        <strong>{{ $data->keterangan_fungsi_surat ?? '...........................................' }}</strong>
+        Surat keterangan ini dibuat untuk keperluan
+        <strong>{{ $data->peruntukan_sktm ?? '...........................................' }}</strong>,
+        dengan keterangan fungsi surat:
+        <strong>{{ $data->keterangan_fungsi_surat ?? '...........................................' }}</strong>.
     </p>
 
-    @if(!empty($data->bantuan))
+    <p class="tulisan">
+        Berdasarkan keterangan pemohon, data kepesertaan atau bantuan sosial yang dimiliki
+        oleh yang bersangkutan adalah sebagai berikut:
+    </p>
+
+    @if (!empty($bantuan))
+        <table class="bantuan">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">No</th>
+                    <th style="width: 42%;">Jenis Bantuan Sosial</th>
+                    <th style="width: 50%;">Nomor / ID Kepesertaan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($bantuan as $key)
+                    <tr>
+                        <td style="text-align: center;">{{ $loop->iteration }}</td>
+                        <td>{{ $bansosMap[$key] ?? strtoupper(str_replace('_', ' ', $key)) }}</td>
+                        <td>{{ $bantuanId[$key] ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
         <p class="tulisan">
-            Yang bersangkutan juga menerima bantuan sosial:
-            <strong>{{ implode(', ', (array) $data->bantuan) }}</strong>
+            Yang bersangkutan tidak mencantumkan kepesertaan bantuan sosial dalam permohonan ini.
         </p>
     @endif
 
     <p class="tulisan">
         Demikian surat keterangan ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
+        Apabila di kemudian hari terdapat kekeliruan atau data yang tidak benar, maka surat keterangan
+        ini dapat ditinjau kembali sesuai dengan ketentuan yang berlaku.
     </p>
 
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper">
         <div class="ttd-right">
             <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
-            <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
+            <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
 
+            {{--
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
             </div>
+            --}}
+
+            <br><br><br>
 
             <div class="materai">Materai<br>10.000</div>
 
-            <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
+            <p><strong><u>Hari Purnawan, S.Sos. S.Pd.I</u></strong></p>
 
+            {{--
             <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
-                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
             </div>
+            --}}
         </div>
     </div>
 

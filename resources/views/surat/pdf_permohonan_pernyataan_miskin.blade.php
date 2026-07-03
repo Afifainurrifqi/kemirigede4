@@ -288,7 +288,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -357,7 +357,7 @@
         </p>
 
         <p class="paragraf-tanpa-indent">
-            Sehubungan dengan kondisi tersebut, kami atas nama Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE
+            Sehubungan dengan kondisi tersebut, kami atas nama KEPALA DESA KEMIRIGEDE Kecamatan Kesamben
             Kabupaten Blitar, sangat berharap bantuan Bapak untuk bias memberikan keringanan berobat
         </p>
 
@@ -376,7 +376,7 @@
             <tr>
                 <td class="ttd-spacer"></td>
                 <td class="ttd-cell">
-                    <p>Kepala Desa KEMIRIGEDE</p>
+                    <p>KEPALA DESA KEMIRIGEDE</p>
 
                     <div class="ttd-img-wrapper">
                         @if (file_exists($ttdKades))
@@ -384,7 +384,7 @@
                         @endif
                     </div>
 
-                    <p class="nama-kades">MOH. HAMID ALMAULUDI</p>
+                    <p class="nama-kades">Hari Purnawan, S.Sos.</p>
 
                     @if (file_exists($barcodeSurat))
                         <div class="barcode">

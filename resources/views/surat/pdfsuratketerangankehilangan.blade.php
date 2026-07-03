@@ -212,7 +212,7 @@
 
     <!-- ISI -->
     <p class="tulisan">
-        Yang bertanda tangan di bawah ini, Kepala Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE, Kabupaten Blitar,
+        Yang bertanda tangan di bawah ini, KEPALA DESA KEMIRIGEDE, Kecamatan Kesamben, Kabupaten Blitar,
         menerangkan dengan sebenarnya bahwa:
     </p>
 
@@ -277,7 +277,7 @@
     <div class="ttd-wrapper">
         <div class="ttd-right">
             <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
-            <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
+            <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
 
             {{-- <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
@@ -286,7 +286,7 @@
             <br><br><br><br>
 
 
-            <p><strong><u>MOH. HAMID ALMAULUDI S.Pd.I</u></strong></p>
+            <p><strong><u>Hari Purnawan, S.Sos. S.Pd.I</u></strong></p>
 
             {{-- <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">

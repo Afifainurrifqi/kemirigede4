@@ -288,7 +288,7 @@
             ? \Carbon\Carbon::parse($data->tanggal_surat)->format('Y')
             : now('Asia/Jakarta')->format('Y');
 
-        $namaKepalaDesa = $data->nama_kepala_desa ?? 'MOH. HAMID ALMAULUDI, S.Pd.I';
+        $namaKepalaDesa = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
     @endphp
 
     <!-- KOP SURAT -->
@@ -301,7 +301,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -367,13 +367,13 @@
         <tr>
             <td class="label">Jabatan</td>
             <td class="colon">:</td>
-            <td class="value">{{ $data->jabatan ?? 'Kepala Desa KEMIRIGEDE' }}</td>
+            <td class="value">{{ $data->jabatan ?? 'KEPALA DESA KEMIRIGEDE' }}</td>
         </tr>
         <tr>
             <td class="label">Alamat</td>
             <td class="colon">:</td>
             <td class="value">
-                {{ $data->alamat_kepala_desa ?? 'Dusun Sidomulyo RT 004 RW 001 Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar' }}
+                {{ $data->alamat_kepala_desa ?? 'Dusun Sidomulyo RT 004 RW 001 Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar' }}
             </td>
         </tr>
     </table>
@@ -396,7 +396,7 @@
             <td class="label">Alamat</td>
             <td class="colon">:</td>
             <td class="value">
-                {{ $data->alamat_rekening ?? 'Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar' }}
+                {{ $data->alamat_rekening ?? 'Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar' }}
             </td>
         </tr>
         <tr>
@@ -452,7 +452,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd">
         <div>Blitar, {{ $tanggalSurat }}</div>
-        <div class="jabatan">Kepala Desa KEMIRIGEDE</div>
+        <div class="jabatan">KEPALA DESA KEMIRIGEDE</div>
         <div class="nama">{{ $namaKepalaDesa }}</div>
     </div>
 

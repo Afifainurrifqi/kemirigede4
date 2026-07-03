@@ -102,7 +102,10 @@ class SuratmasukController extends Controller
 
         $sptjmSuamiIstri = \App\Models\surat_sptjm_suami_istri::where('status_verif', '!=', 'Terverifikasi')->get();
         $numpangNikah = surat_keterangan_numpang_nikah::where('status_verif', '!=', 'Terverifikasi')->get();
-        $usaha = SuratKeteranganUsaha::where('status_verif', '!=', 'Terverifikasi')->get();
+        $usaha = SuratKeteranganUsaha::where(function ($query) {
+            $query->where('status_surat', '!=', 'Di terima')
+                ->orWhere('status_verif', '!=', 'Terverifikasi');
+        })->get();
         $miskinDesa = SuratKeteranganDesaMiskin::where('status_verif', '!=', 'Terverifikasi')->get();
         $skm = SuratKeteranganMiskinSkm::where('status_verif', '!=', 'Terverifikasi')->get();
         $ahliwarisDesa = \App\Models\surat_keterangan_ahli_waris_desa::where('status_verif', '!=', 'Terverifikasi')->get();
@@ -233,7 +236,9 @@ class SuratmasukController extends Controller
         $formulirUserId = \App\Models\surat_formulir_pengajuan_user_id::where('status_verif', '!=', 'Terverifikasi')->get();
         $sptjmSuamiIstri = \App\Models\surat_sptjm_suami_istri::where('status_verif', '!=', 'Terverifikasi')->get();
         $numpangNikah = surat_keterangan_numpang_nikah::where('status_verif', '!=', 'Terverifikasi')->get();
-        $usaha = SuratKeteranganUsaha::where('status_verif', '!=', 'Terverifikasi')->get();
+        $usaha = SuratKeteranganUsaha::where('status_surat', 'Di terima')
+            ->where('status_verif', 'Terverifikasi')
+            ->get();
         $miskinDesa = SuratKeteranganDesaMiskin::where('status_verif', '!=', 'Terverifikasi')->get();
         $skm = SuratKeteranganMiskinSkm::where('status_verif', '!=', 'Terverifikasi')->get();
         $ahliwarisDesa = \App\Models\surat_keterangan_ahli_waris_desa::where('status_verif', '!=', 'Terverifikasi')->get();

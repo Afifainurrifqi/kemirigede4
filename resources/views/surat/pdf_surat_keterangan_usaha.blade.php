@@ -191,7 +191,7 @@
 
             <td class="kop-desa-text">
                 <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                 <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                 <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                 <div class="kop-desa-kontak">
@@ -226,7 +226,7 @@
         <tr>
             <td>Jabatan</td>
             <td>:</td>
-            <td>Kepala Desa KEMIRIGEDE</td>
+            <td>KEPALA DESA KEMIRIGEDE</td>
         </tr>
     </table>
 
@@ -292,16 +292,17 @@
     <tr>
         <td></td>
         <td>
-            <div class="ttd-img-wrapper">
+            {{-- <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-            </div>
+            </div> --}}
 
-            <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
+            <br><br><br>
+            <div class="nama-kades">Hari Purnawan, S.Sos.</div>
 
-            <div class="qr-section">
+            {{-- <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </td>
     </tr>
 </table>

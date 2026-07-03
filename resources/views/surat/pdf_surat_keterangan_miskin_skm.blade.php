@@ -195,7 +195,7 @@
 
             <td class="kop-desa-text">
                 <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                 <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                 <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                 <div class="kop-desa-kontak">
@@ -225,12 +225,12 @@
         <tr>
             <td>Nama</td>
             <td>:</td>
-            <td>MOH. HAMID ALMAULUDI, S.Pd.I</td>
+            <td>Hari Purnawan, S.Sos.</td>
         </tr>
         <tr>
             <td>Jabatan</td>
             <td>:</td>
-            <td>Kepala Desa KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar</td>
+            <td>KEPALA DESA KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar</td>
         </tr>
     </table>
 
@@ -283,7 +283,7 @@
         <td colspan="2"><strong>TIM VERIFIKATOR DESA:</strong></td>
     </tr>
     <tr>
-        <td><strong>Kepala Desa KEMIRIGEDE</strong></td>
+        <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
         <td><strong>Bidan Desa</strong></td>
     </tr>
     <tr>
@@ -292,7 +292,7 @@
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
             </div>
 
-            <div class="nama-kades">MOH. HAMID ALMAULUDI, S.Pd.I</div>
+            <div class="nama-kades">Hari Purnawan, S.Sos.</div>
 
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">

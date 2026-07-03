@@ -188,7 +188,7 @@
                                         'KEPOLISIAN RI (POLRI)',
                                         'DOSEN',
                                         'GURU',
-                                        'Guru agama_penumpang_kk',
+                                        'Guru Agama',
                                         'KEPALA DESA',
                                         'PERANGKAT DESA',
                                         'Pegawai Kantor Desa',
@@ -290,7 +290,7 @@
                                         'KEPOLISIAN RI (POLRI)',
                                         'DOSEN',
                                         'GURU',
-                                        'Guru agama_penumpang_kk',
+                                        'Guru Agama',
                                         'KEPALA DESA',
                                         'PERANGKAT DESA',
                                         'Pegawai Kantor Desa',
@@ -399,42 +399,89 @@
                     <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
                     <script>
+                        function setInputValue(id, value) {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.value = value || '';
+                            }
+                        }
+
+                        function setSelectValue(id, value) {
+                            const select = document.getElementById(id);
+                            if (!select) return;
+
+                            const cleanValue = (value || '').toString().trim().toUpperCase();
+
+                            let found = false;
+
+                            Array.from(select.options).forEach(option => {
+                                const optionValue = option.value.toString().trim().toUpperCase();
+
+                                if (optionValue === cleanValue) {
+                                    select.value = option.value;
+                                    found = true;
+                                }
+                            });
+
+                            if (!found) {
+                                select.value = '';
+                                console.warn(`Value "${value}" tidak ditemukan di select #${id}`);
+                            }
+                        }
+
                         function autofillData(nikFieldId, prefix) {
                             const nik = document.getElementById(nikFieldId).value.trim();
+
                             if (nik.length < 10) return;
 
                             fetch(`/datapenduduk/lookup/${nik}`)
                                 .then(res => res.json())
                                 .then(result => {
+                                    console.log('HASIL LOOKUP:', result);
+
                                     if (result.success) {
                                         const d = result.data;
 
                                         if (prefix === 'pemilik') {
-                                            document.getElementById('nama_pemilik_kk').value = d.nama || '';
-                                            document.getElementById('no_kk').value = d.nokk || ''; // ← Tambahkan ini
-                                            document.getElementById('alamat_pemilik_kk').value = d.alamat || '';
-                                            document.getElementById('pekerjaan_pemilik_kk').value = d.pekerjaan || '';
-                                        } else if (prefix === 'penumpang') {
-                                            document.getElementById('nama_penumpang_kk').value = d.nama || '';
-                                            document.getElementById('tempat_lahir_penumpang_kk').value = d.tempat_lahir || '';
-                                            document.getElementById('tanggal_lahir_penumpang_kk').value = d.tanggal_lahir || '';
+                                            setInputValue('nama_pemilik_kk', d.nama);
+                                            setInputValue('no_kk', d.nokk || d.no_kk);
+                                            setInputValue('alamat_pemilik_kk', d.alamat);
+
+                                            setSelectValue('pekerjaan_pemilik_kk', d.pekerjaan);
+                                        }
+
+                                        if (prefix === 'penumpang') {
+                                            setInputValue('nama_penumpang_kk', d.nama);
+                                            setInputValue('tempat_lahir_penumpang_kk', d.tempat_lahir);
+                                            setInputValue('tanggal_lahir_penumpang_kk', d.tanggal_lahir);
+
+                                            setSelectValue('agama_penumpang_kk', d.agama);
+                                            setSelectValue('pekerjaan_penumpang_kk', d.pekerjaan);
                                         }
                                     } else {
                                         alert(result.message || 'NIK tidak ditemukan');
                                     }
                                 })
-                                .catch(() => alert('Gagal mengambil data dari server'));
+                                .catch(error => {
+                                    console.error(error);
+                                    alert('Gagal mengambil data dari server');
+                                });
                         }
 
                         document.addEventListener('DOMContentLoaded', function() {
-                            // Autofill Pemilik KK
                             const nikPemilik = document.getElementById('nik_pemilik_kk');
-                            if (nikPemilik) nikPemilik.addEventListener('blur', () => autofillData('nik_pemilik_kk', 'pemilik'));
+                            if (nikPemilik) {
+                                nikPemilik.addEventListener('blur', function() {
+                                    autofillData('nik_pemilik_kk', 'pemilik');
+                                });
+                            }
 
-                            // Autofill Penumpang KK
                             const nikPenumpang = document.getElementById('nik_penumpang_kk');
-                            if (nikPenumpang) nikPenumpang.addEventListener('blur', () => autofillData('nik_penumpang_kk',
-                                'penumpang'));
+                            if (nikPenumpang) {
+                                nikPenumpang.addEventListener('blur', function() {
+                                    autofillData('nik_penumpang_kk', 'penumpang');
+                                });
+                            }
                         });
                     </script>
 </body>

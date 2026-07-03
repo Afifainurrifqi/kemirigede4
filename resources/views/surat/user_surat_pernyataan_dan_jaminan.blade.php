@@ -165,7 +165,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Alamat Penjamin</label>
-                            <textarea class="form-control" name="alamat_pembuat" rows="2" required>{{ old('alamat_pembuat') }}</textarea>
+                            <textarea class="form-control" name="alamat_pembuat" id="alamat_pembuat" rows="2" required>{{ old('alamat_pembuat') }}</textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Hubungan dengan Terjamin</label>
@@ -176,17 +176,17 @@
                         <h6 class="mb-2 mt-3">B. Identitas Pihak yang Dijamin</h6>
                         <div class="mb-3">
                             <label class="form-label">Nama Terjamin</label>
-                            <input class="form-control" name="nama_terjamin" required
+                            <input class="form-control" name="nama_terjamin" id="nama_terjamin" required
                                 value="{{ old('nama_terjamin') }}">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">NIK Terjamin</label>
-                            <input class="form-control" name="nik_terjamin" required
+                            <input class="form-control" name="nik_terjamin" id="nik_terjamin" required
                                 value="{{ old('nik_terjamin') }}">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Alamat Terjamin</label>
-                            <textarea class="form-control" name="alamat_terjamin" rows="2" required>{{ old('alamat_terjamin') }}</textarea>
+                            <textarea class="form-control" name="alamat_terjamin" id="alamat_terjamin" rows="2" required>{{ old('alamat_terjamin') }}</textarea>
                         </div>
 
                         <h6 class="mb-2 mt-3">C. Pernyataan & Jaminan</h6>
@@ -267,20 +267,58 @@
                     <script src="{{ asset('assets4/dist/js/active.js') }}"></script>
                     <script src="{{ asset('assets4/dist/js/pwa.js') }}"></script>
                     <script>
-                        function autofillPembuat() {
-                            const nik = document.getElementById('nik_pembuat').value.trim();
+                        function setValue(id, value) {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.value = value || '';
+                            }
+                        }
+
+                        function autofillPenduduk(nikId, namaId, alamatId) {
+                            const nikInput = document.getElementById(nikId);
+                            if (!nikInput) return;
+
+                            const nik = nikInput.value.trim();
+
                             if (nik.length < 10) return;
+
                             fetch(`/datapenduduk/lookup/${nik}`)
                                 .then(res => res.json())
-                                .then(r => {
-                                    if (r.success) {
-                                        document.getElementById('nama_pembuat').value = r.data.nama || '';
-                                        document.getElementById('alamat_pembuat').value = r.data.alamat || '';
+                                .then(result => {
+                                    console.log('HASIL LOOKUP:', result);
+
+                                    if (!result.success) {
+                                        alert(result.message || 'NIK tidak ditemukan');
+                                        return;
                                     }
+
+                                    const d = result.data;
+
+                                    setValue(namaId, d.nama);
+                                    setValue(alamatId, d.alamat);
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                    alert('Gagal mengambil data penduduk');
                                 });
                         }
 
-                        document.getElementById('nik_pembuat').addEventListener('blur', autofillPembuat);
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const nikPembuat = document.getElementById('nik_pembuat');
+                            const nikTerjamin = document.getElementById('nik_terjamin');
+
+                            if (nikPembuat) {
+                                nikPembuat.addEventListener('blur', function() {
+                                    autofillPenduduk('nik_pembuat', 'nama_pembuat', 'alamat_pembuat');
+                                });
+                            }
+
+                            if (nikTerjamin) {
+                                nikTerjamin.addEventListener('blur', function() {
+                                    autofillPenduduk('nik_terjamin', 'nama_terjamin', 'alamat_terjamin');
+                                });
+                            }
+                        });
                     </script>
 </body>
 

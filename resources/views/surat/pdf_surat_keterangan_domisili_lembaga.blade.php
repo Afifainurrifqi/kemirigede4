@@ -199,7 +199,7 @@
 
             <td class="kop-desa-text">
                 <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                 <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                 <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                 <div class="kop-desa-kontak">
@@ -228,7 +228,7 @@
     <tr>
         <td>Nama</td>
         <td>:</td>
-        <td>{{ $data->nama_pengurus ?? 'MOH. HAMID ALMAULUDI' }}</td>
+        <td>{{ $data->nama_pengurus ?? 'Hari Purnawan, S.Sos.' }}</td>
     </tr>
     <tr>
         <td>Jabatan</td>
@@ -238,7 +238,7 @@
     <tr>
         <td>Alamat</td>
         <td>:</td>
-        <td>Dsn. Sidomulyo RT 04 RW 01 Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE</td>
+        <td>Dsn. Sidomulyo RT 04 RW 01 Desa KEMIRIGEDE, Kecamatan Kesamben</td>
     </tr>
 </table>
 
@@ -283,7 +283,7 @@
 </table>
 
 <p class="tulisan">
-    Lembaga tersebut di atas adalah benar-benar berdomisili di Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar.
+    Lembaga tersebut di atas adalah benar-benar berdomisili di Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar.
     Dan sampai saat ini masih aktif. Surat keterangan ini dipergunakan untuk {{ $data->keterangan_tambahan ?? '....................' }}.
 </p>
 
@@ -296,14 +296,14 @@
         <td class="ttd-spacer"></td>
         <td class="ttd-cell">
             <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
-            <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
+            <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
 
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">
             </div>
 
             <p class="nama">
-                <u>MOH. HAMID ALMAULUDI, S.Pd.I</u>
+                <u>Hari Purnawan, S.Sos.</u>
             </p>
 
             <div class="qr-section">

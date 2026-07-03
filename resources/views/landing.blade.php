@@ -61,7 +61,7 @@
                         <img src="/assets3/img/logosi2.png" class="wow slideInLeft" style="width: 30%">
                         <h2 class="wow slideInLeft">SITAKRO KEMIRIGEDE </h2>
                         <p class="wow fadeInLeft">
-                            Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten
+                            Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten
                             Blitar
                         </p>
                         <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('login') }}">LOGIN

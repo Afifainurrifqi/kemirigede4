@@ -13,6 +13,7 @@ class surat_keterangan_kematian_desa extends Eloquent
 
     protected $fillable = [
         // Data almarhum
+        'nik',
         'nama_lengkap',
         'jenis_kelamin',
         'kewarganegaraan',

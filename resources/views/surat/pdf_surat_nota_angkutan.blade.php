@@ -408,7 +408,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">

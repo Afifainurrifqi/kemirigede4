@@ -339,8 +339,8 @@
             $data->nomor_sppd ??
             ($data->nomor_surat ?? 'B/010.02/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/409.41.2/' . $tahunSurat);
 
-        $namaKades = $data->nama_kepala_desa ?? 'MOH. HAMID ALMAULUDI, S.Pd.I';
-        $pejabat = $data->pejabat_pemberi_perintah ?? 'Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar';
+        $namaKades = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
+        $pejabat = $data->pejabat_pemberi_perintah ?? 'KEPALA DESA KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar';
 
         $namaPegawai = $data->nama_pegawai ?? 'ITA PUJI LESTARI';
         $pangkatGolongan = $data->pangkat_golongan ?? '- Perangkat Desa KEMIRIGEDE';
@@ -370,7 +370,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -564,7 +564,7 @@
     </table>
 
     <div class="ttd-kanan">
-        <div>Kepala Desa KEMIRIGEDE</div>
+        <div>KEPALA DESA KEMIRIGEDE</div>
         <div class="nama">{{ $namaKades }}</div>
     </div>
 
@@ -602,7 +602,7 @@
                 </table>
 
                 <div class="lembar-ttd">
-                    <div>Kepala Desa KEMIRIGEDE</div>
+                    <div>KEPALA DESA KEMIRIGEDE</div>
                     <div class="nama">{{ $namaKades }}</div>
                 </div>
             </td>
@@ -771,7 +771,7 @@
                 </div>
 
                 <div class="lembar-ttd">
-                    <div>Kepala Desa KEMIRIGEDE</div>
+                    <div>KEPALA DESA KEMIRIGEDE</div>
                     <div class="nama">{{ $namaKades }}</div>
                 </div>
             </td>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('assets4/dist/style.css') }}">
     <link rel="manifest" href="/assets4/dist/manifest.json">
 </head>
+
 <body>
     <!-- Preloader -->
     <div id="preloader">
@@ -54,7 +56,11 @@
                 <div class="card-body">
                     @if ($errors->any())
                         <div class="alert alert-danger">
-                            <ul class="mb-0">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $e)
+                                    <li>{{ $e }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
 
@@ -65,12 +71,14 @@
 
                         <div class="mb-3">
                             <label>NIK <span class="text-danger">*</span></label>
-                            <input type="text" name="nik" id="nik" class="form-control" required value="{{ old('nik') }}">
+                            <input type="text" name="nik" id="nik" class="form-control" required
+                                value="{{ old('nik') }}">
                         </div>
 
                         <div class="mb-3">
                             <label>Nama Lengkap <span class="text-danger">*</span></label>
-                            <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="{{ old('nama_lengkap') }}">
+                            <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required
+                                value="{{ old('nama_lengkap') }}">
                         </div>
 
                         <div class="mb-3">
@@ -85,11 +93,13 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label>Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" value="{{ old('tempat_lahir') }}">
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control"
+                                    value="{{ old('tempat_lahir') }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label>Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{ old('tanggal_lahir') }}">
+                                <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control"
+                                    value="{{ old('tanggal_lahir') }}">
                             </div>
                         </div>
 
@@ -97,7 +107,7 @@
                             <label>Agama</label>
                             <select name="agama" id="agama" class="form-control">
                                 <option value="">-- Pilih --</option>
-                                @foreach(['Islam','Kristen','Katolik','Hindu','Buddha','Khonghucu'] as $agama)
+                                @foreach (['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Khonghucu'] as $agama)
                                     <option value="{{ $agama }}">{{ $agama }}</option>
                                 @endforeach
                             </select>
@@ -105,7 +115,8 @@
 
                         <div class="mb-3">
                             <label>Kewarganegaraan</label>
-                            <input type="text" name="kewarganegaraan" id="kewarganegaraan" class="form-control" value="{{ old('kewarganegaraan', 'Indonesia') }}">
+                            <input type="text" name="kewarganegaraan" id="kewarganegaraan" class="form-control"
+                                value="{{ old('kewarganegaraan', 'Indonesia') }}">
                         </div>
 
                         <div class="mb-3">
@@ -124,9 +135,55 @@
                             <select name="pekerjaan" id="pekerjaan" class="form-control">
                                 <option value="">-- Pilih Pekerjaan --</option>
                                 @php
-                                    $jobs = ["BELUM/TIDAK BEKERJA","PELAJAR/MAHASISWA","KARYAWAN SWASTA","IBU RUMAH TANGGA","WIRASWASTA","PETANI/PEKEBUN","BURUH TANI","PEDAGANG","PEGAWAI NEGERI SIPIL (PNS)","KARYAWAN HONORER","BURUH HARIAN LEPAS","SOPIR","KARYAWAN BUMN","PENSIUNAN","Lainnya"];
+                                    $jobs = [
+                                        'BELUM/TIDAK BEKERJA',
+                                        'PELAJAR/MAHASISWA',
+                                        'TIDAK/BELUM SEKOLAH',
+                                        'KARYAWAN SWASTA',
+                                        'IBU RUMAH TANGGA',
+                                        'WIRASWASTA',
+                                        'TENTARA NASIONAL INDONESIA (TNI)',
+                                        'KEPOLISIAN RI (POLRI)',
+                                        'DOSEN',
+                                        'GURU',
+                                        'Guru agama',
+                                        'KEPALA DESA',
+                                        'PERANGKAT DESA',
+                                        'Pegawai Kantor Desa',
+                                        'BIDAN',
+                                        'DOKTER',
+                                        'PERAWAT',
+                                        'PETANI/PEKEBUN PEMILIK LAHAN',
+                                        'BURUH TANI/PERKEBUNAN',
+                                        'PEDAGANG',
+                                        'PEGAWAI NEGERI SIPIL (PNS)',
+                                        'BURUH HARIAN LEPAS',
+                                        'SOPIR',
+                                        'KARYAWAN BUMN',
+                                        'PENSIUNAN',
+                                        'PEMBANTU RUMAH TANGGA',
+                                        'BURUH PETERNAKAN',
+                                        'KONSTRUKSI',
+                                        'PELAUT',
+                                        'NELAYAN/PERIKANAN',
+                                        'KARYAWAN HONORER',
+                                        'PETERNAK',
+                                        'MEKANIK',
+                                        'PENATA RIAS',
+                                        'TUKANG LAS/PANDAI BESI',
+                                        'INDUSTRI',
+                                        'USTADZ/MUBALIGH',
+                                        'TABIB',
+                                        'BURUH NELAYAN/PERIKANAN',
+                                        'JURU MASAK',
+                                        'SENIMAN',
+                                        'AKUNTAN',
+                                        'Petani/Pekebun penyewa',
+                                        'TKI',
+                                        'Lainnya',
+                                    ];
                                 @endphp
-                                @foreach($jobs as $job)
+                                @foreach ($jobs as $job)
                                     <option value="{{ $job }}">{{ $job }}</option>
                                 @endforeach
                             </select>
@@ -140,17 +197,20 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label>RT</label>
-                                <input type="text" name="rt" id="rt" class="form-control" value="{{ old('rt') }}">
+                                <input type="text" name="rt" id="rt" class="form-control"
+                                    value="{{ old('rt') }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label>RW</label>
-                                <input type="text" name="rw" id="rw" class="form-control" value="{{ old('rw') }}">
+                                <input type="text" name="rw" id="rw" class="form-control"
+                                    value="{{ old('rw') }}">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label>No WhatsApp <span class="text-danger">*</span></label>
-                            <input type="text" name="nowa" id="nowa" class="form-control" required value="{{ old('nowa') }}">
+                            <input type="text" name="nowa" id="nowa" class="form-control" required
+                                value="{{ old('nowa') }}">
                         </div>
 
                         <!-- Status otomatis di-set di Controller -->
@@ -185,6 +245,47 @@
 
     <!-- Autofill Script -->
     <script>
+        function setInputValue(id, value) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.value = value || '';
+            }
+        }
+
+        function setSelectValue(id, value) {
+            const select = document.getElementById(id);
+            if (!select) return;
+
+            const rawValue = (value || '').toString().trim();
+            const cleanValue = rawValue.toUpperCase();
+
+            if (!rawValue) {
+                select.value = '';
+                return;
+            }
+
+            let found = false;
+
+            Array.from(select.options).forEach(option => {
+                const optionValue = option.value.toString().trim().toUpperCase();
+
+                if (optionValue === cleanValue) {
+                    select.value = option.value;
+                    found = true;
+                }
+            });
+
+            // Kalau pekerjaan dari database tidak ada di daftar option,
+            // otomatis tambahkan option baru agar tetap terisi.
+            if (!found) {
+                const newOption = new Option(rawValue, rawValue, true, true);
+                select.add(newOption);
+                select.value = rawValue;
+
+                console.warn(`Value "${rawValue}" tidak ada di select #${id}, jadi ditambahkan otomatis.`);
+            }
+        }
+
         function autofillPernahMenikah() {
             const nik = document.getElementById('nik').value.trim();
             if (nik.length < 10) return;
@@ -192,19 +293,22 @@
             fetch(`/datapenduduk/lookup/${nik}`)
                 .then(res => res.json())
                 .then(result => {
+                    console.log('HASIL LOOKUP:', result);
+
                     if (result.success && result.data) {
                         const d = result.data;
-                        document.getElementById('nama_lengkap').value = d.nama || '';
-                        document.getElementById('tempat_lahir').value = d.tempat_lahir || '';
-                        document.getElementById('tanggal_lahir').value = d.tanggal_lahir ? d.tanggal_lahir.substring(0,10) : '';
-                        document.getElementById('alamat').value = d.alamat || '';
 
-                        if (d.jenis_kelamin) document.getElementById('jenis_kelamin').value = d.jenis_kelamin;
-                        if (d.agama) document.getElementById('agama').value = d.agama;
-                        if (d.pekerjaan) document.getElementById('pekerjaan').value = d.pekerjaan;
-                        if (d.status_perkawinan || d.status) {
-                            document.getElementById('status_perkawinan').value = d.status_perkawinan || d.status;
-                        }
+                        setInputValue('nama_lengkap', d.nama);
+                        setInputValue('tempat_lahir', d.tempat_lahir);
+                        setInputValue('tanggal_lahir', d.tanggal_lahir ? d.tanggal_lahir.substring(0, 10) : '');
+                        setInputValue('alamat', d.alamat);
+                        setInputValue('rt', d.rt || d.RT);
+                        setInputValue('rw', d.rw || d.RW);
+
+                        setSelectValue('jenis_kelamin', d.jenis_kelamin);
+                        setSelectValue('agama', d.agama);
+                        setSelectValue('pekerjaan', d.pekerjaan);
+                        setSelectValue('status_perkawinan', d.status_perkawinan || d.status);
                     }
                 })
                 .catch(err => console.log(err));
@@ -212,8 +316,11 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const nikInput = document.getElementById('nik');
-            if (nikInput) nikInput.addEventListener('blur', autofillPernahMenikah);
+            if (nikInput) {
+                nikInput.addEventListener('blur', autofillPernahMenikah);
+            }
         });
     </script>
 </body>
+
 </html>

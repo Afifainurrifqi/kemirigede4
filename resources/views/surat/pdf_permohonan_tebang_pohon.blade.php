@@ -310,7 +310,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -408,7 +408,7 @@
                         @endif
                     </div>
 
-                    <p class="nama">MOH. HAMID ALMAULUDI</p>
+                    <p class="nama">Hari Purnawan, S.Sos.</p>
 
                     @if (file_exists($barcodeSurat))
                         <div class="barcode">

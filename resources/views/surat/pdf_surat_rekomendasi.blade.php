@@ -335,7 +335,7 @@
     $tempat = $data->tempat ?? 'Lapangan Desa KEMIRIGEDE Kab Blitar';
     $keperluan = $data->keperluan ?? 'Pasar Malam';
 
-    $namaKades = $data->nama_kepala_desa ?? 'MOH. HAMID ALMAULUDI, S.Pd.I';
+    $namaKades = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
     $namaKadesFormatted = str_replace(', ', ",\n", $namaKades);
 @endphp
 
@@ -349,7 +349,7 @@
 
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
@@ -387,7 +387,7 @@
             <td class="header-right">
                 <div class="tujuan">
                     Kepada :<br>
-                    Yth. Muspika Kecamatan KEMIRIGEDE<br>
+                    Yth. Muspika Kecamatan Kesamben<br>
                     Di<br>
                     <span class="tempat">TEMPAT</span>
                 </div>
@@ -397,7 +397,7 @@
 
     <!-- ISI SURAT -->
     <p class="paragraph indent">
-        Yang bertandatangan dibawah ini Kepala Desa KEMIRIGEDE Kecamatan KEMIRIGEDE Kabupaten Blitar menerangkan bahwa :
+        Yang bertandatangan dibawah ini KEPALA DESA KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar menerangkan bahwa :
     </p>
 
     <table class="data-table">
@@ -464,7 +464,7 @@
             <td class="ttd-right">
                 <p>Blitar, {{ $tanggalSurat }}</p>
                 <p>Mengetahui</p>
-                <p>Kepala Desa KEMIRIGEDE</p>
+                <p>KEPALA DESA KEMIRIGEDE</p>
 
                 <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">

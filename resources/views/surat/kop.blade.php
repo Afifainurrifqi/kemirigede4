@@ -30,7 +30,7 @@
             </td>
             <td class="kop-header">
                 <strong>PEMERINTAH KABUPATEN BLITAR<br>
-                KECAMATAN KEMIRIGEDE<br>
+                KECAMATAN KESAMBEN<br>
                 KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
                 <small>
                     Jln. Merdeka No. 74 Telp. 082139324445<br>

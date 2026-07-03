@@ -41,6 +41,7 @@ class SuratKeteranganKematianDesaController extends Controller
     public function userstore(Request $request)
     {
         $validated = $request->validate([
+            'nik'             => 'required|string|max:32',
             'nama_lengkap'    => 'required|string|max:255',
             'jenis_kelamin'   => 'required|string|max:20',
             'kewarganegaraan' => 'required|string|max:50',
@@ -72,6 +73,7 @@ class SuratKeteranganKematianDesaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'nik'             => 'required|string|max:32',
             'nama_lengkap'    => 'required|string|max:255',
             'jenis_kelamin'   => 'required|string|max:20',
             'kewarganegaraan' => 'required|string|max:50',
@@ -128,6 +130,7 @@ class SuratKeteranganKematianDesaController extends Controller
     public function update(Request $request, surat_keterangan_kematian_desa $surat)
     {
         $validated = $request->validate([
+            'nik'             => 'required|string|max:32',
             'nama_lengkap'    => 'required|string|max:255',
             'jenis_kelamin'   => 'required|string|max:20',
             'kewarganegaraan' => 'required|string|max:50',

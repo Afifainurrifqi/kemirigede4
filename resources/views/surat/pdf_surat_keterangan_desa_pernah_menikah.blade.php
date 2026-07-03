@@ -193,7 +193,7 @@
 
                 <td class="kop-text">
                     <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-baris-2">KECAMATAN KEMIRIGEDE</div>
+                    <div class="kop-baris-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-kontak">
@@ -222,7 +222,7 @@
 
     <!-- ISI -->
     <p class="tulisan">
-        Yang bertanda tangan di bawah ini Kepala Desa KEMIRIGEDE, Kecamatan KEMIRIGEDE,
+        Yang bertanda tangan di bawah ini KEPALA DESA KEMIRIGEDE, Kecamatan Kesamben,
         Kabupaten Blitar, menerangkan dengan sebenarnya bahwa:
     </p>
 
@@ -287,26 +287,29 @@
     <div class="ttd-wrapper">
         <div class="ttd-right">
             <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
-            <p><strong>Kepala Desa KEMIRIGEDE</strong></p>
+            <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
 
-            <div class="ttd-img-wrapper">
+            {{-- <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-            </div>
+            </div> --}}
+
+            <br><br><br>
+
 
             <div class="materai">Materai<br>10.000</div>
 
             <p>
                 <strong>
-                    <u>{{ $data->nama_lengkap ?? '...........................................' }}</u>
+                      <p class="nama">Hari Purnawan, S.Sos.</p>
                 </strong>
             </p>
 
-            <p>NIK: {{ $data->nik ?? '...........................................' }}</p>
+            {{-- <p>NIK: {{ $data->nik ?? '...........................................' }}</p> --}}
 
-            <div class="barcode">
+            {{-- <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </div>
     </div>
 

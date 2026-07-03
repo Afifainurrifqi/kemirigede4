@@ -192,8 +192,8 @@ class DatapendudukController extends Controller
 
     public function lookupByNik($nik)
     {
-        $penduduk = Datapenduduk::where('nik', $nik)
-            ->with(['pekerjaan', 'detailkk.kk'])   // ← Tambahkan ini
+        $penduduk = Datapenduduk::with(['agama', 'pekerjaan', 'status', 'detailkk.kk'])
+            ->where('nik', $nik)
             ->first();
 
         if (!$penduduk) {
@@ -210,15 +210,30 @@ class DatapendudukController extends Controller
             'data' => [
                 'nama'          => $penduduk->nama ?? '',
                 'tempat_lahir'  => $penduduk->tempat_lahir ?? '',
-                'tanggal_lahir' => $penduduk->tanggal_lahir ?? '',
+                'tanggal_lahir' => $penduduk->tanggal_lahir
+                    ? \Carbon\Carbon::parse($penduduk->tanggal_lahir)->format('Y-m-d')
+                    : '',
+
                 'jenis_kelamin' => $penduduk->jenis_kelamin == '1' ? 'Laki-laki' : 'Perempuan',
-                'pekerjaan'     => optional($penduduk->pekerjaan)->nama ?? '',
-                'alamat'        => $penduduk->alamat ?? '',
-                'rt'            => $penduduk->RT ?? '',
-                'rw'            => $penduduk->RW ?? '',
-                'nokk'          => $nokk,
-                'agama'            => $penduduk->agama->agama ?? $penduduk->agama->nama_agama ?? '',
-                'status_perkawinan' => $penduduk->status->status ?? $penduduk->status->nama_status ?? '',        // ← Tambahan No KK
+
+                // INI YANG DIPAKAI AUTOFILL PEKERJAAN
+                'pekerjaan' => optional($penduduk->pekerjaan)->nama ?? '',
+
+                // INI YANG DIPAKAI AUTOFILL AGAMA
+                'agama' => optional($penduduk->agama)->nama
+                    ?? optional($penduduk->agama)->agama
+                    ?? optional($penduduk->agama)->nama_agama
+                    ?? '',
+
+                'alamat' => $penduduk->alamat ?? '',
+                'rt'     => $penduduk->RT ?? $penduduk->rt ?? '',
+                'rw'     => $penduduk->RW ?? $penduduk->rw ?? '',
+                'nokk'   => $nokk,
+
+                'status_perkawinan' => optional($penduduk->status)->nama
+                    ?? optional($penduduk->status)->status
+                    ?? optional($penduduk->status)->nama_status
+                    ?? '',
             ]
         ]);
     }

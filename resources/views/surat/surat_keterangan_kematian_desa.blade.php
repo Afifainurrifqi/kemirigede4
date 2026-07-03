@@ -119,32 +119,84 @@
 
 <!-- ==================== AUTOFILL SCRIPT ==================== -->
 <script>
-    function autofillKematianAdmin() {
-        const nik = document.getElementById('nik').value.trim();
+    function setInputValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = value || '';
+        }
+    }
+
+    function setSelectByTextOrValue(id, value) {
+        const select = document.getElementById(id);
+        if (!select) return;
+
+        const rawValue = (value || '').toString().trim();
+
+        if (!rawValue) {
+            select.value = '';
+            return;
+        }
+
+        const cleanValue = rawValue.toUpperCase();
+        let found = false;
+
+        Array.from(select.options).forEach(option => {
+            const optionValue = option.value.toString().trim().toUpperCase();
+            const optionText = option.textContent.toString().trim().toUpperCase();
+
+            if (optionValue === cleanValue || optionText === cleanValue) {
+                select.value = option.value;
+                found = true;
+            }
+        });
+
+        if (!found) {
+            console.warn(`Value "${rawValue}" tidak ditemukan di select #${id}`);
+        }
+    }
+
+    function autofillDataPenduduk() {
+        const nikField = document.getElementById('nik');
+        if (!nikField) return;
+
+        const nik = nikField.value.trim();
         if (nik.length < 10) return;
 
         fetch(`/datapenduduk/lookup/${nik}`)
             .then(res => res.json())
             .then(result => {
-                if (result.success && result.data) {
-                    const d = result.data;
+                console.log('HASIL LOOKUP:', result);
 
-                    document.getElementById('nama_lengkap').value = d.nama || '';
-                    document.getElementById('alamat').value = d.alamat || '';
-
-                    if (d.jenis_kelamin) document.getElementById('jenis_kelamin').value = d.jenis_kelamin;
-                    if (d.kewarganegaraan) document.getElementById('kewarganegaraan').value = d.kewarganegaraan;
-                    if (d.status) document.getElementById('status').value = d.status;
-                    // Pekerjaan diisi manual karena menggunakan ID dari master
+                if (!result.success || !result.data) {
+                    alert(result.message || 'NIK tidak ditemukan');
+                    return;
                 }
+
+                const d = result.data;
+
+                setInputValue('nama_lengkap', d.nama);
+                setInputValue('alamat', d.alamat);
+                setInputValue('kewarganegaraan', d.kewarganegaraan || 'Indonesia');
+
+                setSelectByTextOrValue('jenis_kelamin', d.jenis_kelamin);
+
+                // INI YANG DIPERBAIKI
+                setSelectByTextOrValue('status', d.status_perkawinan || d.status);
+
+                // PEKERJAAN JUGA PAKAI TEXT OPTION, KARENA VALUE-NYA ID
+                setSelectByTextOrValue('pekerjaan', d.pekerjaan);
             })
-            .catch(err => console.log('Autofill Error:', err));
+            .catch(err => {
+                console.log(err);
+                alert('Gagal mengambil data penduduk');
+            });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const nikInput = document.getElementById('nik');
-        if (nikInput) {
-            nikInput.addEventListener('blur', autofillKematianAdmin);
+        const nikField = document.getElementById('nik');
+
+        if (nikField) {
+            nikField.addEventListener('blur', autofillDataPenduduk);
         }
     });
 </script>
