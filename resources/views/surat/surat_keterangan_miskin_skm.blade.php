@@ -53,6 +53,7 @@
                             $jobs = [
                                 'BELUM/TIDAK BEKERJA',
                                 'PELAJAR/MAHASISWA',
+                                'TIDAK/BELUM SEKOLAH',
                                 'KARYAWAN SWASTA',
                                 'IBU RUMAH TANGGA',
                                 'WIRASWASTA',
@@ -60,6 +61,7 @@
                                 'KEPOLISIAN RI (POLRI)',
                                 'DOSEN',
                                 'GURU',
+                                'Guru agama',
                                 'KEPALA DESA',
                                 'PERANGKAT DESA',
                                 'Pegawai Kantor Desa',
@@ -74,11 +76,24 @@
                                 'SOPIR',
                                 'KARYAWAN BUMN',
                                 'PENSIUNAN',
+                                'PEMBANTU RUMAH TANGGA',
+                                'BURUH PETERNAKAN',
                                 'KONSTRUKSI',
+                                'PELAUT',
                                 'NELAYAN/PERIKANAN',
                                 'KARYAWAN HONORER',
                                 'PETERNAK',
                                 'MEKANIK',
+                                'PENATA RIAS',
+                                'TUKANG LAS/PANDAI BESI',
+                                'INDUSTRI',
+                                'USTADZ/MUBALIGH',
+                                'TABIB',
+                                'BURUH NELAYAN/PERIKANAN',
+                                'JURU MASAK',
+                                'SENIMAN',
+                                'AKUNTAN',
+                                'Petani/Pekebun penyewa',
                                 'TKI',
                                 'Lainnya',
                             ];
@@ -136,68 +151,103 @@
             </div>
         </div>
     </div>
-    <script>
-        function setValueIfExists(id, value) {
-            const el = document.getElementById(id);
-            if (el && value !== undefined && value !== null && value !== '') el.value = value;
+   <script>
+    function setValueIfExists(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = value || '';
+        }
+    }
+
+    function setSelectIfExists(id, value) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const rawValue = (value || '').toString().trim();
+
+        if (!rawValue) {
+            el.value = '';
+            return;
         }
 
-        function setSelectIfExists(id, value) {
-            const el = document.getElementById(id);
-            if (!el || !value) return;
+        const normalized = rawValue.toLowerCase();
 
-            const normalized = String(value).trim().toLowerCase();
-            const matched = Array.from(el.options).find(option =>
-                option.value.trim().toLowerCase() === normalized ||
-                option.text.trim().toLowerCase() === normalized
-            );
+        const matched = Array.from(el.options).find(option => {
+            const optionValue = option.value.toString().trim().toLowerCase();
+            const optionText = option.textContent.toString().trim().toLowerCase();
 
-            if (matched) el.value = matched.value;
+            return optionValue === normalized || optionText === normalized;
+        });
+
+        if (matched) {
+            el.value = matched.value;
+        } else {
+            const newOption = new Option(rawValue, rawValue, true, true);
+            el.add(newOption);
+            el.value = rawValue;
+
+            console.warn(`Value "${rawValue}" tidak ada di select #${id}, jadi ditambahkan otomatis.`);
         }
+    }
 
-        function formatTanggal(value) {
-            if (!value) return '';
-            const str = String(value);
+    function formatTanggal(value) {
+        if (!value) return '';
 
-            if (/^\d{4}-\d{2}-\d{2}/.test(str)) return str.substring(0, 10);
+        const str = String(value);
 
-            if (/^\d{2}-\d{2}-\d{4}/.test(str)) {
-                const p = str.split('-');
-                return `${p[2]}-${p[1]}-${p[0]}`;
-            }
-
+        if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
             return str.substring(0, 10);
         }
 
-        function autofillSkm() {
-            const nikInput = document.getElementById('nik');
-            if (!nikInput) return;
-
-            const nik = nikInput.value.trim();
-            if (nik.length < 10) return;
-
-            fetch(`/datapenduduk/lookup/${nik}`)
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success && result.data) {
-                        const d = result.data;
-
-                        setValueIfExists('nama', d.nama);
-                        setValueIfExists('tempat_lahir', d.tempat_lahir);
-                        setValueIfExists('tanggal_lahir', formatTanggal(d.tanggal_lahir));
-                        setValueIfExists('alamat', d.alamat);
-                        setSelectIfExists('pekerjaan', d.pekerjaan);
-                    }
-                })
-                .catch(err => console.log('Autofill SKM error:', err));
+        if (/^\d{2}-\d{2}-\d{4}/.test(str)) {
+            const p = str.split('-');
+            return `${p[2]}-${p[1]}-${p[0]}`;
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const nikInput = document.getElementById('nik');
-            if (nikInput) {
-                nikInput.addEventListener('blur', autofillSkm);
-                nikInput.addEventListener('change', autofillSkm);
-            }
-        });
-    </script>
+        return str.substring(0, 10);
+    }
+
+    function autofillSkm() {
+        const nikInput = document.getElementById('nik');
+        if (!nikInput) return;
+
+        const nik = nikInput.value.trim();
+
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(res => res.json())
+            .then(result => {
+                console.log('HASIL LOOKUP SKM:', result);
+
+                if (!result.success || !result.data) {
+                    alert(result.message || 'NIK tidak ditemukan');
+                    return;
+                }
+
+                const d = result.data;
+
+                setValueIfExists('nama', d.nama);
+                setValueIfExists('tempat_lahir', d.tempat_lahir);
+                setValueIfExists('tanggal_lahir', formatTanggal(d.tanggal_lahir));
+                setValueIfExists('alamat', d.alamat);
+
+                // INI BAGIAN PEKERJAAN
+                setSelectIfExists('pekerjaan', d.pekerjaan);
+            })
+            .catch(err => {
+                console.log('Autofill SKM error:', err);
+                alert('Gagal mengambil data penduduk');
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const nikInput = document.getElementById('nik');
+
+        if (nikInput) {
+            nikInput.addEventListener('blur', autofillSkm);
+            nikInput.addEventListener('change', autofillSkm);
+        }
+    });
+</script>
 @endsection

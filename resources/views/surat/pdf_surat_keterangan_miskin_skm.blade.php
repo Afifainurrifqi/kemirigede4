@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Surat Keterangan Miskin SKM</title>
@@ -177,134 +178,139 @@
 </head>
 
 <body>
-@php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    @php
+        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
 
-    $tanggalLahir = !empty($data->tanggal_lahir)
-        ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
-        : '...........................................';
-@endphp
+        $tanggalLahir = !empty($data->tanggal_lahir)
+            ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+            : '...........................................';
+    @endphp
 
-<!-- KOP SURAT -->
-<div class="kop-desa-container">
-    <table class="kop-desa-table">
-        <tr>
-            <td class="kop-desa-logo">
-                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
-            </td>
+    <!-- KOP SURAT -->
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
+            <tr>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-            <td class="kop-desa-text">
-                <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
-                <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="kop-desa-kontak">
-                    email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
-                </div>
-            </td>
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
 
-            <td class="kop-desa-logo">
+                {{--   {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td>
-        </tr>
-    </table>
+            </td> --}} --}}
+            </tr>
+        </table>
 
-    <hr class="kop-desa-garis">
-</div>
+        <hr class="kop-desa-garis">
+    </div>
 
-<div class="judul">SURAT KETERANGAN MISKIN (SKM)</div>
+    <div class="judul">SURAT KETERANGAN MISKIN (SKM)</div>
 
-<div class="nomor">
-    Nomor : {{ $data->nomor_surat ?? '422.4 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
-</div>
+    <div class="nomor">
+        Nomor : {{ $data->nomor_surat ?? '422.4 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+    </div>
 
-<div class="isi">
-    <p>Yang bertanda tangan dibawah ini:</p>
+    <div class="isi">
+        <p>Yang bertanda tangan dibawah ini:</p>
 
-    <table class="data">
+        <table class="data">
+            <tr>
+                <td>Nama</td>
+                <td>:</td>
+                <td>Hari Purnawan, S.Sos.</td>
+            </tr>
+            <tr>
+                <td>Jabatan</td>
+                <td>:</td>
+                <td>KEPALA DESA KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar</td>
+            </tr>
+        </table>
+
+        <p>Menerangkan dengan sebenarnya bahwa:</p>
+
+        <table class="data">
+            <tr>
+                <td>Nama</td>
+                <td>:</td>
+                <td>{{ $data->nama ?? '...........................................' }}</td>
+            </tr>
+            <tr>
+                <td>Tempat Tgl Lahir</td>
+                <td>:</td>
+                <td>{{ $data->tempat_lahir ?? '....................' }}, {{ $tanggalLahir }}</td>
+            </tr>
+            <tr>
+                <td>NIK</td>
+                <td>:</td>
+                <td>{{ $data->nik ?? '...........................................' }}</td>
+            </tr>
+            <tr>
+                <td>Pekerjaan</td>
+                <td>:</td>
+                <td>{{ $data->pekerjaan ?? '...........................................' }}</td>
+            </tr>
+            <tr>
+                <td>Alamat</td>
+                <td>:</td>
+                <td>{{ $data->alamat ?? '...........................................' }}</td>
+            </tr>
+        </table>
+
+        <p>
+            Bahwa orang tersebut diatas adalah keluarga miskin yang belum mempunyai kartu
+            Jamkesmas maupun kartu Jamkesda Provinsi Jawa Timur.
+        </p>
+
+        <p>
+            Demikian surat keterangan miskin ini dibuat dan dipergunakan sesuai dengan
+            ketentuan yang berlaku dalam pelayanan Jamkesda Provinsi Jawa Timur.
+        </p>
+    </div>
+
+    <table class="ttd">
         <tr>
-            <td>Nama</td>
-            <td>:</td>
-            <td>Hari Purnawan, S.Sos.</td>
+            <td colspan="2">Blitar, {{ $tanggalSurat }}</td>
         </tr>
         <tr>
-            <td>Jabatan</td>
-            <td>:</td>
-            <td>KEPALA DESA KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar</td>
-        </tr>
-    </table>
-
-    <p>Menerangkan dengan sebenarnya bahwa:</p>
-
-    <table class="data">
-        <tr>
-            <td>Nama</td>
-            <td>:</td>
-            <td>{{ $data->nama ?? '...........................................' }}</td>
+            <td colspan="2"><strong>TIM VERIFIKATOR DESA:</strong></td>
         </tr>
         <tr>
-            <td>Tempat Tgl Lahir</td>
-            <td>:</td>
-            <td>{{ $data->tempat_lahir ?? '....................' }}, {{ $tanggalLahir }}</td>
+            <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
+            <td><strong>Bidan Desa</strong></td>
         </tr>
         <tr>
-            <td>NIK</td>
-            <td>:</td>
-            <td>{{ $data->nik ?? '...........................................' }}</td>
-        </tr>
-        <tr>
-            <td>Pekerjaan</td>
-            <td>:</td>
-            <td>{{ $data->pekerjaan ?? '...........................................' }}</td>
-        </tr>
-        <tr>
-            <td>Alamat</td>
-            <td>:</td>
-            <td>{{ $data->alamat ?? '...........................................' }}</td>
-        </tr>
-    </table>
+            <td>
 
-    <p>
-        Bahwa orang tersebut diatas adalah keluarga miskin yang belum mempunyai kartu
-        Jamkesmas maupun kartu Jamkesda Provinsi Jawa Timur.
-    </p>
+                <br><br><br>
+                {{-- <div class="ttd-img-wrapper">
+                    <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
+                </div> --}}
 
-    <p>
-        Demikian surat keterangan miskin ini dibuat dan dipergunakan sesuai dengan
-        ketentuan yang berlaku dalam pelayanan Jamkesda Provinsi Jawa Timur.
-    </p>
-</div>
 
-<table class="ttd">
-    <tr>
-        <td colspan="2">Blitar, {{ $tanggalSurat }}</td>
-    </tr>
-    <tr>
-        <td colspan="2"><strong>TIM VERIFIKATOR DESA:</strong></td>
-    </tr>
-    <tr>
-        <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
-        <td><strong>Bidan Desa</strong></td>
-    </tr>
-    <tr>
-        <td>
-            <div class="ttd-img-wrapper">
-                <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-            </div>
+                <div class="nama-kades">Hari Purnawan, S.Sos.</div>
 
-            <div class="nama-kades">Hari Purnawan, S.Sos.</div>
-
+              {{--
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
-        </td>
-        <td>
-            <div class="space-sign"></div>
-            <strong><u>...........................................</u></strong>
-        </td>
-    </tr>
-</table>
+            </div> --}}
+            </td>
+            <td>
+                <div class="space-sign"></div>
+                <strong><u>...........................................</u></strong>
+            </td>
+        </tr>
+    </table>
 
 </body>
+
 </html>

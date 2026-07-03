@@ -198,10 +198,11 @@
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
             </div>
             <p class="nama"><u>Hari Purnawan, S.Sos.</u></p>
+              {{--
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </td>
     </tr>
 </table>

@@ -330,9 +330,10 @@
                 <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
                 <p>Hormat Saya,</p>
 
-                <div class="ttd-img-wrapper">
+                {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-                </div>
+                </div> --}}
+
 
                 <div class="materai">Materai<br>10.000</div>
 

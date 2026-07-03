@@ -344,9 +344,10 @@
                 <p>Blitar, {{ $tanggalSurat }}</p>
                 <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
 
-                {{-- <div class="ttd-img-wrapper">
+                {{-- {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
+ --}}
 
                 <br><br><br>
 

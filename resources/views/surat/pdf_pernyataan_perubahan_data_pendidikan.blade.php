@@ -290,9 +290,10 @@
                 <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
                 <p>Saya yang menyatakan,</p>
 
-                <div class="ttd-img-wrapper">
+                {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-                </div>
+                </div> --}}
+
 
                 <p class="nama-kades">
                     <u>{{ $data->nama ?? '...........................................' }}</u>

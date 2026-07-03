@@ -193,9 +193,9 @@
                 </div>
             </td>
 
-            <td class="kop-desa-logo">
+              {{--   {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td>
+            </td> --}} --}}
         </tr>
     </table>
 
@@ -298,10 +298,11 @@
                 {{ $data->nama ?? '...........................................' }}
             </div>
 
+              {{--
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </td>
     </tr>
 </table>

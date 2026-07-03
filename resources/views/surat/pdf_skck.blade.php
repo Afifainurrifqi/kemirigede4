@@ -223,9 +223,9 @@
                     </div>
                 </td>
 
-                <td class="kop-desa-logo">
+                {{-- <td class="kop-desa-logo">
                     <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-                </td>
+                </td> --}}
             </tr>
         </table>
 
@@ -334,9 +334,10 @@
             </td>
 
             <td>
-                <div class="ttd-img-wrapper">
+                {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-                </div>
+                </div> --}}
+
 
                 <div class="nama-ttd">Hari Purnawan, S.Sos. S.Pd.I</div>
 
