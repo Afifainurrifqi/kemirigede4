@@ -68,7 +68,8 @@
                             SITAKRO</a>
                         <a class="wow fadeInDown btn btn-light border btn-md popup-youtube"
                             href="https://www.youtube.com/watch?v=l_nwLjT8Vzg">PROFILE SITAKRO</a>
-                        <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('farm.start') }}">Pertanian</a>
+                        <a class="wow fadeInDown btn btn-light border btn-md"
+                            href="{{ route('farm.start') }}">Pertanian</a>
                         <a class="wow fadeInDown btn btn-light border btn-md"
                             href="{{ route('surat.usersurat') }}">Pelayanan Surat</a>
                         {{-- <a href="https://www.youtube.com/watch?v=l_nwLjT8Vzg" class="popup-youtube light video-play-button video-inline">
@@ -277,9 +278,9 @@
         <div class="row">
             <div class="google-maps">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26373.635146314475!2d112.2089291389598!3d-8.11435107478953!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78eb5100ed161f%3A0x391127009ed5ff3d!2sKemirigede%2C%20Kec.%20Kanigoro%2C%20Kabupaten%20Blitar%2C%20Jawa%20Timur!5e1!3m2!1sid!2sid!4v1764128204691!5m2!1sid!2sid"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31602.429163630488!2d112.38799725251108!3d-8.070479944259121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7890938344505f%3A0x8ace940bb054e3cf!2sKemirigede%2C%20Kec.%20Kesamben%2C%20Kabupaten%20Blitar%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1783096869301!5m2!1sid!2sid"
                     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
         </div>
     </div>
