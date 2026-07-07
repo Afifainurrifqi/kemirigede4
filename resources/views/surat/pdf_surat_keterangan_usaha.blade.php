@@ -198,9 +198,9 @@
                     email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
                 </div>
             </td>
-   {{--   {{-- <td class="kop-desa-logo">
+      {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td> --}} --}}
+            </td> --}} 
         </tr>
     </table>
 

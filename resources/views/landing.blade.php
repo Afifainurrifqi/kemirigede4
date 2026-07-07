@@ -58,7 +58,7 @@
             <div class="row">
                 <div class="double-items text-light">
                     <div class="info col-md-7">
-                        <img src="/assets3/img/logosi2.png" class="wow slideInLeft" style="width: 30%">
+                        <img src="/assets/images/logositakro.png" class="wow slideInLeft" style="width: 30%">
                         <h2 class="wow slideInLeft">SITAKRO KEMIRIGEDE </h2>
                         <p class="wow fadeInLeft">
                             Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten
