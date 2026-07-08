@@ -296,7 +296,7 @@
             <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
             <p><strong>Hormat Saya,</strong></p>
 
-            <div class="materai">Materai<br>10.000</div>
+            {{-- <div class="materai">Materai<br>10.000</div> --}}
 
             <div class="signature-line"></div>
 

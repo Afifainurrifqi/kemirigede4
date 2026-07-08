@@ -39,14 +39,14 @@
                         <div class="mb-3">
                             <label class="form-label">NIK <span class="text-danger">*</span></label>
                             <input type="text" name="nik" id="nik" class="form-control"
-                                   value="{{ old('nik') }}" required>
+                                value="{{ old('nik') }}" required>
                         </div>
 
                         <!-- Nama -->
                         <div class="mb-3">
                             <label class="form-label">Nama</label>
                             <input type="text" name="nama" id="nama" class="form-control"
-                                   value="{{ old('nama') }}" required>
+                                value="{{ old('nama') }}" required>
                         </div>
 
                         <!-- Tempat & Tanggal Lahir -->
@@ -54,13 +54,12 @@
                             <label class="form-label">Tempat/Tanggal Lahir</label>
                             <div class="row g-2">
                                 <div class="col-6">
-                                    <input type="text" name="ttl_tempat" id="ttl_tempat"
-                                           class="form-control" placeholder="Tempat"
-                                           value="{{ old('ttl_tempat') }}" required>
+                                    <input type="text" name="ttl_tempat" id="ttl_tempat" class="form-control"
+                                        placeholder="Tempat" value="{{ old('ttl_tempat') }}" required>
                                 </div>
                                 <div class="col-6">
-                                    <input type="date" name="ttl_tanggal" id="ttl_tanggal"
-                                           class="form-control" value="{{ old('ttl_tanggal') }}" required>
+                                    <input type="date" name="ttl_tanggal" id="ttl_tanggal" class="form-control"
+                                        value="{{ old('ttl_tanggal') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -70,8 +69,9 @@
                             <label class="form-label">Pekerjaan</label>
                             <select name="pekerjaan" id="pekerjaan" class="form-control" required>
                                 <option value="">-- Pilih pekerjaan --</option>
-                                @foreach (['BELUM/TIDAK BEKERJA','PELAJAR/MAHASISWA','KARYAWAN SWASTA','IBU RUMAH TANGGA','WIRASWASTA','PETANI/PEKEBUN','BURUH TANI','PEDAGANG','PEGAWAI NEGERI SIPIL (PNS)','KARYAWAN HONORER','Lainnya'] as $job)
-                                    <option value="{{ $job }}" {{ old('pekerjaan') == $job ? 'selected' : '' }}>
+                                @foreach (['BELUM/TIDAK BEKERJA', 'PELAJAR/MAHASISWA', 'TIDAK/BELUM SEKOLAH', 'KARYAWAN SWASTA', 'IBU RUMAH TANGGA', 'WIRASWASTA', 'TENTARA NASIONAL INDONESIA (TNI)', 'KEPOLISIAN RI (POLRI)', 'DOSEN', 'GURU', 'Guru agama', 'KEPALA DESA', 'PERANGKAT DESA', 'Pegawai Kantor Desa', 'BIDAN', 'DOKTER', 'PERAWAT', 'PETANI/PEKEBUN PEMILIK LAHAN', 'BURUH TANI/PERKEBUNAN', 'PEDAGANG', 'PEGAWAI NEGERI SIPIL (PNS)', 'BURUH HARIAN LEPAS', 'SOPIR', 'KARYAWAN BUMN', 'PENSIUNAN', 'PEMBANTU RUMAH TANGGA', 'BURUH PETERNAKAN', 'KONSTRUKSI', 'PELAUT', 'NELAYAN/PERIKANAN', 'KARYAWAN HONORER', 'PETERNAK', 'MEKANIK', 'PENATA RIAS', 'TUKANG LAS/PANDAI BESI', 'INDUSTRI', 'USTADZ/MUBALIGH', 'TABIB', 'BURUH NELAYAN/PERIKANAN', 'JURU MASAK', 'SENIMAN', 'AKUNTAN', 'Petani/Pekebun penyewa', 'TKI', 'Lainnya'] as $job)
+                                    <option value="{{ $job }}"
+                                        {{ old('pekerjaan') == $job ? 'selected' : '' }}>
                                         {{ $job }}
                                     </option>
                                 @endforeach
@@ -91,14 +91,14 @@
                         <div class="mb-3">
                             <label class="form-label">Nama Yang Sesuai</label>
                             <input type="text" name="nama_sesuai" class="form-control"
-                                   value="{{ old('nama_sesuai') }}" required>
+                                value="{{ old('nama_sesuai') }}" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Sumber data Nama</label>
                             <input type="text" name="sumber_data_nama" class="form-control"
-                                   placeholder="contoh: Buku Nikah, KTP, KK"
-                                   value="{{ old('sumber_data_nama') }}" required>
+                                placeholder="contoh: Buku Nikah, KTP, KK" value="{{ old('sumber_data_nama') }}"
+                                required>
                         </div>
 
                         <input type="hidden" name="status_surat" value="Pending">
@@ -106,8 +106,8 @@
 
                         <div class="mb-3">
                             <label class="form-label">No WhatsApp</label>
-                            <input type="text" name="nowa" class="form-control"
-                                   value="{{ old('nowa') }}" required>
+                            <input type="text" name="nowa" class="form-control" value="{{ old('nowa') }}"
+                                required>
                         </div>
 
                         <div class="text-end">
@@ -140,6 +140,31 @@
 
     <!-- Autofill Script -->
     <script>
+        function setSelectValue(selectId, value) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+
+            const dbValue = (value || '').trim();
+            const normalizedDb = dbValue.toUpperCase();
+
+            let found = false;
+
+            for (let i = 0; i < select.options.length; i++) {
+                const optionValue = select.options[i].value.trim().toUpperCase();
+
+                if (optionValue === normalizedDb) {
+                    select.selectedIndex = i;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found && dbValue !== '') {
+                const newOption = new Option(dbValue, dbValue, true, true);
+                select.add(newOption);
+            }
+        }
+
         function autofillBedaNama() {
             const nik = document.getElementById('nik').value.trim();
             if (nik.length < 10) return;
@@ -147,14 +172,19 @@
             fetch(`/datapenduduk/lookup/${nik}`)
                 .then(res => res.json())
                 .then(result => {
+                    console.log(result);
+
                     if (result.success && result.data) {
                         const d = result.data;
-                        document.getElementById('nama').value       = d.nama || '';
+
+                        document.getElementById('nama').value = d.nama || '';
                         document.getElementById('ttl_tempat').value = d.tempat_lahir || '';
-                        document.getElementById('ttl_tanggal').value = d.tanggal_lahir
-                            ? d.tanggal_lahir.substring(0, 10) : '';
-                        document.getElementById('alamat').value     = d.alamat || '';
-                        document.getElementById('pekerjaan').value  = d.pekerjaan || '';
+                        document.getElementById('ttl_tanggal').value = d.tanggal_lahir ?
+                            d.tanggal_lahir.substring(0, 10) :
+                            '';
+                        document.getElementById('alamat').value = d.alamat || '';
+
+                        setSelectValue('pekerjaan', d.pekerjaan);
                     }
                 })
                 .catch(err => console.log(err));
@@ -162,10 +192,13 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const nikInput = document.getElementById('nik');
+
             if (nikInput) {
                 nikInput.addEventListener('blur', autofillBedaNama);
+                nikInput.addEventListener('change', autofillBedaNama);
             }
         });
     </script>
 </body>
+
 </html>

@@ -51,20 +51,21 @@
 
                             <div class="mb-3">
                                 <label>Pekerjaan</label>
-                                <select name="pekerjaan" class="form-control">
-                                    <option value="">-- Pilih Pekerjaan --</option>
-                                    @foreach (['BELUM/TIDAK BEKERJA', 'PELAJAR/MAHASISWA', 'KARYAWAN SWASTA', 'IBU RUMAH TANGGA', 'WIRASWASTA', 'PETANI/PEKEBUN', 'BURUH TANI', 'PEDAGANG', 'PEGAWAI NEGERI SIPIL (PNS)', 'KARYAWAN HONORER', 'Lainnya'] as $job)
+                                <select name="pekerjaan" id="pekerjaan" class="form-control" required>
+                                    <option value="">-- Pilih --</option>
+                                    @foreach (['BELUM/TIDAK BEKERJA', 'PELAJAR/MAHASISWA', 'TIDAK/BELUM SEKOLAH', 'KARYAWAN SWASTA', 'IBU RUMAH TANGGA', 'WIRASWASTA', 'TENTARA NASIONAL INDONESIA (TNI)', 'KEPOLISIAN RI (POLRI)', 'DOSEN', 'GURU', 'Guru agama', 'KEPALA DESA', 'PERANGKAT DESA', 'Pegawai Kantor Desa', 'BIDAN', 'DOKTER', 'PERAWAT', 'PETANI/PEKEBUN PEMILIK LAHAN', 'BURUH TANI/PERKEBUNAN', 'PEDAGANG', 'PEGAWAI NEGERI SIPIL (PNS)', 'BURUH HARIAN LEPAS', 'SOPIR', 'KARYAWAN BUMN', 'PENSIUNAN', 'PEMBANTU RUMAH TANGGA', 'BURUH PETERNAKAN', 'KONSTRUKSI', 'PELAUT', 'NELAYAN/PERIKANAN', 'KARYAWAN HONORER', 'PETERNAK', 'MEKANIK', 'PENATA RIAS', 'TUKANG LAS/PANDAI BESI', 'INDUSTRI', 'USTADZ/MUBALIGH', 'TABIB', 'BURUH NELAYAN/PERIKANAN', 'JURU MASAK', 'SENIMAN', 'AKUNTAN', 'Petani/Pekebun penyewa', 'TKI', 'Lainnya'] as $job)
                                         <option value="{{ $job }}"
-                                            {{ old('pekerjaan') == $job ? 'selected' : '' }}>{{ $job }}</option>
+                                            {{ old('pekerjaan') == $job ? 'selected' : '' }}>
+                                            {{ $job }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="mb-3">
                                 <label>Alamat <span class="text-danger">*</span></label>
-                                <textarea name="alamat" class="form-control" rows="2" required>{{ old('alamat') }}</textarea>
+                                <textarea name="alamat" id="alamat" class="form-control" rows="2" required>{{ old('alamat') }}</textarea>
                             </div>
-
                             <hr>
                             <h6 class="fw-bold mb-2">Data Perubahan Pendidikan</h6>
 
@@ -172,29 +173,61 @@
         </div>
     </div>
 
-    <script>
-        function autofillPerubahanPendidikan() {
-            const nik = document.getElementById('nik').value.trim();
-            if (nik.length < 10) return;
+   <script>
+    function setSelectValue(selectId, value) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
 
-            fetch(`/datapenduduk/lookup/${nik}`)
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success && result.data) {
-                        const d = result.data;
-                        document.getElementById('nama').value = d.nama || '';
-                        document.getElementById('ttl_tempat').value = d.tempat_lahir || '';
-                        document.getElementById('ttl_tanggal').value = d.tanggal_lahir ? d.tanggal_lahir.substring(0,
-                            10) : '';
-                        document.getElementById('alamat').value = d.alamat || '';
-                        document.getElementById('pekerjaan').value = d.pekerjaan || '';
-                    }
-                });
+        const dbValue = (value || '').trim();
+        const normalizedDb = dbValue.toUpperCase();
+
+        let found = false;
+
+        for (let i = 0; i < select.options.length; i++) {
+            const optionValue = select.options[i].value.trim().toUpperCase();
+
+            if (optionValue === normalizedDb) {
+                select.selectedIndex = i;
+                found = true;
+                break;
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const nikInput = document.getElementById('nik');
-            if (nikInput) nikInput.addEventListener('blur', autofillPerubahanPendidikan);
-        });
-    </script>
+        if (!found && dbValue !== '') {
+            select.add(new Option(dbValue, dbValue, true, true));
+        }
+    }
+
+    function autofillPerubahanPendidikan() {
+        const nik = document.getElementById('nik').value.trim();
+        if (nik.length < 10) return;
+
+        fetch(`/datapenduduk/lookup/${nik}`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    const d = result.data;
+
+                    document.getElementById('nama').value = d.nama || '';
+                    document.getElementById('ttl_tempat').value = d.tempat_lahir || '';
+                    document.getElementById('ttl_tanggal').value = d.tanggal_lahir
+                        ? d.tanggal_lahir.substring(0, 10)
+                        : '';
+                    document.getElementById('alamat').value = d.alamat || '';
+
+                    setSelectValue('pekerjaan', d.pekerjaan);
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const nikInput = document.getElementById('nik');
+
+        if (nikInput) {
+            nikInput.addEventListener('blur', autofillPerubahanPendidikan);
+            nikInput.addEventListener('change', autofillPerubahanPendidikan);
+        }
+    });
+</script>
 @endsection

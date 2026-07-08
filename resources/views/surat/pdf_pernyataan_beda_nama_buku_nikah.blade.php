@@ -213,7 +213,7 @@
                     </div>
                 </td>
 
-               {{-- <td class="kop-logo">
+                {{-- <td class="kop-logo">
                     <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td> --}}
             </tr>
@@ -292,17 +292,16 @@
                 {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
-
-
+                <br><br><br>
                 <p class="nama-kades">
                     <u>{{ $data->nama ?? '...........................................' }}</u>
                 </p>
 
-                <div class="barcode">
+                {{-- <div class="barcode">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                     <br>
                     <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
+                </div> --}}
             </td>
         </tr>
     </table>

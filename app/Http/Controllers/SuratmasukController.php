@@ -328,7 +328,10 @@ class SuratmasukController extends Controller
             return redirect()->route('surat.anakseorangibu.index');
         }
 
-        if ($kategori === 'adminduk' && $jenis_form === 'surat_pernyataan_akta_barcode_nomor_samabaru_isi_sendiri') {
+        if (
+            $kategori === 'adminduk' &&
+            Str::contains(strtolower($jenis_form), 'akta_barcode')
+        ) {
             return redirect()->route('surat.aktabarcode.index');
         }
 

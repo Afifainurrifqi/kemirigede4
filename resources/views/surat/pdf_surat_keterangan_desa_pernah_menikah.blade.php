@@ -296,8 +296,8 @@
             <br><br><br>
 
 
-            <div class="materai">Materai<br>10.000</div>
-
+            {{-- <div class="materai">Materai<br>10.000</div> --}}
+<br><br><br><br>
             <p>
                 <strong>
                       <p class="nama">Hari Purnawan, S.Sos.</p>

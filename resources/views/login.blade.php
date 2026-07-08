@@ -45,7 +45,7 @@
                     <div class="col-lg-9 col-xl-7 mx-auto position-relative">
 
                         <h1 class="mb-3 text-center">
-                            <img src="/assets3/img/logosi2.png" alt="Logo" height="55">
+                            <img src="/assets/images/logositakro.png" alt="Logo" height="55">
                         </h1>
                         <h2 class="mb-2 text-center">MASUK</h2>
                         <h3 class="mb-4 text-center">SITAKRO KEMIRIGEDE</h3>

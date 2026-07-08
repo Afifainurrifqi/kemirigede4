@@ -21,15 +21,16 @@
 
                     <h5 class="mb-3">Yang Bertandatangan</h5>
                     <div class="mb-3">
-                        <label class="form-label" for="ybt_nama">Nama</label>
-                        <input id="ybt_nama" name="ybt_nama" type="text" class="form-control" required
-                            value="{{ old('ybt_nama') }}">
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label" for="ybt_nik">NIK</label>
                         <input id="ybt_nik" name="ybt_nik" type="text" class="form-control" required
                             value="{{ old('ybt_nik') }}">
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="ybt_nama">Nama</label>
+                        <input id="ybt_nama" name="ybt_nama" type="text" class="form-control" required
+                            value="{{ old('ybt_nama') }}">
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label" for="ybt_alamat">Alamat</label>
                         <textarea id="ybt_alamat" name="ybt_alamat" rows="2" class="form-control" required>{{ old('ybt_alamat') }}</textarea>
@@ -101,7 +102,7 @@
                 .then(result => {
                     if (result.success && result.data) {
                         const d = result.data;
-                        document.getElementById('ybt_nama').value   = d.nama || '';
+                        document.getElementById('ybt_nama').value = d.nama || '';
                         document.getElementById('ybt_alamat').value = d.alamat || '';
                     } else {
                         // Opsional: beri tahu user jika NIK tidak ditemukan

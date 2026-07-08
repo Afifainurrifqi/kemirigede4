@@ -400,7 +400,7 @@
 
             <br><br><br>
 
-            <div class="materai">Materai<br>10.000</div>
+            {{-- <div class="materai">Materai<br>10.000</div> --}}
 
             <p><strong><u>Hari Purnawan, S.Sos. S.Pd.I</u></strong></p>
 

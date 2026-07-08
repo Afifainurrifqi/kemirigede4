@@ -295,8 +295,9 @@
             <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
             <p>Saya yang menyatakan,</p>
 
-            <div class="materai">Materai<br>10.000</div>
+            {{-- <div class="materai">Materai<br>10.000</div> --}}
 
+            <br><br><br>
             <div class="signature-line"></div>
 
             <p>
@@ -305,11 +306,11 @@
                 </strong>
             </p>
 
-            <div class="barcode">
+            {{-- <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                 <br>
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </div>
     </div>
 

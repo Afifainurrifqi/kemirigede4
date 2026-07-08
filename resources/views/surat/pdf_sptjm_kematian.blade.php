@@ -185,6 +185,26 @@
             text-align: center;
         }
 
+
+
+       .judul-surat {
+    text-align: center;
+    font-weight: bold;
+    font-size: 13pt;
+    text-transform: uppercase;
+    text-decoration: underline;
+    line-height: 1.2;
+    margin: 12px 0 0 0;
+}
+
+.nomor-surat {
+    text-align: center;
+    font-weight: bold;
+    font-size: 11pt;
+    margin-top: 2px;
+    margin-bottom: 18px;
+}
+
         .nama-pernyataan {
             display: inline-block;
             min-width: 230px;
@@ -211,190 +231,195 @@
 
 <body>
 
-@php
-    \Carbon\Carbon::setLocale('id');
+    @php
+        \Carbon\Carbon::setLocale('id');
 
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
 
-    $tanggalLahirPemohon = !empty($data->ttl_tanggal)
-        ? \Carbon\Carbon::parse($data->ttl_tanggal)->translatedFormat('d F Y')
-        : '';
+        $tanggalLahirPemohon = !empty($data->ttl_tanggal)
+            ? \Carbon\Carbon::parse($data->ttl_tanggal)->translatedFormat('d F Y')
+            : '';
 
-    $tanggalLahirJenazah = !empty($data->ttl_tanggal_jenazah)
-        ? \Carbon\Carbon::parse($data->ttl_tanggal_jenazah)->translatedFormat('d F Y')
-        : '';
+        $tanggalLahirJenazah = !empty($data->ttl_tanggal_jenazah)
+            ? \Carbon\Carbon::parse($data->ttl_tanggal_jenazah)->translatedFormat('d F Y')
+            : '';
 
-    $tanggalKematian = !empty($data->tanggal_kematian)
-        ? \Carbon\Carbon::parse($data->tanggal_kematian)->translatedFormat('d F Y')
-        : '';
+        $tanggalKematian = !empty($data->tanggal_kematian)
+            ? \Carbon\Carbon::parse($data->tanggal_kematian)->translatedFormat('d F Y')
+            : '';
 
-    $ttlPemohon = trim(
-        ($data->ttl_tempat ?? '') . (!empty($tanggalLahirPemohon) ? ', ' . $tanggalLahirPemohon : '')
-    );
+        $ttlPemohon = trim(
+            ($data->ttl_tempat ?? '') . (!empty($tanggalLahirPemohon) ? ', ' . $tanggalLahirPemohon : ''),
+        );
 
-    $ttlJenazah = trim(
-        ($data->ttl_tempat_jenazah ?? '') . (!empty($tanggalLahirJenazah) ? ', ' . $tanggalLahirJenazah : '')
-    );
-@endphp
+        $ttlJenazah = trim(
+            ($data->ttl_tempat_jenazah ?? '') . (!empty($tanggalLahirJenazah) ? ', ' . $tanggalLahirJenazah : ''),
+        );
+    @endphp
 
-<!-- KOP SURAT -->
-<div class="kop-container">
-    <table class="kop-table">
-        <tr>
-            <td class="kop-logo">
-                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
-            </td>
+    <!-- KOP SURAT -->
+    <div class="kop-container">
+        <table class="kop-table">
+            <tr>
+                <td class="kop-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-            <td class="kop-text">
-                <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-baris-2">KECAMATAN KESAMBEN</div>
-                <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
-                <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="kop-kontak">
-                    email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
-                </div>
-            </td>
+                <td class="kop-text">
+                    <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-baris-2">KECAMATAN KESAMBEN</div>
+                    <div class="kop-baris-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
 
-            {{-- <td class="kop-logo">
+                {{-- <td class="kop-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
             </td> --}}
+            </tr>
+        </table>
+
+        <hr class="kop-garis">
+    </div>
+
+    <!-- JUDUL SURAT -->
+    <div class="judul-surat">
+        SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK (SPTJM)<br>
+        KEBENARAN DATA KEMATIAN
+    </div>
+    <div class="nomor-surat">
+        Nomor: {{ $data->nomor_surat ?? '460 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+    </div>
+
+    <!-- DATA PEMBUAT PERNYATAAN -->
+    <p>Saya yang bertanda tangan di bawah ini:</p>
+
+    <table class="data-table">
+        <tr>
+            <td class="label">Nama</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->nama ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">NIK</td>
+            <td class="colon">:</td>
+            <td class="value">{{ $data->nik ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Tempat/Tgl. Lahir</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $ttlPemohon }}</td>
+        </tr>
+        <tr>
+            <td class="label">Pekerjaan</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->pekerjaan ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Alamat</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->alamat ?? '' }}</td>
         </tr>
     </table>
 
-    <hr class="kop-garis">
-</div>
+    <p>Menyatakan dengan ini, bahwa:</p>
 
-<!-- JUDUL SURAT -->
-<div class="judul-surat">
-    SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK (SPTJM)<br>
-    KEBENARAN DATA KEMATIAN
-</div>
+    <!-- DATA JENAZAH -->
+    <table class="data-table">
+        <tr>
+            <td class="label">Nama Jenazah</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->nama_jenazah ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">NIK</td>
+            <td class="colon">:</td>
+            <td class="value">{{ $data->nik_jenazah ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Tempat/Tgl. Lahir</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $ttlJenazah }}</td>
+        </tr>
+        <tr>
+            <td class="label">Jenis Kelamin</td>
+            <td class="colon">:</td>
+            <td class="value">{{ $data->jenis_kelamin ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Anak ke *)</td>
+            <td class="colon">:</td>
+            <td class="value">{{ $data->anak_ke ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Nama Ayah Kandung</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->nama_ayah_kandung ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Nama Ibu Kandung</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->nama_ibu_kandung ?? '' }}</td>
+        </tr>
+    </table>
 
-<!-- DATA PEMBUAT PERNYATAAN -->
-<p>Saya yang bertanda tangan di bawah ini:</p>
+    <table class="data-table">
+        <tr>
+            <td class="label">Meninggal dunia pada tanggal</td>
+            <td class="colon">:</td>
+            <td class="value">{{ $tanggalKematian }}</td>
+        </tr>
+        <tr>
+            <td class="label">Terlampir surat kematian dari</td>
+            <td class="colon">:</td>
+            <td class="value uppercase">{{ $data->surat_kematian_dari ?? '' }}</td>
+        </tr>
+    </table>
 
-<table class="data-table">
-    <tr>
-        <td class="label">Nama</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->nama ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">NIK</td>
-        <td class="colon">:</td>
-        <td class="value">{{ $data->nik ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">Tempat/Tgl. Lahir</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $ttlPemohon }}</td>
-    </tr>
-    <tr>
-        <td class="label">Pekerjaan</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->pekerjaan ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">Alamat</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->alamat ?? '' }}</td>
-    </tr>
-</table>
+    <p class="paragraph-final">
+        Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan apabila
+        dikemudian hari ternyata pernyataan saya tidak benar, maka saya bersedia diproses
+        secara hukum sesuai dengan peraturan perundang-undangan yang berlaku dan
+        dokumen yang diterbitkan dari pernyataan ini menjadi tidak sah.
+    </p>
 
-<p>Menyatakan dengan ini, bahwa:</p>
+    <!-- TANDA TANGAN DAN SAKSI -->
+    <table class="ttd-table">
+        <tr>
+            <td class="ttd-left">
+                <p class="saksi-title">Saksi I,</p>
+                <div class="saksi-name uppercase">{{ $data->nama_saksi_1 ?? '' }}</div>
+                <div class="saksi-nik">NIK: {{ $data->nik_saksi_1 ?? '' }}</div>
 
-<!-- DATA JENAZAH -->
-<table class="data-table">
-    <tr>
-        <td class="label">Nama Jenazah</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->nama_jenazah ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">NIK</td>
-        <td class="colon">:</td>
-        <td class="value">{{ $data->nik_jenazah ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">Tempat/Tgl. Lahir</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $ttlJenazah }}</td>
-    </tr>
-    <tr>
-        <td class="label">Jenis Kelamin</td>
-        <td class="colon">:</td>
-        <td class="value">{{ $data->jenis_kelamin ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">Anak ke *)</td>
-        <td class="colon">:</td>
-        <td class="value">{{ $data->anak_ke ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">Nama Ayah Kandung</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->nama_ayah_kandung ?? '' }}</td>
-    </tr>
-    <tr>
-        <td class="label">Nama Ibu Kandung</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->nama_ibu_kandung ?? '' }}</td>
-    </tr>
-</table>
+                <p class="saksi-title">Saksi II,</p>
+                <div class="saksi-name uppercase">{{ $data->nama_saksi_2 ?? '' }}</div>
+                <div class="saksi-nik">NIK: {{ $data->nik_saksi_2 ?? '' }}</div>
 
-<table class="data-table">
-    <tr>
-        <td class="label">Meninggal dunia pada tanggal</td>
-        <td class="colon">:</td>
-        <td class="value">{{ $tanggalKematian }}</td>
-    </tr>
-    <tr>
-        <td class="label">Terlampir surat kematian dari</td>
-        <td class="colon">:</td>
-        <td class="value uppercase">{{ $data->surat_kematian_dari ?? '' }}</td>
-    </tr>
-</table>
+                <div class="keterangan">
+                    Keterangan:<br>
+                    - Ditulis dengan huruf besar atau balok<br>
+                    *) Ditulis urutan kelahiran anak.
+                </div>
+            </td>
 
-<p class="paragraph-final">
-    Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan apabila
-    dikemudian hari ternyata pernyataan saya tidak benar, maka saya bersedia diproses
-    secara hukum sesuai dengan peraturan perundang-undangan yang berlaku dan
-    dokumen yang diterbitkan dari pernyataan ini menjadi tidak sah.
-</p>
+            <td class="ttd-right">
+                <p>Blitar, {{ $tanggalSurat }}</p>
+                <p>Saya yang menyatakan,</p>
 
-<!-- TANDA TANGAN DAN SAKSI -->
-<table class="ttd-table">
-    <tr>
-        <td class="ttd-left">
-            <p class="saksi-title">Saksi I,</p>
-            <div class="saksi-name uppercase">{{ $data->nama_saksi_1 ?? '' }}</div>
-            <div class="saksi-nik">NIK: {{ $data->nik_saksi_1 ?? '' }}</div>
-
-            <p class="saksi-title">Saksi II,</p>
-            <div class="saksi-name uppercase">{{ $data->nama_saksi_2 ?? '' }}</div>
-            <div class="saksi-nik">NIK: {{ $data->nik_saksi_2 ?? '' }}</div>
-
-            <div class="keterangan">
-                Keterangan:<br>
-                - Ditulis dengan huruf besar atau balok<br>
-                *) Ditulis urutan kelahiran anak.
-            </div>
-        </td>
-
-        <td class="ttd-right">
-            <p>Blitar, {{ $tanggalSurat }}</p>
-            <p>Saya yang menyatakan,</p>
-
-            <div class="materai-space">
+                {{-- <div class="materai-space">
                 Meterai 10.000
-            </div>
+            </div> --}}
+                <br><br><br>
 
-            <div class="nama-pernyataan uppercase">
-                {{ $data->nama ?? '' }}
-            </div>
-        </td>
-    </tr>
-</table>
+                <div class="nama-pernyataan uppercase">
+                    {{ $data->nama ?? '' }}
+                </div>
+            </td>
+        </tr>
+    </table>
 
 </body>
+
 </html>

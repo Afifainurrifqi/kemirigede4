@@ -335,7 +335,7 @@
                 </div> --}}
 
 
-                <div class="materai">Materai<br>10.000</div>
+                {{-- <div class="materai">Materai<br>10.000</div> --}}
 
                 <p class="nama">
                     <u>{{ $data->nama ?? '...........................................' }}</u>
