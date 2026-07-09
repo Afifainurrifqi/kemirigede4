@@ -6,13 +6,14 @@
 
     <style>
         @page {
-            margin: 1.15cm 1.8cm 1.15cm 1.8cm;
+            size: A4;
+            margin: 1.0cm 1.5cm 1.0cm 1.5cm;
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 11.3pt;
-            line-height: 1.33;
+            font-size: 10.5pt;
+            line-height: 1.25;
             color: #000;
             margin: 0;
             padding: 0;
@@ -21,7 +22,7 @@
         /* KOP SURAT FIX */
         .kop-desa-container {
             width: 100%;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
 
         .kop-desa-table {
@@ -30,48 +31,48 @@
         }
 
         .kop-desa-logo {
-            width: 16%;
+            width: 15%;
             text-align: center;
             vertical-align: middle;
         }
 
         .kop-desa-logo img {
-            width: 105px;
+            width: 85px;
             height: auto;
         }
 
         .kop-desa-text {
-            width: 68%;
+            width: 85%;
             text-align: center;
             vertical-align: middle;
             line-height: 1.15;
         }
 
         .kop-desa-1 {
-            font-size: 15pt;
+            font-size: 13pt;
             font-weight: normal;
             text-transform: uppercase;
         }
 
         .kop-desa-2 {
-            font-size: 15pt;
+            font-size: 13pt;
             font-weight: normal;
             text-transform: uppercase;
         }
 
         .kop-desa-3 {
-            font-size: 17pt;
+            font-size: 15pt;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .kop-desa-alamat {
-            font-size: 11pt;
-            margin-top: 2px;
+            font-size: 10pt;
+            margin-top: 1px;
         }
 
         .kop-desa-kontak {
-            font-size: 10pt;
+            font-size: 9pt;
         }
 
         .kop-desa-garis {
@@ -79,40 +80,40 @@
             border-top: 3px solid #000;
             border-bottom: 1px solid #000;
             height: 3px;
-            margin: 6px 0 12px 0;
+            margin: 4px 0 8px 0;
         }
 
         .judul-surat {
             text-align: center;
             font-weight: bold;
-            font-size: 13.5pt;
+            font-size: 12.5pt;
             text-decoration: underline;
-            margin: 12px 0 4px 0;
+            margin: 6px 0 2px 0;
         }
 
         .nomor-surat {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .tulisan {
             text-align: justify;
-            margin: 6px 0;
+            margin: 4px 0;
         }
 
         table.data {
             width: 100%;
             border-collapse: collapse;
-            margin: 6px 0 10px 0;
+            margin: 4px 0;
         }
 
         table.data td {
-            padding: 2.5px 5px;
+            padding: 1.5px 4px;
             vertical-align: top;
         }
 
         table.data td:first-child {
-            width: 165px;
+            width: 150px;
         }
 
         table.data td:nth-child(2) {
@@ -120,19 +121,24 @@
         }
 
         .anak-list {
-            margin: 4px 0 8px 22px;
+            margin: 2px 0 4px 20px;
             padding: 0;
         }
 
         .anak-list li {
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             padding-left: 4px;
+        }
+
+        /* KONTROL AREA BOTTOM AGAR TIDAK PECAH Halaman */
+        .bottom-section {
+            page-break-inside: avoid;
         }
 
         .saksi-ttd-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 18px;
+            margin-top: 10px;
         }
 
         .saksi-cell {
@@ -147,7 +153,7 @@
         }
 
         .saksi-title {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: bold;
         }
 
@@ -157,23 +163,12 @@
         }
 
         table.saksi-table td {
-            padding: 2px 3px;
+            padding: 1.5px 2px;
             vertical-align: top;
         }
 
         .ttd-cell p {
-            margin: 2px 0;
-        }
-
-        .ttd-img-wrapper {
-            height: 55px;
-            margin: 5px 0 3px 0;
-            text-align: center;
-        }
-
-        .ttd-img {
-            width: 165px;
-            height: auto;
+            margin: 1px 0;
         }
 
         .nama-kades {
@@ -182,41 +177,16 @@
             margin: 3px 0 2px 0;
         }
 
-        .qr-section {
-            margin-top: 6px;
-            text-align: center;
-        }
-
-        .qr-section img {
-            width: 78px;
-            height: auto;
-        }
-
-        .qr-section small {
-            font-size: 7.3pt;
-            color: #555;
-            display: block;
-            margin-top: 2px;
-        }
-
         .camat-section {
             width: 45%;
             text-align: center;
-            margin-top: 10px;
-        }
-
-        .space-camat {
-            height: 55px;
+            margin-top: 8px;
         }
 
         @media print {
             body {
                 margin: 0;
                 padding: 0;
-            }
-
-            .kop-desa-garis {
-                margin: 6px 0 12px 0;
             }
         }
     </style>
@@ -250,31 +220,22 @@
                 <td class="kop-desa-logo">
                     <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
                 </td>
-
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
-                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                        email : Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
                     </div>
                 </td>
-
-                {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-                </td> --}}
             </tr>
         </table>
-
         <hr class="kop-desa-garis">
     </div>
 
     {{-- JUDUL --}}
-    <div class="judul-surat">
-        SURAT KETERANGAN WARIS
-    </div>
-
+    <div class="judul-surat">SURAT KETERANGAN WARIS</div>
     <div class="nomor-surat">
         No : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
     </div>
@@ -388,55 +349,49 @@
         sebagaimana mestinya.
     </p>
 
-    {{-- SAKSI DAN TANDA TANGAN --}}
-    <table class="saksi-ttd-table">
-        <tr>
-            <td class="saksi-cell">
-                <div class="saksi-title">Saksi-Saksi :</div>
+    {{-- CONTAINER SAKSI & TTD (DIPAKSA TIDAK BISA BREAK HALAMAN) --}}
+    <div class="bottom-section">
+        <table class="saksi-ttd-table">
+            <tr>
+                <td class="saksi-cell">
+                    <div class="saksi-title">Saksi-Saksi :</div>
+                    <table class="saksi-table">
+                        @for ($i = 0; $i < $jumlahSaksi; $i++)
+                            <tr>
+                                <td style="width: 15px;">{{ $i + 1 }}.</td>
+                                <td style="width: 130px;">{{ $namaSaksi[$i] ?? '...........................................' }}</td>
+                                <td style="width: 8px;">:</td>
+                                <td>__________________</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>NIK</td>
+                                <td>:</td>
+                                <td>{{ $nikSaksi[$i] ?? '...........................................' }}</td>
+                            </tr>
+                        @endfor
+                    </table>
+                </td>
 
-                <table class="saksi-table">
-                    @for ($i = 0; $i < $jumlahSaksi; $i++)
-                        <tr>
-                            <td style="width: 18px;">{{ $i + 1 }}.</td>
-                            <td style="width: 140px;">{{ $namaSaksi[$i] ?? '...........................................' }}</td>
-                            <td style="width: 10px;">:</td>
-                            <td>__________________</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>NIK</td>
-                            <td>:</td>
-                            <td>{{ $nikSaksi[$i] ?? '...........................................' }}</td>
-                        </tr>
-                    @endfor
-                </table>
-            </td>
+                <td class="ttd-cell">
+                    <p>Blitar, {{ $tanggalSurat }}</p>
+                    <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
 
-            <td class="ttd-cell">
-                <p>Blitar, {{ $tanggalSurat }}</p>
-                <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
+                    {{-- Jarak tanda tangan dioptimalkan dengan margin murni --}}
+                    <div style="margin-top: 45px;"></div>
 
-                {{-- <div class="ttd-img-wrapper">
-                    <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-                </div> --}}
+                    <p class="nama-kades">Hari Purnawan, S.Sos.</p>
+                </td>
+            </tr>
+        </table>
 
-
-                <p class="nama-kades">Hari Purnawan, S.Sos.</p>
-
-                <div class="qr-section">
-                    <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
-                    <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
-            </td>
-        </tr>
-    </table>
-
-    {{-- MENGETAHUI CAMAT --}}
-    <div class="camat-section">
-        <p><strong>Mengetahui</strong></p>
-        <p><strong>CAMAT KEMIRIGEDE</strong></p>
-        <div class="space-camat"></div>
-        <p><strong><u>...........................................</u></strong></p>
+        {{-- MENGETAHUI CAMAT --}}
+        <div class="camat-section">
+            <p><strong>Mengetahui</strong></p>
+            <p><strong>CAMAT KESAMBEN</strong></p>
+            <div style="margin-top: 45px;"></div>
+            <p><strong><u>...........................................</u></strong></p>
+        </div>
     </div>
 
 </body>

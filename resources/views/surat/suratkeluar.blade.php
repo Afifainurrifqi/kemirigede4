@@ -158,6 +158,8 @@
                                                     => 'SuratPermohonanPernyataanMiskin',
                                                 'App\Models\SuratPermohonanTebangPohon' => 'SuratPermohonanTebangPohon',
                                                 'surat_permohonan_tebang_pohon' => 'SuratPermohonanTebangPohon',
+                                                'App\Models\surat_keterangan_ghoib' => 'surat_keterangan_ghoib',
+                                                'App\Models\SuratKeteranganGhoib' => 'surat_keterangan_ghoib',
                                                 default => class_basename($item),
                                             };
 
@@ -358,6 +360,8 @@
                                                     {{ $item->nama_pemilik_kk ?? '-' }}
                                                 @elseif($jenisSurat === 'SuratKeteranganDomisiliWarga')
                                                     {{ $item->nama_lengkap ?? '-' }}
+                                                @elseif ($jenisSurat === 'surat_keterangan_ghoib')
+                                                    {{ $item->nama_pemohon ?? '-' }}
                                                 @elseif (
                                                     $jenisSurat === 'surat_permohonan_pengantar_keabsahan_akta_kelahiran' ||
                                                         $jenisSurat === 'SuratPermohonanPengantarKeabsahanAktaKelahiran')
@@ -465,6 +469,8 @@
                                                     {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanDanJaminan')
                                                     {{ $item->nik_pembuat ?? '-' }}
+                                                @elseif ($jenisSurat === 'surat_keterangan_ghoib')
+                                                    {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganDesaSebagaiPenduduk')
                                                     {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanTidakPunyaKartuJkn')
@@ -656,6 +662,8 @@
                                                     {{ $item->alamat_lembaga ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganDesaSebagaiPenduduk')
                                                     {{ $item->alamat ?? '-' }}
+                                                @elseif ($jenisSurat === 'surat_keterangan_ghoib')
+                                                    {{ $item->alamat ?? '-' }}
                                                 @elseif (
                                                     $jenisSurat === 'surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak' ||
                                                         $jenisSurat === 'SuratPermohonanPengantarKeabsahanAktaKelahiranAnak')
@@ -691,9 +699,9 @@
                                                     {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganKematianDesa')
                                                     {{ $item->alamat ?? '-' }}
-                                                     @elseif ($jenisSurat === 'SuratKeteranganDomisiliLembaga')
+                                                @elseif ($jenisSurat === 'SuratKeteranganDomisiliLembaga')
                                                     {{ $item->alamat_lembaga ?? '-' }}
-                                                            @elseif ($jenisSurat === 'SuratKeteranganKepemilikanAset')
+                                                @elseif ($jenisSurat === 'SuratKeteranganKepemilikanAset')
                                                     {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganDomisiliLembaga')
                                                     {{ $item->alamat_lembaga ?? '-' }}

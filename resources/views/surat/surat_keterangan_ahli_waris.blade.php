@@ -14,13 +14,18 @@
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <h4 class="mb-4">Form Surat Keterangan Ahli Waris (User)</h4>
+                <h4 class="mb-4">Form Surat Keterangan Ahli Waris</h4>
 
                 <form action="{{ route('surat.ahliwaris.store') }}" method="POST">
                     @csrf
 
                     {{-- YANG BERTANDA TANGAN --}}
                     <h5 class="mb-3">Yang Bertanda Tangan</h5>
+                    <div class="mb-3">
+                        <label class="form-label" for="no_ktp">No KTP</label>
+                        <input type="text" id="no_ktp" name="no_ktp" class="form-control" required
+                            value="{{ old('no_ktp') }}">
+                    </div>
                     <div class="mb-3">
                         <label class="form-label" for="nama_lengkap">Nama Lengkap</label>
                         <input type="text" id="nama_lengkap" name="nama_lengkap" class="form-control" required
@@ -106,11 +111,6 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="no_ktp">No KTP</label>
-                        <input type="text" id="no_ktp" name="no_ktp" class="form-control" required
-                            value="{{ old('no_ktp') }}">
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label" for="status">Status</label>
                         <select id="status" name="status" class="form-control" required>
                             <option value="">-- Pilih Status --</option>
@@ -130,6 +130,11 @@
                     {{-- KETERANGAN ISTRI --}}
                     <h5 class="mb-3">Keterangan Istri</h5>
                     <div class="mb-3">
+                        <div class="mb-3">
+                            <label class="form-label" for="no_ktp_istri">No KTP</label>
+                            <input type="text" id="no_ktp_istri" name="no_ktp_istri" class="form-control" required
+                                value="{{ old('no_ktp_istri') }}">
+                        </div>
                         <label class="form-label" for="nama_istri">Nama Lengkap</label>
                         <input type="text" id="nama_istri" name="nama_istri" class="form-control" required
                             value="{{ old('nama_istri') }}">
@@ -224,11 +229,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="no_ktp_istri">No KTP</label>
-                        <input type="text" id="no_ktp_istri" name="no_ktp_istri" class="form-control" required
-                            value="{{ old('no_ktp_istri') }}">
-                    </div>
+
                     <div class="mb-3">
                         <label class="form-label" for="alamat_istri">Alamat</label>
                         <textarea id="alamat_istri" name="alamat_istri" class="form-control" rows="2" required>{{ old('alamat_istri') }}</textarea>
@@ -326,18 +327,143 @@
             }
         }
 
-        function setSelectIfExists(id, value) {
-            const element = document.getElementById(id);
-            if (!element || value === undefined || value === null || value === '') return;
+        function extractSelectValue(value) {
+            if (value === undefined || value === null) {
+                return '';
+            }
 
-            const options = Array.from(element.options);
-            const matched = options.find(option =>
-                option.value.toLowerCase() === String(value).toLowerCase()
+            if (typeof value === 'object') {
+                return String(
+                    value.nama ??
+                    value.nama_pekerjaan ??
+                    value.pekerjaan ??
+                    value.label ??
+                    value.value ??
+                    ''
+                ).trim();
+            }
+
+            return String(value).trim();
+        }
+
+        function normalizeSelectValue(value) {
+            return extractSelectValue(value)
+                .toUpperCase()
+                .replace(/\s*\/\s*/g, '/')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function normalizePekerjaan(value) {
+            const originalValue = extractSelectValue(value);
+            const normalized = normalizeSelectValue(originalValue);
+
+            const aliases = {
+                'BELUM BEKERJA': 'BELUM/TIDAK BEKERJA',
+                'TIDAK BEKERJA': 'BELUM/TIDAK BEKERJA',
+                'BELUM / TIDAK BEKERJA': 'BELUM/TIDAK BEKERJA',
+                'BELUM/TIDAK BEKERJA': 'BELUM/TIDAK BEKERJA',
+                'BELUM TIDAK BEKERJA': 'BELUM/TIDAK BEKERJA',
+
+                'PELAJAR': 'PELAJAR/MAHASISWA',
+                'MAHASISWA': 'PELAJAR/MAHASISWA',
+
+                'PNS': 'PEGAWAI NEGERI SIPIL (PNS)',
+                'PEGAWAI NEGERI SIPIL': 'PEGAWAI NEGERI SIPIL (PNS)',
+
+                'TNI': 'TENTARA NASIONAL INDONESIA (TNI)',
+                'POLRI': 'KEPOLISIAN RI (POLRI)',
+
+                'IRT': 'IBU RUMAH TANGGA',
+
+                'PETANI': 'PETANI/PEKEBUN PEMILIK LAHAN',
+                'PEKEBUN': 'PETANI/PEKEBUN PEMILIK LAHAN',
+
+                'NELAYAN': 'NELAYAN/PERIKANAN',
+
+                'LAIN-LAIN': 'Lainnya',
+                'LAINNYA': 'Lainnya'
+            };
+
+            return aliases[normalized] ?? originalValue;
+        }
+
+        function setSelectIfExists(id, value, addWhenMissing = false) {
+            const element = document.getElementById(id);
+
+            if (!element) {
+                return false;
+            }
+
+            let finalValue = extractSelectValue(value);
+
+            if (id === 'pekerjaan' || id === 'pekerjaan_istri') {
+                finalValue = normalizePekerjaan(finalValue);
+            }
+
+            if (!finalValue) {
+                return false;
+            }
+
+            const normalizedValue = normalizeSelectValue(finalValue);
+
+            let matched = Array.from(element.options).find(option => {
+                const normalizedOptionValue = normalizeSelectValue(option.value);
+                const normalizedOptionText = normalizeSelectValue(option.textContent);
+
+                return normalizedOptionValue === normalizedValue ||
+                    normalizedOptionText === normalizedValue;
+            });
+
+            if (!matched) {
+                matched = Array.from(element.options).find(option => {
+                    if (!option.value) {
+                        return false;
+                    }
+
+                    const normalizedOption = normalizeSelectValue(option.value);
+
+                    return normalizedOption.includes(normalizedValue) ||
+                        normalizedValue.includes(normalizedOption);
+                });
+            }
+
+            if (!matched && addWhenMissing) {
+                matched = new Option(
+                    finalValue,
+                    finalValue,
+                    true,
+                    true
+                );
+
+                element.add(matched);
+            }
+
+            if (!matched) {
+                console.warn(
+                    `Pekerjaan tidak ditemukan pada select ${id}:`,
+                    value
+                );
+
+                return false;
+            }
+
+            element.value = matched.value;
+            matched.selected = true;
+
+            element.dispatchEvent(
+                new Event('change', {
+                    bubbles: true
+                })
             );
 
-            if (matched) {
-                element.value = matched.value;
+            if (window.jQuery) {
+                window.jQuery(element)
+                    .val(matched.value)
+                    .trigger('change');
             }
+
+            return true;
         }
 
         function formatTanggal(value) {
