@@ -143,12 +143,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label>Nomor Surat</label>
-                                <input type="text" name="nomor_surat" class="form-control"
-                                       value="{{ $surat->nomor_surat ?? old('nomor_surat') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label>Status Surat</label>
                                 <select name="status_surat" class="form-control">
                                     <option value="Pending" {{ $surat->status_surat == 'Pending' ? 'selected' : '' }}>Pending</option>

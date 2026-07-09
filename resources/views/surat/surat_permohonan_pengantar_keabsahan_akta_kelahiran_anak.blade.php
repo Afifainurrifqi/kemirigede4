@@ -30,7 +30,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label>Jenis Kelamin <span class="text-danger">*</span></label>
-                        <select name="jenis_kelamin" class="form-control" required>
+                      <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
                             <option value="">-- Pilih --</option>
                             <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -90,25 +90,95 @@
 </div>
 
 <script>
-    function autofill() {
-        const nik = document.getElementById('nik').value.trim();
-        if (nik.length < 10) return;
+function autofill() {
 
-        fetch(`/datapenduduk/lookup/${nik}`)
-            .then(res => res.json())
-            .then(result => {
-                if (result.success && result.data) {
-                    const d = result.data;
-                    document.getElementById('nama').value = d.nama || '';
-                    document.getElementById('ttl_tempat').value = d.tempat_lahir || '';
-                    document.getElementById('ttl_tanggal').value = d.tanggal_lahir ? d.tanggal_lahir.substring(0,10) : '';
-                    document.getElementById('alamat').value = d.alamat || '';
+    const nik = document.getElementById('nik').value.trim();
+
+    if (nik.length < 10) return;
+
+
+    fetch(`/datapenduduk/lookup/${nik}`)
+        .then(res => res.json())
+        .then(result => {
+
+            console.log(result); // cek data dari API
+
+
+            if (result.success && result.data) {
+
+                const d = result.data;
+
+
+                document.getElementById('nama').value = d.nama || '';
+
+                document.getElementById('ttl_tempat').value =
+                    d.tempat_lahir || '';
+
+                document.getElementById('ttl_tanggal').value =
+                    d.tanggal_lahir
+                    ? d.tanggal_lahir.substring(0,10)
+                    : '';
+
+                document.getElementById('alamat').value =
+                    d.alamat || '';
+
+
+
+                // =========================
+                // AUTOFILL JENIS KELAMIN
+                // =========================
+
+                let jk = d.jenis_kelamin || '';
+
+                if (jk) {
+
+                    jk = jk.toString().toUpperCase();
+
+
+                    if (
+                        jk == 'L' ||
+                        jk == 'LAKI-LAKI' ||
+                        jk == 'LAKI LAKI' ||
+                        jk == 'PRIA'
+                    ) {
+
+                        document.getElementById('jenis_kelamin').value = 'Laki-laki';
+
+                    }
+
+
+                    else if (
+                        jk == 'P' ||
+                        jk == 'PEREMPUAN' ||
+                        jk == 'WANITA'
+                    ) {
+
+                        document.getElementById('jenis_kelamin').value = 'Perempuan';
+
+                    }
+
                 }
-            });
+
+            }
+
+        })
+        .catch(err => console.log(err));
+
+}
+
+
+document.addEventListener('DOMContentLoaded', function(){
+
+    const nikInput = document.getElementById('nik');
+
+    if(nikInput){
+
+        nikInput.addEventListener('blur', autofill);
+
+        nikInput.addEventListener('change', autofill);
+
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('nik').addEventListener('blur', autofill);
-    });
+});
 </script>
 @endsection

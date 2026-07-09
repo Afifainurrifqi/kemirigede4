@@ -274,7 +274,8 @@
 
         $alamatPemilik =
             $data->alamat ??
-            ($data->alamat_pemilik ?? 'Dusun ........ RT ... RW ... Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar');
+            ($data->alamat_pemilik ??
+                'Dusun ........ RT ... RW ... Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar');
 
         $pekerjaanPemilik =
             $data->pekerjaan ?? ($data->pekerjaan_pemilik ?? '...........................................');
@@ -467,14 +468,14 @@
                 {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
-
+                <br><br><br>
 
                 <p class="nama-kades">Hari Purnawan, S.Sos.</p>
 
-                <div class="qr-section">
+                {{-- <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                     <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
+                </div> --}}
             </td>
         </tr>
     </table>

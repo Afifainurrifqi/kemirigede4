@@ -444,6 +444,12 @@
                                                     {{ $item->nik_pelapor ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanNumpangKk')
                                                     {{ $item->nik_pemilik_kk ?? '-' }}
+                                                @elseif (
+                                                    $jenisSurat === 'surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak' ||
+                                                        $jenisSurat === 'SuratPermohonanPengantarKeabsahanAktaKelahiranAnak')
+                                                    {{ $item->nik ?? '-' }}
+                                                @elseif ($jenisSurat === 'SuratPernyataanPembetulanDataTidakMerubahLagi')
+                                                    {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'surat_keterangan_tidakmampu')
                                                     {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanKepemilikanDokumenAsli')
@@ -648,11 +654,19 @@
                                                     {{ $item->alamat_pemilik_kk ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganDomisiliLembaga')
                                                     {{ $item->alamat_lembaga ?? '-' }}
+                                                            @elseif ($jenisSurat === 'SuratKeteranganKepemilikanAset')
+                                                    {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganDesaSebagaiPenduduk')
                                                     {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanMiskin')
                                                     {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPermohonanPernyataanMiskin' || $jenisSurat === 'surat_permohonan_pernyataan_miskin')
+                                                    {{ $item->alamat ?? '-' }}
+                                                @elseif (
+                                                    $jenisSurat === 'surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak' ||
+                                                        $jenisSurat === 'SuratPermohonanPengantarKeabsahanAktaKelahiranAnak')
+                                                    {{ $item->alamat ?? '-' }}
+                                                @elseif ($jenisSurat === 'surat_pernyataan_batal_pindah_penduduk')
                                                     {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratUndangan')
                                                     {{ $item->tempat ?? '-' }}

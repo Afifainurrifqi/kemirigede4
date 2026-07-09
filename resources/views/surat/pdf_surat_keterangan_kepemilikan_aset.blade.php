@@ -214,7 +214,7 @@
 
                 {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td> --}} 
+            </td> --}}
         </tr>
     </table>
 
@@ -334,16 +334,16 @@
     <tr>
         <td></td>
         <td>
-            <div class="ttd-img-wrapper">
+            {{-- <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">
-            </div>
-
+            </div> --}}
+<br><br><br>
             <div class="nama-kades">Hari Purnawan, S.Sos.</div>
 
-            <div class="qr-section">
+            {{-- <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
+            </div> --}}
         </td>
     </tr>
 </table>

@@ -280,7 +280,7 @@
 
               {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td> --}} 
+            </td> --}}
         </tr>
     </table>
 
@@ -414,10 +414,12 @@
         <td class="ttd-cell">
             <p>Blitar, {{ $tanggalSurat }}</p>
             <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
-
+{{--
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
-            </div>
+            </div> --}}
+
+            <br><br><br>
 
             <p class="nama-kades">Hari Purnawan, S.Sos.</p>
 

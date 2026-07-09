@@ -77,23 +77,29 @@
 
                         <div class="mb-3">
                             <label for="nik" class="form-label">NIK <span class="text-danger">*</span></label>
-                            <input type="text" name="nik" id="nik" class="form-control" required value="{{ old('nik') }}">
+                            <input type="text" name="nik" id="nik" class="form-control" required
+                                value="{{ old('nik') }}">
                             <small class="text-muted">Isi NIK lalu klik/tab keluar agar data otomatis terisi.</small>
                         </div>
 
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
-                            <input type="text" name="nama" id="nama" class="form-control" required value="{{ old('nama') }}">
+                            <input type="text" name="nama" id="nama" class="form-control" required
+                                value="{{ old('nama') }}">
                         </div>
 
                         <div class="mb-3">
-                            <label for="tempat_lahir" class="form-label">Tempat Lahir <span class="text-danger">*</span></label>
-                            <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" required value="{{ old('tempat_lahir') }}">
+                            <label for="tempat_lahir" class="form-label">Tempat Lahir <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" required
+                                value="{{ old('tempat_lahir') }}">
                         </div>
 
                         <div class="mb-3">
-                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required value="{{ old('tanggal_lahir') }}">
+                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required
+                                value="{{ old('tanggal_lahir') }}">
                         </div>
 
                         <div class="mb-3">
@@ -101,7 +107,8 @@
                             <select name="agama" id="agama" class="form-control" required>
                                 <option value="">-- Pilih Agama --</option>
                                 @foreach (['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Khonghucu'] as $agama)
-                                    <option value="{{ $agama }}" {{ old('agama') == $agama ? 'selected' : '' }}>
+                                    <option value="{{ $agama }}"
+                                        {{ old('agama') == $agama ? 'selected' : '' }}>
                                         {{ $agama }}
                                     </option>
                                 @endforeach
@@ -109,7 +116,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="pekerjaan" class="form-label">Pekerjaan <span class="text-danger">*</span></label>
+                            <label for="pekerjaan" class="form-label">Pekerjaan <span
+                                    class="text-danger">*</span></label>
                             <select name="pekerjaan" id="pekerjaan" class="form-control" required>
                                 <option value="">-- Pilih Pekerjaan --</option>
                                 @php
@@ -152,7 +160,8 @@
                                 @endphp
 
                                 @foreach ($jobs as $job)
-                                    <option value="{{ $job }}" {{ old('pekerjaan') == $job ? 'selected' : '' }}>
+                                    <option value="{{ $job }}"
+                                        {{ old('pekerjaan') == $job ? 'selected' : '' }}>
                                         {{ $job }}
                                     </option>
                                 @endforeach
@@ -160,18 +169,27 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="status_perkawinan" class="form-label">Status Perkawinan <span class="text-danger">*</span></label>
+                            <label for="status_perkawinan" class="form-label">Status Perkawinan <span
+                                    class="text-danger">*</span></label>
                             <select name="status_perkawinan" id="status_perkawinan" class="form-control" required>
                                 <option value="">-- Pilih Status --</option>
-                                <option value="Belum Kawin" {{ old('status_perkawinan') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
-                                <option value="Kawin" {{ old('status_perkawinan') == 'Kawin' ? 'selected' : '' }}>Kawin</option>
-                                <option value="Cerai Hidup" {{ old('status_perkawinan') == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
-                                <option value="Cerai Mati" {{ old('status_perkawinan') == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati</option>
+                                <option value="Belum Kawin"
+                                    {{ old('status_perkawinan') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin
+                                </option>
+                                <option value="Kawin" {{ old('status_perkawinan') == 'Kawin' ? 'selected' : '' }}>
+                                    Kawin</option>
+                                <option value="Cerai Hidup"
+                                    {{ old('status_perkawinan') == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup
+                                </option>
+                                <option value="Cerai Mati"
+                                    {{ old('status_perkawinan') == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati
+                                </option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="alamat" class="form-label">Alamat <span class="text-danger">*</span></label>
+                            <label for="alamat" class="form-label">Alamat <span
+                                    class="text-danger">*</span></label>
                             <textarea name="alamat" id="alamat" class="form-control" rows="3" required>{{ old('alamat') }}</textarea>
                         </div>
 
@@ -180,23 +198,30 @@
                         <h5 class="mb-3">Keterangan Numpang Nikah</h5>
 
                         <div class="mb-3">
-                            <label for="keperluan" class="form-label">Keperluan <span class="text-danger">*</span></label>
-                            <input type="text" name="keperluan" id="keperluan" class="form-control" required value="{{ old('keperluan', 'Pernikahan') }}">
+                            <label for="keperluan" class="form-label">Keperluan <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="keperluan" id="keperluan" class="form-control" required
+                                value="{{ old('keperluan', 'Pernikahan') }}">
                         </div>
 
                         <div class="mb-3">
-                            <label for="alamat_tujuan" class="form-label">Alamat yang Dituju <span class="text-danger">*</span></label>
+                            <label for="alamat_tujuan" class="form-label">Alamat yang Dituju <span
+                                    class="text-danger">*</span></label>
                             <textarea name="alamat_tujuan" id="alamat_tujuan" class="form-control" rows="3" required>{{ old('alamat_tujuan') }}</textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="mulai_berangkat" class="form-label">Mulai Berangkat <span class="text-danger">*</span></label>
-                            <input type="date" name="mulai_berangkat" id="mulai_berangkat" class="form-control" required value="{{ old('mulai_berangkat') }}">
+                            <label for="mulai_berangkat" class="form-label">Mulai Berangkat <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" name="mulai_berangkat" id="mulai_berangkat" class="form-control"
+                                required value="{{ old('mulai_berangkat') }}">
                         </div>
 
                         <div class="mb-3">
-                            <label for="pembawaan" class="form-label">Pembawaan <span class="text-danger">*</span></label>
-                            <input type="text" name="pembawaan" id="pembawaan" class="form-control" required value="{{ old('pembawaan', 'Pakaian secukupnya') }}">
+                            <label for="pembawaan" class="form-label">Pembawaan <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="pembawaan" id="pembawaan" class="form-control" required
+                                value="{{ old('pembawaan', 'Pakaian secukupnya') }}">
                         </div>
 
                         <hr>
@@ -205,7 +230,8 @@
 
                         <div class="mb-3">
                             <label for="jumlah_pengikut" class="form-label">Jumlah Pengikut</label>
-                            <input type="number" min="0" name="jumlah_pengikut" id="jumlah_pengikut" class="form-control" value="{{ old('jumlah_pengikut', 0) }}">
+                            <input type="number" min="0" name="jumlah_pengikut" id="jumlah_pengikut"
+                                class="form-control" value="{{ old('jumlah_pengikut', 0) }}">
                         </div>
 
                         <div id="pengikut-wrapper"></div>
@@ -213,8 +239,10 @@
                         <hr>
 
                         <div class="mb-3">
-                            <label for="nowa" class="form-label">No WhatsApp <span class="text-danger">*</span></label>
-                            <input type="text" name="nowa" id="nowa" class="form-control" required value="{{ old('nowa') }}">
+                            <label for="nowa" class="form-label">No WhatsApp <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nowa" id="nowa" class="form-control" required
+                                value="{{ old('nowa') }}">
                         </div>
 
                         <input type="hidden" name="status_surat" value="Pending">
@@ -269,87 +297,98 @@
 
             if (matched) {
                 element.value = matched.value;
+            } else {
+
+                // jika pekerjaan belum ada di list
+                const newOption = new Option(value, value, true, true);
+                element.add(newOption);
             }
-        }
+            }
 
-        function formatTanggal(value) {
-            if (!value) return '';
+            function formatTanggal(value) {
+                if (!value) return '';
 
-            const str = String(value);
+                const str = String(value);
 
-            if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+                if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+                    return str.substring(0, 10);
+                }
+
+                if (/^\d{2}-\d{2}-\d{4}/.test(str)) {
+                    const parts = str.split('-');
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+
                 return str.substring(0, 10);
             }
 
-            if (/^\d{2}-\d{2}-\d{4}/.test(str)) {
-                const parts = str.split('-');
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            function autofillNumpangNikah() {
+                const nikInput = document.getElementById('nik');
+                if (!nikInput) return;
+
+                const nik = nikInput.value.trim();
+                if (nik.length < 10) return;
+
+                fetch(`/datapenduduk/lookup/${nik}`)
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success && result.data) {
+                            const d = result.data;
+
+                            setValueIfExists('nama', d.nama);
+                            setValueIfExists('tempat_lahir', d.tempat_lahir);
+                            setValueIfExists('tanggal_lahir', formatTanggal(d.tanggal_lahir));
+                            setValueIfExists('alamat', d.alamat);
+
+                            setSelectIfExists('agama', d.agama);
+                            setSelectIfExists(
+                                'pekerjaan',
+                                d.pekerjaan ||
+                                d.nama_pekerjaan ||
+                                d.pekerjaan_nama ||
+                                d.job
+                            );
+                            setSelectIfExists('status_perkawinan', d.status_perkawinan || d.status);
+                        } else {
+                            alert(result.message || 'Data penduduk tidak ditemukan.');
+                        }
+                    })
+                    .catch(() => alert('Gagal mengambil data penduduk.'));
             }
 
-            return str.substring(0, 10);
-        }
+            const oldNamaPengikut = @json(old('nama_pengikut', []));
+            const oldUmurPengikut = @json(old('umur_pengikut', []));
+            const oldJenisKelaminPengikut = @json(old('jenis_kelamin_pengikut', []));
+            const oldHubunganKeluargaPengikut = @json(old('hubungan_keluarga_pengikut', []));
+            const oldKeteranganPengikut = @json(old('keterangan_pengikut', []));
 
-        function autofillNumpangNikah() {
-            const nikInput = document.getElementById('nik');
-            if (!nikInput) return;
+            function safe(value) {
+                if (value === undefined || value === null) return '';
+                return String(value).replace(/"/g, '&quot;');
+            }
 
-            const nik = nikInput.value.trim();
-            if (nik.length < 10) return;
+            function selected(current, option) {
+                return String(current || '').toLowerCase() === String(option || '').toLowerCase() ? 'selected' : '';
+            }
 
-            fetch(`/datapenduduk/lookup/${nik}`)
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success && result.data) {
-                        const d = result.data;
+            function renderPengikut(count, useOld = true) {
+                const wrapper = document.getElementById('pengikut-wrapper');
+                if (!wrapper) return;
 
-                        setValueIfExists('nama', d.nama);
-                        setValueIfExists('tempat_lahir', d.tempat_lahir);
-                        setValueIfExists('tanggal_lahir', formatTanggal(d.tanggal_lahir));
-                        setValueIfExists('alamat', d.alamat);
+                wrapper.innerHTML = '';
+                const jumlah = parseInt(count || 0, 10);
 
-                        setSelectIfExists('agama', d.agama);
-                        setSelectIfExists('pekerjaan', d.pekerjaan);
-                        setSelectIfExists('status_perkawinan', d.status_perkawinan || d.status);
-                    } else {
-                        alert(result.message || 'Data penduduk tidak ditemukan.');
-                    }
-                })
-                .catch(() => alert('Gagal mengambil data penduduk.'));
-        }
+                for (let i = 0; i < jumlah; i++) {
+                    const nama = useOld ? oldNamaPengikut[i] : '';
+                    const umur = useOld ? oldUmurPengikut[i] : '';
+                    const jk = useOld ? oldJenisKelaminPengikut[i] : '';
+                    const hubungan = useOld ? oldHubunganKeluargaPengikut[i] : '';
+                    const keterangan = useOld ? oldKeteranganPengikut[i] : '';
 
-        const oldNamaPengikut = @json(old('nama_pengikut', []));
-        const oldUmurPengikut = @json(old('umur_pengikut', []));
-        const oldJenisKelaminPengikut = @json(old('jenis_kelamin_pengikut', []));
-        const oldHubunganKeluargaPengikut = @json(old('hubungan_keluarga_pengikut', []));
-        const oldKeteranganPengikut = @json(old('keterangan_pengikut', []));
+                    const div = document.createElement('div');
+                    div.className = 'border rounded p-3 mb-3';
 
-        function safe(value) {
-            if (value === undefined || value === null) return '';
-            return String(value).replace(/"/g, '&quot;');
-        }
-
-        function selected(current, option) {
-            return String(current || '').toLowerCase() === String(option || '').toLowerCase() ? 'selected' : '';
-        }
-
-        function renderPengikut(count, useOld = true) {
-            const wrapper = document.getElementById('pengikut-wrapper');
-            if (!wrapper) return;
-
-            wrapper.innerHTML = '';
-            const jumlah = parseInt(count || 0, 10);
-
-            for (let i = 0; i < jumlah; i++) {
-                const nama = useOld ? oldNamaPengikut[i] : '';
-                const umur = useOld ? oldUmurPengikut[i] : '';
-                const jk = useOld ? oldJenisKelaminPengikut[i] : '';
-                const hubungan = useOld ? oldHubunganKeluargaPengikut[i] : '';
-                const keterangan = useOld ? oldKeteranganPengikut[i] : '';
-
-                const div = document.createElement('div');
-                div.className = 'border rounded p-3 mb-3';
-
-                div.innerHTML = `
+                    div.innerHTML = `
                     <h6 class="mb-3">Pengikut ${i + 1}</h6>
 
                     <div class="mb-3">
@@ -382,26 +421,26 @@
                     </div>
                 `;
 
-                wrapper.appendChild(div);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const nikInput = document.getElementById('nik');
-            const jumlahInput = document.getElementById('jumlah_pengikut');
-
-            if (nikInput) {
-                nikInput.addEventListener('blur', autofillNumpangNikah);
+                    wrapper.appendChild(div);
+                }
             }
 
-            if (jumlahInput) {
-                renderPengikut(jumlahInput.value, true);
+            document.addEventListener('DOMContentLoaded', function() {
+                const nikInput = document.getElementById('nik');
+                const jumlahInput = document.getElementById('jumlah_pengikut');
 
-                jumlahInput.addEventListener('input', function () {
-                    renderPengikut(this.value, false);
-                });
-            }
-        });
+                if (nikInput) {
+                    nikInput.addEventListener('blur', autofillNumpangNikah);
+                }
+
+                if (jumlahInput) {
+                    renderPengikut(jumlahInput.value, true);
+
+                    jumlahInput.addEventListener('input', function() {
+                        renderPengikut(this.value, false);
+                    });
+                }
+            });
     </script>
 </body>
 

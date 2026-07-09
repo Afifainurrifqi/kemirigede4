@@ -25,7 +25,8 @@
                         <label for="nik" class="form-label">NIK <span class="text-danger">*</span></label>
                         <input type="text" name="nik" id="nik" class="form-control" required
                             value="{{ old('nik') }}">
-                        <small class="text-muted">Isi NIK, lalu klik/tab keluar dari kolom ini agar data otomatis terisi.</small>
+                        <small class="text-muted">Isi NIK, lalu klik/tab keluar dari kolom ini agar data otomatis
+                            terisi.</small>
                     </div>
 
                     <div class="mb-3">
@@ -41,7 +42,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir <span
+                                class="text-danger">*</span></label>
                         <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required
                             value="{{ old('tanggal_lahir') }}">
                     </div>
@@ -110,11 +112,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="status_perkawinan" class="form-label">Status Perkawinan <span class="text-danger">*</span></label>
+                        <label for="status_perkawinan" class="form-label">Status Perkawinan <span
+                                class="text-danger">*</span></label>
                         <select name="status_perkawinan" id="status_perkawinan" class="form-control" required>
                             <option value="">-- Pilih Status --</option>
                             @foreach (['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati'] as $status)
-                                <option value="{{ $status }}" {{ old('status_perkawinan') == $status ? 'selected' : '' }}>
+                                <option value="{{ $status }}"
+                                    {{ old('status_perkawinan') == $status ? 'selected' : '' }}>
                                     {{ $status }}
                                 </option>
                             @endforeach
@@ -137,12 +141,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="alamat_tujuan" class="form-label">Alamat yang Dituju <span class="text-danger">*</span></label>
+                        <label for="alamat_tujuan" class="form-label">Alamat yang Dituju <span
+                                class="text-danger">*</span></label>
                         <textarea name="alamat_tujuan" id="alamat_tujuan" class="form-control" rows="3" required>{{ old('alamat_tujuan') }}</textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label for="mulai_berangkat" class="form-label">Mulai Berangkat <span class="text-danger">*</span></label>
+                        <label for="mulai_berangkat" class="form-label">Mulai Berangkat <span
+                                class="text-danger">*</span></label>
                         <input type="date" name="mulai_berangkat" id="mulai_berangkat" class="form-control" required
                             value="{{ old('mulai_berangkat') }}">
                     </div>
@@ -159,8 +165,8 @@
 
                     <div class="mb-3">
                         <label for="jumlah_pengikut" class="form-label">Jumlah Pengikut</label>
-                        <input type="number" min="0" name="jumlah_pengikut" id="jumlah_pengikut" class="form-control"
-                            value="{{ old('jumlah_pengikut', 0) }}">
+                        <input type="number" min="0" name="jumlah_pengikut" id="jumlah_pengikut"
+                            class="form-control" value="{{ old('jumlah_pengikut', 0) }}">
                     </div>
 
                     <div id="pengikut-wrapper" class="mt-3"></div>
@@ -176,10 +182,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="status_surat" class="form-label">Status Surat <span class="text-danger">*</span></label>
+                        <label for="status_surat" class="form-label">Status Surat <span
+                                class="text-danger">*</span></label>
                         <select name="status_surat" id="status_surat" class="form-control" required>
                             @foreach (['Pending', 'Di cek', 'Di terima', 'Ditolak'] as $status)
-                                <option value="{{ $status }}" {{ old('status_surat', 'Pending') == $status ? 'selected' : '' }}>
+                                <option value="{{ $status }}"
+                                    {{ old('status_surat', 'Pending') == $status ? 'selected' : '' }}>
                                     {{ $status }}
                                 </option>
                             @endforeach
@@ -187,10 +195,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="status_verif" class="form-label">Status Verifikasi <span class="text-danger">*</span></label>
+                        <label for="status_verif" class="form-label">Status Verifikasi <span
+                                class="text-danger">*</span></label>
                         <select name="status_verif" id="status_verif" class="form-control" required>
                             @foreach (['Belum Verifikasi', 'Terverifikasi'] as $verif)
-                                <option value="{{ $verif }}" {{ old('status_verif', 'Belum Verifikasi') == $verif ? 'selected' : '' }}>
+                                <option value="{{ $verif }}"
+                                    {{ old('status_verif', 'Belum Verifikasi') == $verif ? 'selected' : '' }}>
                                     {{ $verif }}
                                 </option>
                             @endforeach
@@ -224,6 +234,11 @@
 
             if (matched) {
                 element.value = matched.value;
+            } else {
+
+                // jika pekerjaan belum ada di list
+                const newOption = new Option(value, value, true, true);
+                element.add(newOption);
             }
         }
 
@@ -249,7 +264,6 @@
             if (!nikInput) return;
 
             const nik = nikInput.value.trim();
-
             if (nik.length < 10) return;
 
             fetch(`/datapenduduk/lookup/${nik}`)
@@ -264,7 +278,13 @@
                         setValueIfExists('alamat', d.alamat);
 
                         setSelectIfExists('agama', d.agama);
-                        setSelectIfExists('pekerjaan', d.pekerjaan);
+                        setSelectIfExists(
+                            'pekerjaan',
+                            d.pekerjaan ||
+                            d.nama_pekerjaan ||
+                            d.pekerjaan_nama ||
+                            d.job
+                        );
                         setSelectIfExists('status_perkawinan', d.status_perkawinan || d.status);
                     } else {
                         alert(result.message || 'Data penduduk tidak ditemukan.');
@@ -272,20 +292,6 @@
                 })
                 .catch(() => alert('Gagal mengambil data penduduk.'));
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const nikInput = document.getElementById('nik');
-
-            if (nikInput) {
-                nikInput.addEventListener('blur', autofillNumpangNikah);
-            }
-
-            renderPengikut(document.getElementById('jumlah_pengikut').value, true);
-
-            document.getElementById('jumlah_pengikut').addEventListener('input', function () {
-                renderPengikut(this.value, false);
-            });
-        });
 
         const oldNamaPengikut = @json(old('nama_pengikut', []));
         const oldUmurPengikut = @json(old('umur_pengikut', []));
@@ -304,8 +310,9 @@
 
         function renderPengikut(count, useOld = true) {
             const wrapper = document.getElementById('pengikut-wrapper');
-            wrapper.innerHTML = '';
+            if (!wrapper) return;
 
+            wrapper.innerHTML = '';
             const jumlah = parseInt(count || 0, 10);
 
             for (let i = 0; i < jumlah; i++) {
@@ -354,5 +361,22 @@
                 wrapper.appendChild(div);
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const nikInput = document.getElementById('nik');
+            const jumlahInput = document.getElementById('jumlah_pengikut');
+
+            if (nikInput) {
+                nikInput.addEventListener('blur', autofillNumpangNikah);
+            }
+
+            if (jumlahInput) {
+                renderPengikut(jumlahInput.value, true);
+
+                jumlahInput.addEventListener('input', function() {
+                    renderPengikut(this.value, false);
+                });
+            }
+        });
     </script>
 @endsection

@@ -337,14 +337,14 @@
                 {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
-
+<br><br><br>
 
                 <div class="nama-ttd">Hari Purnawan, S.Sos. S.Pd.I</div>
-
+{{--
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                     <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
+                </div> --}}
             </td>
         </tr>
     </table>

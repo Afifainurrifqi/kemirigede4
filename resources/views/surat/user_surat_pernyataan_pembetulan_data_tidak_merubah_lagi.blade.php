@@ -42,7 +42,12 @@
                             <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}" required>
                         </div>
                         <div class="mb-3"><label>Alamat <span class="text-danger">*</span></label>
-                            <textarea name="alamat" class="form-control" rows="2" required>{{ old('alamat') }}</textarea>
+                           <textarea
+        name="alamat"
+        id="alamat"
+        class="form-control"
+        rows="2"
+        required>{{ old('alamat') }}</textarea>
                         </div>
 
                         <hr>

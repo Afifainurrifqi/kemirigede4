@@ -91,7 +91,7 @@
                     // 'F-1.03 PENDAFTARAN PERPINDAHAN PENDUDUK',
                     // 'F-1.02 PENDAFTARAN PERISTIWA KEPENDUDUKAN',
                     // 'F-1.01 FORM  BIODATA KELUARGA',
-                    'SURAT KETERANGAN NUMPANG NIKAH',
+                    // 'SURAT KETERANGAN NUMPANG NIKAH',
                 ];
 
                 $routeMap = [

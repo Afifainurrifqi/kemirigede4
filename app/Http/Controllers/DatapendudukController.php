@@ -192,48 +192,113 @@ class DatapendudukController extends Controller
 
     public function lookupByNik($nik)
     {
-        $penduduk = Datapenduduk::with(['agama', 'pekerjaan', 'status', 'detailkk.kk'])
+        $nik = trim($nik);
+
+        if (!preg_match('/^\d{16}$/', $nik)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'NIK harus terdiri dari 16 digit.'
+            ], 422);
+        }
+
+        $penduduk = Datapenduduk::with([
+            'agama',
+            'pekerjaan',
+            'pendidikan',
+            'status',
+            'detailkk.kk'
+        ])
             ->where('nik', $nik)
             ->first();
 
         if (!$penduduk) {
             return response()->json([
                 'success' => false,
-                'message' => 'NIK tidak ditemukan'
+                'message' => 'NIK tidak ditemukan.'
             ], 404);
         }
 
+        /*
+    |--------------------------------------------------------------------------
+    | Ambil nama pekerjaan
+    |--------------------------------------------------------------------------
+    |
+    | Dibuat beberapa alternatif karena nama kolom pada collection/tabel
+    | pekerjaan bisa berbeda.
+    |
+    */
+
+        $pekerjaan = optional($penduduk->pekerjaan)->nama
+            ?? optional($penduduk->pekerjaan)->nama_pekerjaan
+            ?? optional($penduduk->pekerjaan)->pekerjaan
+            ?? '';
+
+        /*
+    |--------------------------------------------------------------------------
+    | Ambil nama pendidikan
+    |--------------------------------------------------------------------------
+    */
+
+        $pendidikan = optional($penduduk->pendidikan)->nama
+            ?? optional($penduduk->pendidikan)->nama_pendidikan
+            ?? optional($penduduk->pendidikan)->pendidikan
+            ?? optional($penduduk->pendidikan)->jenjang
+            ?? '';
+
+        $agama = optional($penduduk->agama)->nama
+            ?? optional($penduduk->agama)->agama
+            ?? optional($penduduk->agama)->nama_agama
+            ?? '';
+
+        $statusPerkawinan = optional($penduduk->status)->nama
+            ?? optional($penduduk->status)->status
+            ?? optional($penduduk->status)->nama_status
+            ?? '';
+
         $nokk = optional(optional($penduduk->detailkk)->kk)->nokk ?? '';
+
+        $jenisKelamin = match ((string) $penduduk->jenis_kelamin) {
+            '1', 'L', 'Laki-laki', 'LAKI-LAKI' => 'Laki-laki',
+            '2', 'P', 'Perempuan', 'PEREMPUAN' => 'Perempuan',
+            default => '',
+        };
 
         return response()->json([
             'success' => true,
             'data' => [
-                'nama'          => $penduduk->nama ?? '',
-                'tempat_lahir'  => $penduduk->tempat_lahir ?? '',
+                'nama' => $penduduk->nama ?? '',
+
+                'tempat_lahir' => $penduduk->tempat_lahir ?? '',
+
                 'tanggal_lahir' => $penduduk->tanggal_lahir
                     ? \Carbon\Carbon::parse($penduduk->tanggal_lahir)->format('Y-m-d')
                     : '',
 
-                'jenis_kelamin' => $penduduk->jenis_kelamin == '1' ? 'Laki-laki' : 'Perempuan',
+                'jenis_kelamin' => $jenisKelamin,
 
-                // INI YANG DIPAKAI AUTOFILL PEKERJAAN
-                'pekerjaan' => optional($penduduk->pekerjaan)->nama ?? '',
+                'pekerjaan' => $pekerjaan,
 
-                // INI YANG DIPAKAI AUTOFILL AGAMA
-                'agama' => optional($penduduk->agama)->nama
-                    ?? optional($penduduk->agama)->agama
-                    ?? optional($penduduk->agama)->nama_agama
-                    ?? '',
+                'pendidikan' => $pendidikan,
+
+                'agama' => $agama,
+
+                'kewarganegaraan' => $penduduk->kewarganegaraan
+                    ?? $penduduk->warganegara
+                    ?? 'WNI',
 
                 'alamat' => $penduduk->alamat ?? '',
-                'rt'     => $penduduk->RT ?? $penduduk->rt ?? '',
-                'rw'     => $penduduk->RW ?? $penduduk->rw ?? '',
-                'nokk'   => $nokk,
 
-                'status_perkawinan' => optional($penduduk->status)->nama
-                    ?? optional($penduduk->status)->status
-                    ?? optional($penduduk->status)->nama_status
+                'rt' => $penduduk->RT
+                    ?? $penduduk->rt
                     ?? '',
+
+                'rw' => $penduduk->RW
+                    ?? $penduduk->rw
+                    ?? '',
+
+                'nokk' => $nokk,
+
+                'status_perkawinan' => $statusPerkawinan,
             ]
         ]);
     }

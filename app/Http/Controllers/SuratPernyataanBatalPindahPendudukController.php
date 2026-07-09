@@ -17,7 +17,9 @@ class SuratPernyataanBatalPindahPendudukController extends Controller
 
     public function index()
     {
-        return view('surat.surat_pernyataan_batal_pindah_penduduk');
+        $agama = \App\Models\agama::all();
+        $status = \App\Models\status::all();
+        return view('surat.surat_pernyataan_batal_pindah_penduduk', compact('agama', 'status'));
     }
 
     public function user()
@@ -80,6 +82,9 @@ class SuratPernyataanBatalPindahPendudukController extends Controller
 
     public function edit(surat_pernyataan_batal_pindah_penduduk $surat)
     {
+        $agama = \App\Models\agama::all();
+        $status = \App\Models\status::all();
+        return view('surat.edit_surat_pernyataan_batal_pindah_penduduk', compact('agama', 'status', 'surat'));
         return view('surat.edit_surat_pernyataan_batal_pindah_penduduk', compact('surat'));
     }
 

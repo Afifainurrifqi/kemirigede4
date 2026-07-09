@@ -337,17 +337,19 @@
 
                 {{-- <div class="materai">Materai<br>10.000</div> --}}
 
+                <br><br><br>
+
                 <p class="nama">
                     <u>{{ $data->nama ?? '...........................................' }}</u>
                 </p>
 
                 <p>NIK: {{ $data->nik ?? '...........................................' }}</p>
 
-                <div class="barcode">
+                {{-- <div class="barcode">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                     <br>
                     <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
+                </div> --}}
             </td>
         </tr>
     </table>

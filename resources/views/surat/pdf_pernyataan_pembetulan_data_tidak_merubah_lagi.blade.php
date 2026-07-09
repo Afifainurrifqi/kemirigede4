@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Surat Pernyataan Pembetulan Data</title>
@@ -200,6 +201,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- KOP SURAT -->
@@ -220,7 +222,7 @@
                     </div>
                 </td>
 
-               {{-- <td class="kop-logo">
+                {{-- <td class="kop-logo">
                     <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
                 </td> --}}
             </tr>
@@ -258,7 +260,8 @@
     </table>
 
     <div class="tulisan">
-        Dengan ini menyatakan dengan sesungguhnya bahwa saya dengan sadar melakukan permohonan pembetulan data kependudukan berupa:
+        Dengan ini menyatakan dengan sesungguhnya bahwa saya dengan sadar melakukan permohonan pembetulan data
+        kependudukan berupa:
     </div>
 
     <p class="tulisan">
@@ -279,13 +282,16 @@
 
     <div class="tulisan">
         Dan saya menyatakan bahwa tidak akan melakukan perubahan data ke data semula sebelum perubahan ini dilakukan.
-        Apabila dikemudian hari saya melakukan perubahan dimaksud, maka saya bersedia untuk melakukan pemrosesan tersebut
+        Apabila dikemudian hari saya melakukan perubahan dimaksud, maka saya bersedia untuk melakukan pemrosesan
+        tersebut
         melalui penetapan pengadilan negeri.
     </div>
 
     <div class="tulisan">
-        Demikian Surat Pernyataan ini saya buat dengan sebenar-benarnya dan apabila dikemudian hari ternyata pernyataan saya ini tidak benar,
-        maka saya bersedia diproses secara hukum sesuai dengan peraturan perundang-undangan dan dokumen yang diterbitkan akibat
+        Demikian Surat Pernyataan ini saya buat dengan sebenar-benarnya dan apabila dikemudian hari ternyata pernyataan
+        saya ini tidak benar,
+        maka saya bersedia diproses secara hukum sesuai dengan peraturan perundang-undangan dan dokumen yang diterbitkan
+        akibat
         dari pernyataan ini menjadi tidak sah.
     </div>
 
@@ -303,21 +309,22 @@
 
 
                 {{-- <div class="materai">Materai<br>10.000</div> --}}
-
+                <br><br><br>
                 <p class="nama-kades">
                     <u>{{ $data->nama ?? '...........................................' }}</u>
                 </p>
 
                 <p>NIK: {{ $data->nik ?? '...........................................' }}</p>
 
-                <div class="barcode">
+                {{-- <div class="barcode">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                     <br>
                     <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
+                </div> --}}
             </td>
         </tr>
     </table>
 
 </body>
+
 </html>
