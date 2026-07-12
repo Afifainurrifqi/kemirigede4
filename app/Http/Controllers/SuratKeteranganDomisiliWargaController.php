@@ -20,7 +20,7 @@ class SuratKeteranganDomisiliWargaController extends Controller
     public function userstore(Request $request)
     {
         $validated = $request->validate([
-            'nik'              => 'required|string|max:16|unique:surat_keterangan_domisili_warga,nik',
+            'nik'              => 'required|string|max:16|',
             'nama_lengkap'     => 'required|string|max:255',
             'jenis_kelamin'    => 'required|string',
             'tempat_lahir'     => 'required|string|max:100',

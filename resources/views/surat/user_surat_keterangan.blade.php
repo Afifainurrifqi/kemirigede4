@@ -95,7 +95,7 @@
                     'SURAT KETERANGAN DESA PERNAH MENIKAH' => 'surat.userpernahmenikah',
                     'SURAT KETERANGAN KEMATIAN DESA' => 'surat.userkematian',
                     'SURAT KETERANGAN AHLI WARIS DESA' => 'surat.userahliwarisdesa',
-                    // 'SURAT KETERANGAN WARIS' => 'surat.userahliwaris',
+                    'SURAT KETERANGAN WARIS' => 'surat.userahliwaris',
                     'SURAT KETERANGAN HARGA KEPEMILIKAN TANAH' => 'surat.userkepemilikantanah',
                     'KETERANGAN PENGANTAR SKCK' => 'surat.userskck',
                     'SURAT KETERANGAN NUMPANG NIKAH' => 'surat.usernumpangnikah',

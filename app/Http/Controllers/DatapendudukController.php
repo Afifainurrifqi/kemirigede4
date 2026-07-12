@@ -190,119 +190,204 @@ class DatapendudukController extends Controller
         ));
     }
 
-    public function lookupByNik($nik)
-    {
-        $nik = trim($nik);
+   public function lookupByNik($nik)
+{
+    $nik = preg_replace('/\D/', '', trim($nik));
 
-        if (!preg_match('/^\d{16}$/', $nik)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'NIK harus terdiri dari 16 digit.'
-            ], 422);
-        }
-
-        $penduduk = Datapenduduk::with([
-            'agama',
-            'pekerjaan',
-            'pendidikan',
-            'status',
-            'detailkk.kk'
-        ])
-            ->where('nik', $nik)
-            ->first();
-
-        if (!$penduduk) {
-            return response()->json([
-                'success' => false,
-                'message' => 'NIK tidak ditemukan.'
-            ], 404);
-        }
-
-        /*
-    |--------------------------------------------------------------------------
-    | Ambil nama pekerjaan
-    |--------------------------------------------------------------------------
-    |
-    | Dibuat beberapa alternatif karena nama kolom pada collection/tabel
-    | pekerjaan bisa berbeda.
-    |
-    */
-
-        $pekerjaan = optional($penduduk->pekerjaan)->nama
-            ?? optional($penduduk->pekerjaan)->nama_pekerjaan
-            ?? optional($penduduk->pekerjaan)->pekerjaan
-            ?? '';
-
-        /*
-    |--------------------------------------------------------------------------
-    | Ambil nama pendidikan
-    |--------------------------------------------------------------------------
-    */
-
-        $pendidikan = optional($penduduk->pendidikan)->nama
-            ?? optional($penduduk->pendidikan)->nama_pendidikan
-            ?? optional($penduduk->pendidikan)->pendidikan
-            ?? optional($penduduk->pendidikan)->jenjang
-            ?? '';
-
-        $agama = optional($penduduk->agama)->nama
-            ?? optional($penduduk->agama)->agama
-            ?? optional($penduduk->agama)->nama_agama
-            ?? '';
-
-        $statusPerkawinan = optional($penduduk->status)->nama
-            ?? optional($penduduk->status)->status
-            ?? optional($penduduk->status)->nama_status
-            ?? '';
-
-        $nokk = optional(optional($penduduk->detailkk)->kk)->nokk ?? '';
-
-        $jenisKelamin = match ((string) $penduduk->jenis_kelamin) {
-            '1', 'L', 'Laki-laki', 'LAKI-LAKI' => 'Laki-laki',
-            '2', 'P', 'Perempuan', 'PEREMPUAN' => 'Perempuan',
-            default => '',
-        };
-
+    if (!preg_match('/^\d{16}$/', $nik)) {
         return response()->json([
-            'success' => true,
-            'data' => [
-                'nama' => $penduduk->nama ?? '',
-
-                'tempat_lahir' => $penduduk->tempat_lahir ?? '',
-
-                'tanggal_lahir' => $penduduk->tanggal_lahir
-                    ? \Carbon\Carbon::parse($penduduk->tanggal_lahir)->format('Y-m-d')
-                    : '',
-
-                'jenis_kelamin' => $jenisKelamin,
-
-                'pekerjaan' => $pekerjaan,
-
-                'pendidikan' => $pendidikan,
-
-                'agama' => $agama,
-
-                'kewarganegaraan' => $penduduk->kewarganegaraan
-                    ?? $penduduk->warganegara
-                    ?? 'WNI',
-
-                'alamat' => $penduduk->alamat ?? '',
-
-                'rt' => $penduduk->RT
-                    ?? $penduduk->rt
-                    ?? '',
-
-                'rw' => $penduduk->RW
-                    ?? $penduduk->rw
-                    ?? '',
-
-                'nokk' => $nokk,
-
-                'status_perkawinan' => $statusPerkawinan,
-            ]
-        ]);
+            'success' => false,
+            'message' => 'NIK harus terdiri dari 16 digit.',
+        ], 422);
     }
 
+    $penduduk = Datapenduduk::with([
+        'agama',
+        'pekerjaan',
+        'pendidikan',
+        'status',
+        'detailkk.kk',
+    ])
+        ->where('nik', $nik)
+        ->first();
+
+    if (!$penduduk) {
+        return response()->json([
+            'success' => false,
+            'message' => 'NIK tidak ditemukan.',
+        ], 404);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pekerjaan
+    |--------------------------------------------------------------------------
+    */
+
+    $pekerjaan = optional($penduduk->pekerjaan)->nama
+        ?? optional($penduduk->pekerjaan)->nama_pekerjaan
+        ?? optional($penduduk->pekerjaan)->pekerjaan
+        ?? '';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pendidikan
+    |--------------------------------------------------------------------------
+    */
+
+    $pendidikan = optional($penduduk->pendidikan)->nama
+        ?? optional($penduduk->pendidikan)->nama_pendidikan
+        ?? optional($penduduk->pendidikan)->pendidikan
+        ?? optional($penduduk->pendidikan)->jenjang
+        ?? '';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Agama
+    |--------------------------------------------------------------------------
+    */
+
+    $agama = optional($penduduk->agama)->nama
+        ?? optional($penduduk->agama)->agama
+        ?? optional($penduduk->agama)->nama_agama
+        ?? '';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Status perkawinan
+    |--------------------------------------------------------------------------
+    */
+
+    $statusPerkawinan = optional($penduduk->status)->nama
+        ?? optional($penduduk->status)->status
+        ?? optional($penduduk->status)->nama_status
+        ?? '';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nomor KK
+    |--------------------------------------------------------------------------
+    */
+
+    $nokk = optional(
+        optional($penduduk->detailkk)->kk
+    )->nokk ?? '';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Jenis kelamin
+    |--------------------------------------------------------------------------
+    */
+
+    $jenisKelaminRaw = $penduduk->getRawOriginal('jenis_kelamin')
+        ?? $penduduk->jenis_kelamin
+        ?? $penduduk->jk
+        ?? $penduduk->kelamin
+        ?? '';
+
+    $jenisKelaminNormal = strtoupper(
+        preg_replace(
+            '/[^A-Za-z0-9]/',
+            '',
+            trim((string) $jenisKelaminRaw)
+        )
+    );
+
+    if (
+        in_array($jenisKelaminNormal, [
+            '1',
+            'L',
+            'LK',
+            'LAKI',
+            'LAKILAKI',
+            'PRIA',
+            'MALE',
+        ], true)
+    ) {
+        $jenisKelamin = 'Laki-laki';
+    } elseif (
+        in_array($jenisKelaminNormal, [
+            '0',
+            '2',
+            'P',
+            'PR',
+            'PEREMPUAN',
+            'WANITA',
+            'FEMALE',
+        ], true)
+    ) {
+        $jenisKelamin = 'Perempuan';
+    } else {
+        $jenisKelamin = '';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tanggal lahir
+    |--------------------------------------------------------------------------
+    */
+
+    $tanggalLahir = '';
+
+    if (!empty($penduduk->tanggal_lahir)) {
+        try {
+            $tanggalLahir = \Carbon\Carbon::parse(
+                $penduduk->tanggal_lahir
+            )->format('Y-m-d');
+        } catch (\Throwable $e) {
+            $tanggalLahir = '';
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+
+        'data' => [
+            'nama' => $penduduk->nama ?? '',
+
+            'tempat_lahir' => $penduduk->tempat_lahir ?? '',
+
+            'tanggal_lahir' => $tanggalLahir,
+
+            'jenis_kelamin' => $jenisKelamin,
+
+            'pekerjaan' => trim((string) $pekerjaan),
+
+            'pendidikan' => trim((string) $pendidikan),
+
+            'agama' => trim((string) $agama),
+
+            'kewarganegaraan' => $penduduk->kewarganegaraan
+                ?? $penduduk->warganegara
+                ?? 'WNI',
+
+            'alamat' => $penduduk->alamat ?? '',
+
+            'rt' => $penduduk->RT
+                ?? $penduduk->rt
+                ?? '',
+
+            'rw' => $penduduk->RW
+                ?? $penduduk->rw
+                ?? '',
+
+            'nokk' => $nokk,
+
+            'status_perkawinan' => trim(
+                (string) $statusPerkawinan
+            ),
+        ],
+
+        /*
+         * Debug sementara. Hapus setelah berhasil.
+         */
+        'debug' => [
+            'jenis_kelamin_asli' => $jenisKelaminRaw,
+            'jenis_kelamin_normal' => $jenisKelaminNormal,
+            'jenis_kelamin_hasil' => $jenisKelamin,
+        ],
+    ]);
+}
 
     public function addadmin()
     {

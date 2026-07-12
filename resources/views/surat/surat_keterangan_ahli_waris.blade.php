@@ -22,7 +22,7 @@
                     {{-- YANG BERTANDA TANGAN --}}
                     <h5 class="mb-3">Yang Bertanda Tangan</h5>
                     <div class="mb-3">
-                        <label class="form-label" for="no_ktp">No KTP</label>
+                        <label class="form-label" for="no_ktp">NIK</label>
                         <input type="text" id="no_ktp" name="no_ktp" class="form-control" required
                             value="{{ old('no_ktp') }}">
                     </div>
@@ -131,7 +131,7 @@
                     <h5 class="mb-3">Keterangan Istri</h5>
                     <div class="mb-3">
                         <div class="mb-3">
-                            <label class="form-label" for="no_ktp_istri">No KTP</label>
+                            <label class="form-label" for="no_ktp_istri">NIK</label>
                             <input type="text" id="no_ktp_istri" name="no_ktp_istri" class="form-control" required
                                 value="{{ old('no_ktp_istri') }}">
                         </div>
@@ -268,8 +268,71 @@
                     <div id="saksi-wrapper" class="mt-3"></div>
 
                     {{-- Hidden default status untuk USER --}}
-                    <input type="hidden" name="status_surat" value="Pending">
-                    <input type="hidden" name="status_verif" value="Belum Verifikasi">
+                    {{-- STATUS SURAT DAN VERIFIKASI --}}
+                    <hr class="my-4">
+
+                    <h5 class="mb-3">Status Surat dan Verifikasi</h5>
+
+                    @if (Auth::check() && Auth::user()->role === 'admin')
+                        <div class="row">
+                            {{-- Status Surat --}}
+                            <div class="col-md-6 mb-3">
+                                <label for="status_surat" class="form-label">
+                                    Status Surat
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <select name="status_surat" id="status_surat"
+                                    class="form-control @error('status_surat') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Status Surat --</option>
+
+                                    @foreach (['Pending', 'Di cek', 'Di terima', 'Ditolak'] as $statusSurat)
+                                        <option value="{{ $statusSurat }}"
+                                            {{ old('status_surat', 'Pending') === $statusSurat ? 'selected' : '' }}>
+                                            {{ $statusSurat }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                @error('status_surat')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            {{-- Status Verifikasi --}}
+                            <div class="col-md-6 mb-3">
+                                <label for="status_verif" class="form-label">
+                                    Status Verifikasi
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <select name="status_verif" id="status_verif"
+                                    class="form-control @error('status_verif') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Status Verifikasi --</option>
+
+                                    @foreach (['Belum Verifikasi', 'Terverifikasi'] as $statusVerif)
+                                        <option value="{{ $statusVerif }}"
+                                            {{ old('status_verif', 'Belum Verifikasi') === $statusVerif ? 'selected' : '' }}>
+                                            {{ $statusVerif }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                @error('status_verif')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                    @else
+                        {{-- Pengajuan user selalu memakai status awal --}}
+                        <input type="hidden" name="status_surat" value="Pending">
+
+                        <input type="hidden" name="status_verif" value="Belum Verifikasi">
+                    @endif
 
                     <div class="mb-3 mt-3">
                         <label class="form-label" for="nowa">No WhatsApp</label>

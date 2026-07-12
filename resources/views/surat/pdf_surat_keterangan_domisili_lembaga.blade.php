@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Surat Keterangan Domisili Lembaga</title>
@@ -183,136 +184,141 @@
         }
     </style>
 </head>
+
 <body>
 
-@php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
-@endphp
+    @php
+        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    @endphp
 
-{{-- KOP SURAT --}}
-<div class="kop-desa-container">
-    <table class="kop-desa-table">
-        <tr>
-            <td class="kop-desa-logo">
-                <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
-            </td>
+    {{-- KOP SURAT --}}
+    <div class="kop-desa-container">
+        <table class="kop-desa-table">
+            <tr>
+                <td class="kop-desa-logo">
+                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                </td>
 
-            <td class="kop-desa-text">
-                <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
-                <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
-                <div class="kop-desa-kontak">
-                    email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
-                </div>
-            </td>
+                <td class="kop-desa-text">
+                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
+                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-kontak">
+                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                    </div>
+                </td>
 
                 {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td> --}} 
+            </td> --}}
+            </tr>
+        </table>
+
+        <hr class="kop-desa-garis">
+    </div>
+
+    <div class="judul-surat">SURAT KETERANGAN DOMISILI</div>
+
+    <div class="nomor-surat">
+        Nomor : {{ $data->nomor_surat ?? '220 / --- / 409.41.2 / ' . now()->year }}
+    </div>
+
+    <p class="tulisan">Yang bertanda tangan di bawah ini:</p>
+
+    <table class="data">
+        <tr>
+            <td>Nama</td>
+            <td>:</td>
+            <td>{{ $data->nama_pengurus ?? 'Hari Purnawan, S.Sos.' }}</td>
+        </tr>
+        <tr>
+            <td>Jabatan</td>
+            <td>:</td>
+            <td>Kepala Desa</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>:</td>
+            <td>Dsn. Sidomulyo RT 04 RW 01 Desa KEMIRIGEDE, Kecamatan Kesamben</td>
         </tr>
     </table>
 
-    <hr class="kop-desa-garis">
-</div>
+    <p class="tulisan">Dengan ini menerangkan dengan sebenarnya bahwa :</p>
 
-<div class="judul-surat">SURAT KETERANGAN DOMISILI</div>
+    <table class="data">
+        <tr>
+            <td>Nama Lembaga</td>
+            <td>:</td>
+            <td>{{ $data->nama_lembaga }}</td>
+        </tr>
+        <tr>
+            <td>Jenis Kegiatan</td>
+            <td>:</td>
+            <td>{{ $data->jenis_kegiatan }}</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>:</td>
+            <td>{{ $data->alamat_lembaga }}</td>
+        </tr>
+    </table>
 
-<div class="nomor-surat">
-    Nomor : {{ $data->nomor_surat ?? '220 / --- / 409.41.2 / ' . now()->year }}
-</div>
+    <p class="tulisan">Dengan Pengurus (Ketua)</p>
 
-<p class="tulisan">Yang bertanda tangan di bawah ini:</p>
+    <table class="data">
+        <tr>
+            <td>Nama</td>
+            <td>:</td>
+            <td>{{ $data->nama_pengurus }}</td>
+        </tr>
+        <tr>
+            <td>NIK</td>
+            <td>:</td>
+            <td>{{ $data->nik_pengurus }}</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>:</td>
+            <td>{{ $data->alamat_pengurus }}</td>
+        </tr>
+    </table>
 
-<table class="data">
-    <tr>
-        <td>Nama</td>
-        <td>:</td>
-        <td>{{ $data->nama_pengurus ?? 'Hari Purnawan, S.Sos.' }}</td>
-    </tr>
-    <tr>
-        <td>Jabatan</td>
-        <td>:</td>
-        <td>Kepala Desa</td>
-    </tr>
-    <tr>
-        <td>Alamat</td>
-        <td>:</td>
-        <td>Dsn. Sidomulyo RT 04 RW 01 Desa KEMIRIGEDE, Kecamatan Kesamben</td>
-    </tr>
-</table>
+    <p class="tulisan">
+        Lembaga tersebut di atas adalah benar-benar berdomisili di Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar.
+        Dan sampai saat ini masih aktif. Surat keterangan ini dipergunakan untuk
+        {{ $data->keterangan_tambahan ?? '....................' }}.
+    </p>
 
-<p class="tulisan">Dengan ini menerangkan dengan sebenarnya bahwa :</p>
+    <p class="tulisan">
+        Demikian Surat Keterangan Domisili ini dibuat untuk dapat dipergunakan sebagaimana mestinya.
+    </p>
 
-<table class="data">
-    <tr>
-        <td>Nama Lembaga</td>
-        <td>:</td>
-        <td>{{ $data->nama_lembaga }}</td>
-    </tr>
-    <tr>
-        <td>Jenis Kegiatan</td>
-        <td>:</td>
-        <td>{{ $data->jenis_kegiatan }}</td>
-    </tr>
-    <tr>
-        <td>Alamat</td>
-        <td>:</td>
-        <td>{{ $data->alamat_lembaga }}</td>
-    </tr>
-</table>
-
-<p class="tulisan">Dengan Pengurus (Ketua)</p>
-
-<table class="data">
-    <tr>
-        <td>Nama</td>
-        <td>:</td>
-        <td>{{ $data->nama_pengurus }}</td>
-    </tr>
-    <tr>
-        <td>NIK</td>
-        <td>:</td>
-        <td>{{ $data->nik_pengurus }}</td>
-    </tr>
-    <tr>
-        <td>Alamat</td>
-        <td>:</td>
-        <td>{{ $data->alamat_pengurus }}</td>
-    </tr>
-</table>
-
-<p class="tulisan">
-    Lembaga tersebut di atas adalah benar-benar berdomisili di Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar.
-    Dan sampai saat ini masih aktif. Surat keterangan ini dipergunakan untuk {{ $data->keterangan_tambahan ?? '....................' }}.
-</p>
-
-<p class="tulisan">
-    Demikian Surat Keterangan Domisili ini dibuat untuk dapat dipergunakan sebagaimana mestinya.
-</p>
-
-<table class="ttd-table">
-    <tr>
-        <td class="ttd-spacer"></td>
-        <td class="ttd-cell">
-            <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
-            <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
-
+    <table class="ttd-table">
+        <tr>
+            <td class="ttd-spacer"></td>
+            <td class="ttd-cell">
+                <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
+                <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
+                {{--
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">
-            </div>
+            </div> --}}
 
-            <p class="nama">
-                <u>Hari Purnawan, S.Sos.</u>
-            </p>
+                <br><br><br>
 
-            <div class="qr-section">
+                <p class="nama">
+                    <u>Hari Purnawan, S.Sos.</u>
+                </p>
+
+                {{-- <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR">
                 <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-            </div>
-        </td>
-    </tr>
-</table>
+            </div> --}}
+            </td>
+        </tr>
+    </table>
 
 </body>
+
 </html>

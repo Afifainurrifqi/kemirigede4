@@ -371,7 +371,14 @@ class SuratmasukController extends Controller
             return redirect()->route('surat.kematian.index');
         }
 
-        if ($kategori === 'keterangan' && $jenis_form === 'surat_keterangan_ahli_waris') {
+        // Surat Keterangan Ahli Waris
+        if (
+            $kategori === 'keterangan' &&
+            in_array($jenis_form, [
+                'surat_keterangan_waris',
+                'surat_keterangan_ahli_waris',
+            ], true)
+        ) {
             return redirect()->route('surat.ahliwaris.index');
         }
 
@@ -418,7 +425,13 @@ class SuratmasukController extends Controller
         if ($kategori === 'keterangan' && Str::contains($jenis_form, 'surat_keterangan_miskin')) {
             return redirect()->route('surat.skm.index');
         }
-        if ($kategori === 'keterangan' && $jenis_form === 'surat_keterangan_desa_sebagai_penduduk') {
+        if (
+            $kategori === 'keterangan' &&
+            in_array($jenis_form, [
+                'surat_keterangan_desa_sebagai_penduduk',
+                'surat_keterangan_desa_sebagai_penduduk_desa',
+            ], true)
+        ) {
             return redirect()->route('surat.desa_penduduk.index');
         }
 
