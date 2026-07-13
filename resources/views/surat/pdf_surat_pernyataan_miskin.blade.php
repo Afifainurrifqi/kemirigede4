@@ -311,11 +311,12 @@
                 </div>
 
                 <div class="nama-kades">Hari Purnawan, S.Sos.</div>
-
+{{--
+                {{--
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                     <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
-                </div>
+                </div> --}} --}}
             </td>
 
             <td>

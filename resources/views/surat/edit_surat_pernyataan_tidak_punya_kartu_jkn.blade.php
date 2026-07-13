@@ -1,11 +1,11 @@
-@extends('layout.main2')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
+                <div class="card">
                     <h5 class="mb-0">Edit Surat Pernyataan Tidak Memiliki Kartu JAMKESMAS / ASKES / JKN</h5>
                 </div>
                 <div class="card-body">
@@ -54,9 +54,57 @@
                             <label>Pekerjaan <span class="text-danger">*</span></label>
                             <select name="pekerjaan" class="form-control" required>
                                 <option value="">-- Pilih Pekerjaan --</option>
-                                @php
-                                    $jobs = ['BELUM/TIDAK BEKERJA', 'PELAJAR/MAHASISWA', 'KARYAWAN SWASTA', 'WIRASWASTA', 'IBU RUMAH TANGGA', 'PETANI/PEKEBUN', 'PEDAGANG', 'PEGAWAI NEGERI SIPIL (PNS)', 'TUKANG BATU', 'Lainnya'];
-                                @endphp
+                               @php
+                                $jobs = [
+                                    'BELUM/TIDAK BEKERJA',
+                                    'PELAJAR/MAHASISWA',
+                                    'TIDAK/BELUM SEKOLAH',
+                                    'KARYAWAN SWASTA',
+                                    'IBU RUMAH TANGGA',
+                                    'WIRASWASTA',
+                                    'TENTARA NASIONAL INDONESIA (TNI)',
+                                    'KEPOLISIAN RI (POLRI)',
+                                    'DOSEN',
+                                    'GURU',
+                                    'Guru agama',
+                                    'KEPALA DESA',
+                                    'PERANGKAT DESA',
+                                    'Pegawai Kantor Desa',
+                                    'BIDAN',
+                                    'DOKTER',
+                                    'PERAWAT',
+                                    'PETANI/PEKEBUN PEMILIK LAHAN',
+                                    'PETANI/PEKEBUN',
+                                    'BURUH TANI/PERKEBUNAN',
+                                    'PEDAGANG',
+                                    'PEGAWAI NEGERI SIPIL (PNS)',
+                                    'BURUH HARIAN LEPAS',
+                                    'SOPIR',
+                                    'KARYAWAN BUMN',
+                                    'PENSIUNAN',
+                                    'PEMBANTU RUMAH TANGGA',
+                                    'BURUH PETERNAKAN',
+                                    'KONSTRUKSI',
+                                    'PELAUT',
+                                    'NELAYAN/PERIKANAN',
+                                    'KARYAWAN HONORER',
+                                    'PETERNAK',
+                                    'MEKANIK',
+                                    'PENATA RIAS',
+                                    'TUKANG LAS/PANDAI BESI',
+                                    'TUKANG BATU',
+                                    'INDUSTRI',
+                                    'USTADZ/MUBALIGH',
+                                    'TABIB',
+                                    'BURUH NELAYAN/PERIKANAN',
+                                    'JURU MASAK',
+                                    'SENIMAN',
+                                    'AKUNTAN',
+                                    'Petani/Pekebun penyewa',
+                                    'TKI',
+                                    'Lainnya',
+                                ];
+                            @endphp
                                 @foreach ($jobs as $job)
                                     <option value="{{ $job }}" {{ $surat->pekerjaan == $job ? 'selected' : '' }}>
                                         {{ $job }}
@@ -95,7 +143,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-warning">Update Surat</button>
+                        <button type="submit" class="btn btn-primary">Update Surat</button>
                     </form>
                 </div>
             </div>

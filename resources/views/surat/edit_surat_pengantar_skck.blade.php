@@ -232,7 +232,7 @@
 
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary px-4">Update</button>
-                        <a href="{{ route('surat.skck.index') }}" class="btn btn-secondary">Batal</a>
+                        <a href="{{ route('surat.skck.index') }}" class="btn btn-danger">Batal</a>
                     </div>
                 </form>
             </div>

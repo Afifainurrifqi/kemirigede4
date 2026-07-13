@@ -535,7 +535,7 @@ Update
 
 
 <a href="{{route('surat.keluar')}}"
-class="btn btn-secondary">
+class="btn btn-danger">
 
 Kembali
 

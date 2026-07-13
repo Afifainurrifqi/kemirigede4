@@ -1,11 +1,11 @@
-@extends('layout.main2')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-heade">
                         <h5 class="mb-0">Edit Surat Permohonan Pembukaan Rekening Tabungan</h5>
                     </div>
                     <div class="card-body">
@@ -145,7 +145,7 @@
                             </div>
 
                             <div class="text-end mt-4">
-                                <a href="{{ route('surat.keluar') }}" class="btn btn-secondary">Batal</a>
+                                <a href="{{ route('surat.keluar') }}" class="btn btn-danger">Batal</a>
                                 <button type="submit" class="btn btn-primary btn-lg px-5">Update Surat</button>
                             </div>
                         </form>

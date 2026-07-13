@@ -1,4 +1,4 @@
-@extends('layout.main2')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container-fluid py-4">

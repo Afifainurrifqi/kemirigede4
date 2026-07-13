@@ -1,4 +1,4 @@
-@extends('layout.main2')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container-fluid py-4">
@@ -125,7 +125,7 @@
 
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-primary">Update Surat</button>
-                                <a href="{{ route('surat.keluar') }}" class="btn btn-secondary">Kembali</a>
+                                <a href="{{ route('surat.keluar') }}" class="btn btn-danger">Kembali</a>
                             </div>
                         </form>
                     </div>

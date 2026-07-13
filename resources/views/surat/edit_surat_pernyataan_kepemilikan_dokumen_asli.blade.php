@@ -1,11 +1,11 @@
-@extends('layout.main2')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
+                <div class="card">
                     <h5 class="mb-0">Edit Surat Pernyataan Kepemilikan Dokumen Asli</h5>
                 </div>
                 <div class="card-body">
@@ -145,7 +145,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-warning">Update Surat</button>
+                        <button type="submit" class="btn btn-primary">Update Surat</button>
                     </form>
                 </div>
             </div>

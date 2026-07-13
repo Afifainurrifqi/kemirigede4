@@ -1,11 +1,11 @@
-@extends('layout.main2')
+@extends(Auth::user() && Auth::user()->role == 'admin' ? 'layout.main2' : 'layout.main')
 
 @section('content')
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card">
                         <h5 class="mb-0">Edit Surat Kuasa</h5>
                     </div>
                     <div class="card-body">

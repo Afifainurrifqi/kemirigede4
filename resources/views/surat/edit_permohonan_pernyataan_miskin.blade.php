@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <a href="{{ route('surat.keluar') }}" class="btn btn-secondary">Kembali</a>
+                        <a href="{{ route('surat.keluar') }}" class="btn btn-danger">Kembali</a>
                         <button type="submit" class="btn btn-primary btn-lg px-5">Update Surat</button>
                     </div>
                 </form>
