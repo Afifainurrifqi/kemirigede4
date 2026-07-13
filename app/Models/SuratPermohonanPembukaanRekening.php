@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
 class SuratPermohonanPembukaanRekening extends Eloquent
@@ -10,25 +11,33 @@ class SuratPermohonanPembukaanRekening extends Eloquent
     protected $collection = 'surat_permohonan_pembukaan_rekening';
 
     protected $fillable = [
-        // Data Pemohon / Kepala Desa
-        'nama_kepala_desa',
-        'jabatan',
-        'alamat_kepala_desa',
+        // Kepada
+        'kepada_nama_instansi',
+        'kepada_alamat',
 
-        // Data Rekening
-        'atas_nama_rekening',
-        'alamat_rekening',
+        // Yang Bertanda Tangan
+        'ybt_nama',
+        'ybt_jabatan',
+        'ybt_alamat',
 
-        // Pejabat Berwenang
-        'nama_pejabat1',
-        'jabatan1',
-        'nama_pejabat2',
-        'jabatan2',
+        // Ketentuan
+        'rekening_atas_nama',
+        'rekening_alamat',
 
-        // Umum
-        'nomor_surat',
+        // Yang Berwenang (dinamis)
+        'berwenang_jumlah',
+        'berwenang_nama',
+        'berwenang_jabatan',
+
+        // umum
         'status_surat',
         'status_verif',
         'nowa',
+    ];
+
+    protected $casts = [
+        'berwenang_jumlah' => 'integer',
+        'berwenang_nama'   => 'array',
+        'berwenang_jabatan'=> 'array',
     ];
 }

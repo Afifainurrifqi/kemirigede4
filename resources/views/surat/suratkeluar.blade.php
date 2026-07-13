@@ -51,10 +51,8 @@
                             <div class="filter-surat-heading">
                                 <div class="filter-surat-icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none">
-                                        <path d="M4 5h16M7 12h10M10 19h4"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"/>
+                                        <path d="M4 5h16M7 12h10M10 19h4" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" />
                                     </svg>
                                 </div>
 
@@ -73,11 +71,8 @@
                                     </label>
 
                                     <div class="filter-surat-select-wrap">
-                                        <select
-                                            id="filterJenisSurat"
-                                            class="filter-surat-select"
-                                            aria-label="Filter berdasarkan jenis surat"
-                                        >
+                                        <select id="filterJenisSurat" class="filter-surat-select"
+                                            aria-label="Filter berdasarkan jenis surat">
                                             <option value="" data-keys="">
                                                 Semua Jenis Surat
                                             </option>
@@ -85,31 +80,19 @@
 
                                         <span class="filter-surat-chevron" aria-hidden="true">
                                             <svg viewBox="0 0 24 24" fill="none">
-                                                <path d="m7 10 5 5 5-5"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
                                         </span>
                                     </div>
                                 </div>
 
-                                <button
-                                    type="button"
-                                    id="resetFilterJenisSurat"
-                                    class="filter-reset-button"
-                                >
+                                <button type="button" id="resetFilterJenisSurat" class="filter-reset-button">
                                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                        <path d="M4 4v6h6M20 20v-6h-6"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"/>
+                                        <path d="M4 4v6h6M20 20v-6h-6" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M5.5 15a7 7 0 0 0 11.9 2.4L20 14M4 10l2.6-3.4A7 7 0 0 1 18.5 9"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"/>
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                                     </svg>
                                     Reset Filter
                                 </button>
@@ -288,11 +271,11 @@
                                                 'App\Models\surat_keterangan_ahli_waris' => 'SuratKeteranganAhliWaris',
 
                                                 'App\Models\surat_keterangan_ahli_waris' => 'SuratKeteranganAhliWaris',
+                                                'App\Models\SuratPerintahTugas' => 'SuratPerintahTugas',
 
                                                 'App\Models\surat_keterangan_ahli_waris_desa'
                                                     => 'surat_keterangan_ahli_waris_desa',
-                                                'App\Models\SuratIjinKeluarga'
-                                                    => 'SuratIjinKeluarga',
+                                                'App\Models\SuratIjinKeluarga' => 'SuratIjinKeluarga',
                                                 default => class_basename($item),
                                             };
 
@@ -345,6 +328,10 @@
                                                 @elseif ($jenisSurat === 'SuratUndangan' || $jenisSurat === 'surat_undangan')
                                                     <a href="{{ route('surat.undangan.edit', $item->_id) }}"
                                                         class="btn btn-primary btn-sm ms-1">Edit</a>
+                                                @elseif ($jenisSurat === 'SuratPerintahTugas')
+                                                    <a href="{{ route('surat.perintah_tugas.edit', $item->_id) }}"
+                                                        class="btn btn-primary btn-sm ms-1">
+                                                        Edit</a>
                                                 @elseif ($jenisSurat === 'SuratNotaAngkutan' || $jenisSurat === 'surat_nota_angkutan')
                                                     <a href="{{ route('surat.nota_angkutan.edit', $item->_id) }}"
                                                         class="btn btn-primary btn-sm ms-1">Edit</a>
@@ -529,7 +516,7 @@
                                                 @elseif ($jenisSurat === 'SuratRekomendasiBbm' || $jenisSurat === 'surat_rekomendasi_bbm')
                                                     {{ $item->nama_lengkap ?? '-' }}
                                                 @elseif ($jenisSurat === 'PermohonanPembukaanRekening' || $jenisSurat === 'surat_permohonan_pembukaan_rekening')
-                                                    {{ $item->nama_kepala_desa ?? '-' }}
+                                                    {{ $item->ybt_nama ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganAhliWaris')
                                                     {{ $item->nama_lengkap ?? '-' }}
                                                 @elseif ($jenisSurat === 'surat_keterangan_ahli_waris_desa')
@@ -784,8 +771,7 @@
                                                             => 'Surat Keterangan Desa Warga Miskin',
                                                         'surat_keterangan_ahli_waris_desa'
                                                             => 'Surat Keterangan Ahli Waris Desa',
-                                                        'surat_keterangan_ghoib'
-                                                            => 'Surat Keterangan Ghoib',
+                                                        'surat_keterangan_ghoib' => 'Surat Keterangan Ghoib',
                                                         'SuratKeteranganDomisiliUsaha'
                                                             => 'Surat Keterangan Domisili Usaha',
                                                         'surat_keterangan_domisili_usaha'
@@ -811,8 +797,7 @@
                                                 @endphp
                                                 @if (!empty($item->nowa))
                                                     <a href="https://wa.me/{{ $wa }}" target="_blank"
-                                                        rel="noopener"
-                                                        class="btn btn-success btn-sm">
+                                                        rel="noopener" class="btn btn-success btn-sm">
                                                         {{ $item->nowa }}
                                                     </a>
                                                 @else
@@ -988,8 +973,8 @@
 
     <style>
         /* =========================================================
-           FILTER JENIS SURAT
-        ========================================================= */
+                   FILTER JENIS SURAT
+                ========================================================= */
         .filter-surat-panel {
             margin-bottom: 22px;
             padding: 18px;
@@ -1191,8 +1176,8 @@
         }
 
         /* =========================================================
-           TABEL SURAT KELUAR
-        ========================================================= */
+                   TABEL SURAT KELUAR
+                ========================================================= */
         .table-responsive {
             border: 1px solid #e4e9f0;
             border-radius: 12px;
@@ -1431,11 +1416,9 @@
              * label = teks yang muncul pada dropdown.
              * keys  = nilai internal $jenisSurat pada setiap baris tabel.
              */
-            const semuaJenisSurat = [
-                {
+            const semuaJenisSurat = [{
                     kategori: 'ADMINDUK',
-                    items: [
-                        {
+                    items: [{
                             label: 'SURAT PERNYATAAN TIDAK BISA MELAMPIRKAN KTP KEMATIAN',
                             keys: ['SuratPernyataanTidakBisaMelampirkanKtpKematian']
                         },
@@ -1509,8 +1492,7 @@
                 },
                 {
                     kategori: 'KETERANGAN',
-                    items: [
-                        {
+                    items: [{
                             label: 'SURAT KETERANGAN KEHILANGAN',
                             keys: ['SuratKeteranganKehilangan']
                         },
@@ -1593,8 +1575,7 @@
                 },
                 {
                     kategori: 'PERNYATAAN',
-                    items: [
-                        {
+                    items: [{
                             label: 'SURAT PERNYATAAN KEPEMILIKAN DOKUMEN ASLI',
                             keys: ['SuratPernyataanKepemilikanDokumenAsli']
                         },
@@ -1709,9 +1690,9 @@
                     const option = document.createElement('option');
                     option.value = normalizeKey(item.label);
                     option.dataset.keys = normalizedKeys.join('|');
-                    option.textContent = jumlah > 0
-                        ? `${item.label} — ${jumlah} data`
-                        : item.label;
+                    option.textContent = jumlah > 0 ?
+                        `${item.label} — ${jumlah} data` :
+                        item.label;
 
                     optgroup.appendChild(option);
                 });
@@ -1724,16 +1705,16 @@
                     filterSelect.options[filterSelect.selectedIndex];
 
                 const selectedKeys = String(
-                    selectedOption?.dataset.keys || ''
-                )
+                        selectedOption?.dataset.keys || ''
+                    )
                     .split('|')
                     .map(normalizeKey)
                     .filter(Boolean);
 
                 const labelTerpilih =
                     selectedOption?.textContent
-                        ?.replace(/\s+—\s+\d+\s+data$/i, '')
-                        .trim() || 'Semua Jenis Surat';
+                    ?.replace(/\s+—\s+\d+\s+data$/i, '')
+                    .trim() || 'Semua Jenis Surat';
 
                 let jumlahTampil = 0;
 
@@ -1765,9 +1746,9 @@
                 }
 
                 if (filterInfo) {
-                    filterInfo.textContent = selectedKeys.length === 0
-                        ? 'Menampilkan seluruh jenis surat.'
-                        : `Menampilkan jenis: ${labelTerpilih}.`;
+                    filterInfo.textContent = selectedKeys.length === 0 ?
+                        'Menampilkan seluruh jenis surat.' :
+                        `Menampilkan jenis: ${labelTerpilih}.`;
                 }
 
                 if (countBadge) {

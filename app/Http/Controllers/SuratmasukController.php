@@ -246,6 +246,10 @@ class SuratmasukController extends Controller
             return redirect()->route('surat.pernyataan_miskin.index');
         }
 
+         if ($kategori === 'pernyataan' && $jenis_form === 'surat_perintah_tugas') {
+            return redirect()->route('surat.perintah_tugas.index');
+        }
+
         if ($kategori === 'keterangan' && $jenis_form === 'surat_keterangan_ahli_waris_desa') {
             return redirect()->route('surat.ahliwarisdesa.index');
         }

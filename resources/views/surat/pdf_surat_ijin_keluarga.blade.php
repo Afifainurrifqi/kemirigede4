@@ -413,10 +413,10 @@
                 <div class="ttd-label">Mengetahui :</div>
                 <div class="ttd-jabatan">KEPALA DESA KEMIRIGEDE</div>
 
-                <div class="ttd-img-wrapper">
+                {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
-                </div>
-
+                </div> --}}
+<br><br><br>
                 <div class="nama-kades">Hari Purnawan, S.Sos.</div>
             </td>
 

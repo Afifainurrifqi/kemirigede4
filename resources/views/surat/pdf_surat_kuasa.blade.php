@@ -283,7 +283,7 @@
 
                 {{-- <td class="kop-desa-logo">
                 <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-            </td> --}} 
+            </td> --}}
         </tr>
     </table>
 
@@ -431,10 +431,10 @@
         <p>Mengetahui</p>
         <p>KEPALA DESA KEMIRIGEDE</p>
 
-        <div class="ttd-img-wrapper">
+        {{-- <div class="ttd-img-wrapper">
             <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
-        </div>
-
+        </div> --}}
+<br><br><br>
         <p class="nama-kades">Hari Purnawan, S.Sos.</p>
 
         <div class="barcode">

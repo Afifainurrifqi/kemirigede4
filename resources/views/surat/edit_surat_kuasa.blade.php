@@ -215,12 +215,12 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                {{-- <div class="col-md-6 mb-3">
                                     <label>Nomor Surat</label>
                                     <input type="text" name="nomor_surat"
                                         value="{{ old('nomor_surat', $surat->nomor_surat) }}" class="form-control">
-                                </div>
-                                <div class="col-md-6 mb-3">
+                                </div> --}}
+                                <div class="col-md-12 mb-3">
                                     <label>No WhatsApp</label>
                                     <input type="text" name="nowa" value="{{ old('nowa', $surat->nowa) }}"
                                         class="form-control" required>
@@ -252,7 +252,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-warning btn-lg w-100">Update Surat Kuasa</button>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">Update Surat Kuasa</button>
                         </form>
                     </div>
                 </div>

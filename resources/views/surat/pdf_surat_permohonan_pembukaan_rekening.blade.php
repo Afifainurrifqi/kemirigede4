@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+
     <title>Surat Permohonan Pembukaan Rekening</title>
 
     <style>
@@ -11,13 +12,17 @@
             margin: 1cm 1.55cm 0.9cm 1.55cm;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: "Times New Roman", Times, serif;
-            font-size: 11pt;
-            line-height: 1.05;
-            color: #000;
             margin: 0;
             padding: 0;
+            color: #000;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11pt;
+            line-height: 1.12;
         }
 
         p {
@@ -29,7 +34,13 @@
             border-collapse: collapse;
         }
 
-        /* KOP SURAT FIX */
+        .text-justify {
+            text-align: justify;
+        }
+
+        /* =========================================================
+           KOP SURAT
+        ========================================================= */
         .kop-desa-container {
             width: 100%;
             margin-bottom: 12px;
@@ -52,18 +63,13 @@
         }
 
         .kop-desa-text {
-            width: 68%;
+            width: 84%;
             text-align: center;
             vertical-align: middle;
             line-height: 1.15;
         }
 
-        .kop-desa-1 {
-            font-size: 15pt;
-            font-weight: normal;
-            text-transform: uppercase;
-        }
-
+        .kop-desa-1,
         .kop-desa-2 {
             font-size: 15pt;
             font-weight: normal;
@@ -77,8 +83,8 @@
         }
 
         .kop-desa-alamat {
-            font-size: 11pt;
             margin-top: 2px;
+            font-size: 11pt;
         }
 
         .kop-desa-kontak {
@@ -86,16 +92,16 @@
         }
 
         .kop-desa-garis {
-            border: none;
+            height: 3px;
+            margin: 6px 0 12px;
+            border: 0;
             border-top: 3px solid #000;
             border-bottom: 1px solid #000;
-            height: 3px;
-            margin: 6px 0 12px 0;
         }
 
-        /* =========================
-           NOMOR SURAT
-        ========================= */
+        /* =========================================================
+           NOMOR, LAMPIRAN, PERIHAL
+        ========================================================= */
         .surat-meta {
             width: 100%;
             margin-bottom: 18px;
@@ -104,7 +110,7 @@
         .surat-meta td {
             padding: 0;
             vertical-align: top;
-            line-height: 1.08;
+            line-height: 1.12;
         }
 
         .surat-meta .label {
@@ -120,39 +126,44 @@
             width: auto;
         }
 
-        /* =========================
+        /* =========================================================
            TUJUAN SURAT
-        ========================= */
+        ========================================================= */
         .tujuan {
-            margin-bottom: 28px;
-            line-height: 1.08;
+            margin-bottom: 24px;
+            line-height: 1.18;
         }
 
-        .tempat {
-            display: inline-block;
-            margin-left: 42px;
+        .tujuan-nama {
+            margin-left: 0;
+            font-weight: normal;
         }
 
-        /* =========================
-           IDENTITAS
-        ========================= */
+        .tujuan-alamat {
+            margin-left: 32px;
+        }
+
+        /* =========================================================
+           IDENTITAS PENANDATANGAN
+        ========================================================= */
         .biodata-title {
-            margin-bottom: 2px;
-        }
-
-        .biodata {
-            margin-left: 62px;
             margin-bottom: 3px;
         }
 
+        .biodata {
+            width: calc(100% - 62px);
+            margin-left: 62px;
+            margin-bottom: 7px;
+        }
+
         .biodata td {
-            padding: 0;
+            padding: 1px 0;
             vertical-align: top;
-            line-height: 1.08;
+            line-height: 1.15;
         }
 
         .biodata .label {
-            width: 82px;
+            width: 92px;
         }
 
         .biodata .colon {
@@ -165,30 +176,31 @@
         }
 
         .indent-paragraph {
-            text-indent: 1.1cm;
+            margin-bottom: 6px;
             text-align: justify;
-            margin-bottom: 3px;
-            line-height: 1.08;
+            text-indent: 1.1cm;
+            line-height: 1.18;
         }
 
-        /* =========================
+        /* =========================================================
            DATA REKENING
-        ========================= */
+        ========================================================= */
         .rekening {
+            width: calc(100% - 32px);
             margin-left: 32px;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
 
         .rekening td {
             padding: 1px 0;
             vertical-align: top;
-            line-height: 1.08;
+            line-height: 1.15;
         }
 
         .rekening .no {
             width: 24px;
-            text-align: right;
             padding-right: 9px;
+            text-align: right;
         }
 
         .rekening .label {
@@ -204,65 +216,82 @@
             width: auto;
         }
 
-        .pejabat-detail {
-            margin-left: 25px;
-            margin-top: 2px;
+        /* =========================================================
+           PIHAK YANG BERWENANG
+        ========================================================= */
+        .berwenang-wrapper {
+            margin-left: 55px;
+            margin-bottom: 12px;
         }
 
-        .pejabat-detail td {
+        .berwenang-item {
+            width: 100%;
+            margin-bottom: 4px;
+            page-break-inside: avoid;
+        }
+
+        .berwenang-item td {
             padding: 1px 0;
             vertical-align: top;
-            line-height: 1.08;
+            line-height: 1.15;
         }
 
-        .pejabat-detail .huruf {
+        .berwenang-item .huruf {
             width: 24px;
         }
 
-        .pejabat-detail .label {
-            width: 96px;
+        .berwenang-item .label {
+            width: 92px;
         }
 
-        .pejabat-detail .colon {
+        .berwenang-item .colon {
             width: 14px;
             text-align: center;
         }
 
-        /* =========================
+        .berwenang-item .value {
+            width: auto;
+        }
+
+        /* =========================================================
            PENUTUP
-        ========================= */
+        ========================================================= */
         .penutup-1 {
-            text-indent: 1.1cm;
-            text-align: justify;
-            margin-top: 10px;
+            margin-top: 9px;
             margin-bottom: 8px;
-            line-height: 1.08;
+            text-align: justify;
+            text-indent: 1.1cm;
+            line-height: 1.18;
         }
 
         .penutup-2 {
-            text-indent: 1.1cm;
+            margin-bottom: 26px;
             text-align: justify;
-            margin-bottom: 28px;
-            line-height: 1.08;
+            text-indent: 1.1cm;
+            line-height: 1.18;
         }
 
-        /* =========================
+        /* =========================================================
            TANDA TANGAN
-        ========================= */
+        ========================================================= */
         .ttd {
             width: 330px;
-            margin-left: auto;
             margin-right: 0;
+            margin-left: auto;
             text-align: center;
-            line-height: 1.08;
+            line-height: 1.12;
+            page-break-inside: avoid;
         }
 
         .ttd .jabatan {
             margin-top: 20px;
+            text-transform: uppercase;
         }
 
         .ttd .nama {
             margin-top: 52px;
+            font-weight: bold;
+            text-decoration: underline;
         }
 
         @media print {
@@ -270,192 +299,350 @@
                 margin: 0;
                 padding: 0;
             }
-
-            .kop-desa-garis {
-                margin: 6px 0 12px 0;
-            }
         }
     </style>
 </head>
 
 <body>
     @php
-        $tanggalSurat = !empty($data->tanggal_surat)
-            ? \Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat('d F Y')
-            : now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y');
+        /*
+         * =========================================================
+         * TANGGAL SURAT
+         * =========================================================
+         * Prioritas:
+         * 1. tanggal_surat untuk kompatibilitas data lama;
+         * 2. created_at dari MongoDB;
+         * 3. tanggal saat PDF dibuat.
+         */
+        $sumberTanggal =
+            $data->tanggal_surat ??
+            $data->created_at ??
+            now('Asia/Jakarta');
 
-        $tahunSurat = !empty($data->tanggal_surat)
-            ? \Carbon\Carbon::parse($data->tanggal_surat)->format('Y')
-            : now('Asia/Jakarta')->format('Y');
+        try {
+            $tanggalSurat = \Carbon\Carbon::parse($sumberTanggal)
+                ->timezone('Asia/Jakarta')
+                ->locale('id')
+                ->translatedFormat('d F Y');
 
-        $namaKepalaDesa = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
+            $tahunSurat = \Carbon\Carbon::parse($sumberTanggal)
+                ->timezone('Asia/Jakarta')
+                ->format('Y');
+        } catch (\Throwable $e) {
+            $tanggalSurat = now('Asia/Jakarta')
+                ->locale('id')
+                ->translatedFormat('d F Y');
+
+            $tahunSurat = now('Asia/Jakarta')->format('Y');
+        }
+
+        /*
+         * =========================================================
+         * FIELD BARU + FALLBACK DATA LAMA
+         * =========================================================
+         */
+        $kepadaNamaInstansi =
+            $data->kepada_nama_instansi ??
+            'PT Bank BRI Unit KEMIRIGEDE';
+
+        $kepadaAlamat =
+            $data->kepada_alamat ??
+            'KEMIRIGEDE';
+
+        $ybtNama =
+            $data->ybt_nama ??
+            $data->nama_kepala_desa ??
+            '-';
+
+        $ybtJabatan =
+            $data->ybt_jabatan ??
+            $data->jabatan ??
+            'KEPALA DESA KEMIRIGEDE';
+
+        $ybtAlamat =
+            $data->ybt_alamat ??
+            $data->alamat_kepala_desa ??
+            '-';
+
+        $rekeningAtasNama =
+            $data->rekening_atas_nama ??
+            $data->atas_nama_rekening ??
+            '-';
+
+        $rekeningAlamat =
+            $data->rekening_alamat ??
+            $data->alamat_rekening ??
+            '-';
+
+        /*
+         * =========================================================
+         * DAFTAR PIHAK YANG BERWENANG
+         * =========================================================
+         */
+        $berwenangNama = is_array($data->berwenang_nama ?? null)
+            ? array_values($data->berwenang_nama)
+            : array_values(
+                array_filter(
+                    [
+                        $data->nama_pejabat1 ?? null,
+                        $data->nama_pejabat2 ?? null,
+                    ],
+                    fn ($value) => filled($value)
+                )
+            );
+
+        $berwenangJabatan = is_array($data->berwenang_jabatan ?? null)
+            ? array_values($data->berwenang_jabatan)
+            : array_values(
+                array_filter(
+                    [
+                        $data->jabatan1 ?? null,
+                        $data->jabatan2 ?? null,
+                    ],
+                    fn ($value) => filled($value)
+                )
+            );
+
+        $jumlahBerwenang = max(
+            (int) ($data->berwenang_jumlah ?? 0),
+            count($berwenangNama),
+            count($berwenangJabatan)
+        );
+
+        $daftarBerwenang = [];
+
+        for ($i = 0; $i < $jumlahBerwenang; $i++) {
+            $nama = trim((string) ($berwenangNama[$i] ?? ''));
+            $jabatan = trim((string) ($berwenangJabatan[$i] ?? ''));
+
+            if ($nama !== '' || $jabatan !== '') {
+                $daftarBerwenang[] = [
+                    'nama' => $nama !== '' ? $nama : '-',
+                    'jabatan' => $jabatan !== '' ? $jabatan : '-',
+                ];
+            }
+        }
+
+        if (empty($daftarBerwenang)) {
+            $daftarBerwenang[] = [
+                'nama' => '-',
+                'jabatan' => '-',
+            ];
+        }
+
+        /*
+         * nomor_surat tidak lagi ada pada Model/Controller.
+         * Nilai lama tetap digunakan jika dokumen lama masih memilikinya.
+         */
+        $nomorSurat =
+            $data->nomor_surat ??
+            '470/      /409.41.2/' . $tahunSurat;
     @endphp
 
-    <!-- KOP SURAT -->
+    {{-- =========================================================
+         KOP SURAT
+    ========================================================== --}}
     <div class="kop-desa-container">
         <table class="kop-desa-table">
             <tr>
                 <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/blitar.jpg') }}" alt="Logo Kabupaten Blitar">
+                    <img
+                        src="{{ public_path('assets/images/blitar.jpg') }}"
+                        alt="Logo Kabupaten Blitar"
+                    >
                 </td>
 
                 <td class="kop-desa-text">
-                    <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
-                    <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
-                    <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-desa-1">
+                        PEMERINTAH KABUPATEN BLITAR
+                    </div>
+
+                    <div class="kop-desa-2">
+                        KECAMATAN KESAMBEN
+                    </div>
+
+                    <div class="kop-desa-3">
+                        PEMERINTAH DESA KEMIRIGEDE
+                    </div>
+
+                    <div class="kop-desa-alamat">
+                        Jln. Merdeka No. 74 Telp. 082139324445
+                    </div>
+
                     <div class="kop-desa-kontak">
-                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                        email: Kemiriberkelas@gmail.com /
+                        website: Kemirigede-blitarkab.desa.id
                     </div>
                 </td>
-
-                {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
-                </td> --}}
             </tr>
         </table>
 
         <hr class="kop-desa-garis">
     </div>
 
-    <!-- NOMOR, LAMPIRAN, PERIHAL -->
+    {{-- =========================================================
+         NOMOR, LAMPIRAN, DAN PERIHAL
+    ========================================================== --}}
     <table class="surat-meta">
         <tr>
             <td class="label">Nomor</td>
             <td class="colon">:</td>
-            <td class="value">
-                @if (!empty($data->nomor_surat))
-                    {{ $data->nomor_surat }}
-                @else
-                    470/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/409.41.2/{{ $tahunSurat }}
-                @endif
-            </td>
+            <td class="value">{{ $nomorSurat }}</td>
         </tr>
+
         <tr>
             <td class="label">Lampiran</td>
             <td class="colon">:</td>
             <td class="value">-</td>
         </tr>
+
         <tr>
             <td class="label">Perihal</td>
             <td class="colon">:</td>
             <td class="value">
-                Permohonan Pembukaan Rekening Tabungan<br>
-                a.n TP PKK Desa KEMIRIGEDE
+                Permohonan Pembukaan Rekening Tabungan
+                <br>
+                a.n {{ $rekeningAtasNama }}
             </td>
         </tr>
     </table>
 
-    <!-- TUJUAN SURAT -->
+    {{-- =========================================================
+         TUJUAN SURAT
+    ========================================================== --}}
     <div class="tujuan">
-        Kepada Yth.<br>
-        PT. Bank BRI Unit KEMIRIGEDE<br>
-        KCP Unit KEMIRIGEDE<br>
-        Di<br>
-        <span class="tempat">Tempat</span>
+        <div>Kepada Yth.</div>
+
+        <div class="tujuan-nama">
+            {{ $kepadaNamaInstansi }}
+        </div>
+
+        <div>Di</div>
+
+        <div class="tujuan-alamat">
+            {!! nl2br(e($kepadaAlamat)) !!}
+        </div>
     </div>
 
-    <!-- IDENTITAS -->
-    <p class="biodata-title">Yang bertandatangan dibawah ini :</p>
+    {{-- =========================================================
+         IDENTITAS PENANDATANGAN
+    ========================================================== --}}
+    <p class="biodata-title">
+        Yang bertanda tangan di bawah ini:
+    </p>
 
     <table class="biodata">
         <tr>
             <td class="label">Nama</td>
             <td class="colon">:</td>
-            <td class="value">{{ $namaKepalaDesa }}</td>
+            <td class="value">{{ $ybtNama }}</td>
         </tr>
+
         <tr>
             <td class="label">Jabatan</td>
             <td class="colon">:</td>
-            <td class="value">{{ $data->jabatan ?? 'KEPALA DESA KEMIRIGEDE' }}</td>
+            <td class="value">{{ $ybtJabatan }}</td>
         </tr>
+
         <tr>
             <td class="label">Alamat</td>
             <td class="colon">:</td>
             <td class="value">
-                {{ $data->alamat_kepala_desa ?? 'Dusun Sidomulyo RT 004 RW 001 Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar' }}
+                {!! nl2br(e($ybtAlamat)) !!}
             </td>
         </tr>
     </table>
 
     <p class="indent-paragraph">
-        Dengan ini kami memohon untuk membuka rekening tabungan pada PT Bank BRI Unit KEMIRIGEDE dengan ketentuan sebagai
-        berikut :
+        Dengan ini kami memohon untuk membuka rekening tabungan pada
+        {{ $kepadaNamaInstansi }} dengan ketentuan sebagai berikut:
     </p>
 
-    <!-- DATA REKENING -->
+    {{-- =========================================================
+         DATA REKENING
+    ========================================================== --}}
     <table class="rekening">
         <tr>
             <td class="no">1.</td>
             <td class="label">Atas Nama Rekening</td>
             <td class="colon">:</td>
-            <td class="value">{{ $data->atas_nama_rekening ?? 'TP PKK Desa KEMIRIGEDE' }}</td>
+            <td class="value">{{ $rekeningAtasNama }}</td>
         </tr>
+
         <tr>
             <td class="no">2.</td>
             <td class="label">Alamat</td>
             <td class="colon">:</td>
             <td class="value">
-                {{ $data->alamat_rekening ?? 'Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar' }}
+                {!! nl2br(e($rekeningAlamat)) !!}
             </td>
         </tr>
+
         <tr>
             <td class="no">3.</td>
-            <td class="label">Nama Pejabat Yang Berwewenang</td>
+            <td class="label">Pihak yang Berwenang</td>
             <td class="colon">:</td>
             <td class="value"></td>
         </tr>
-        <tr>
-            <td></td>
-            <td colspan="3">
-                <table class="pejabat-detail">
-                    <tr>
-                        <td class="huruf">a.</td>
-                        <td class="label">Nama</td>
-                        <td class="colon">:</td>
-                        <td>{{ $data->nama_pejabat1 ?? 'TITIN MASRUROH' }}</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class="label">Jabatan</td>
-                        <td class="colon">:</td>
-                        <td>{{ $data->jabatan1 ?? 'Ketua TP PKK Desa KEMIRIGEDE' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="huruf">b.</td>
-                        <td class="label">Nama</td>
-                        <td class="colon">:</td>
-                        <td>{{ $data->nama_pejabat2 ?? 'CHRISTIANA SULISTIYAH' }}</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class="label">Jabatan</td>
-                        <td class="colon">:</td>
-                        <td>{{ $data->jabatan2 ?? 'Bendahara' }}</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
     </table>
 
-    <!-- PENUTUP -->
+    <div class="berwenang-wrapper">
+        @foreach ($daftarBerwenang as $index => $pejabat)
+            <table class="berwenang-item">
+                <tr>
+                    <td class="huruf">
+                        {{ chr(97 + $index) }}.
+                    </td>
+
+                    <td class="label">Nama</td>
+                    <td class="colon">:</td>
+                    <td class="value">
+                        {{ $pejabat['nama'] }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td class="label">Jabatan</td>
+                    <td class="colon">:</td>
+                    <td class="value">
+                        {{ $pejabat['jabatan'] }}
+                    </td>
+                </tr>
+            </table>
+        @endforeach
+    </div>
+
+    {{-- =========================================================
+         PENUTUP
+    ========================================================== --}}
     <p class="penutup-1">
-        Selanjutnya kami menyatakan sanggup mengikuti ketentuan-ketentuan untuk membuka rekening yang berlaku pada PT
-        Bank BRI Unit KEMIRIGEDE.
+        Selanjutnya kami menyatakan sanggup mengikuti ketentuan-ketentuan
+        pembukaan rekening yang berlaku pada {{ $kepadaNamaInstansi }}.
     </p>
 
     <p class="penutup-2">
-        Demikian surat permohonan kami sampaikan atas bantuan kerjasama dan kepercayaan PT Bank BRI Unit KEMIRIGEDE kami
-        ucapkan banyak terimakasih.
+        Demikian surat permohonan ini kami sampaikan. Atas bantuan,
+        kerja sama, dan kepercayaan yang diberikan, kami mengucapkan
+        terima kasih.
     </p>
 
-    <!-- TANDA TANGAN -->
+    {{-- =========================================================
+         TANDA TANGAN
+    ========================================================== --}}
     <div class="ttd">
-        <div>Blitar, {{ $tanggalSurat }}</div>
-        <div class="jabatan">KEPALA DESA KEMIRIGEDE</div>
-        <div class="nama">{{ $namaKepalaDesa }}</div>
-    </div>
+        <div>
+            Blitar, {{ $tanggalSurat }}
+        </div>
 
+        <div class="jabatan">
+            {{ $ybtJabatan }}
+        </div>
+
+        <div class="nama">
+            {{ $ybtNama }}
+        </div>
+    </div>
 </body>
 
 </html>
