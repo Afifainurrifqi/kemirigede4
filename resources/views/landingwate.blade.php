@@ -61,7 +61,7 @@
                         <img src="{{ 'assets2/img/logosi2.png' }}" class="wow slideInLeft"  style="width: 50%">
                         <h2 class="wow slideInLeft">SITAKRO KEMIRIGEDE </h2>
                         <p class="wow fadeInLeft">
-                            Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan Kanigoro Kabupaten
+                            Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten
                             Blitar
                         </p>
                         <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('login') }}">LOGIN
@@ -276,7 +276,7 @@
         <div class="row">
             <div class="google-maps">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31598.978692630815!2d112.2297005!3d-8.114479050000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78eb5100ed161f%3A0x391127009ed5ff3d!2sKEMIRIGEDE%2C%20Kec.%20Kanigoro%2C%20Kabupaten%20Blitar%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1698919198281!5m2!1sid!2sid"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31598.978692630815!2d112.2297005!3d-8.114479050000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78eb5100ed161f%3A0x391127009ed5ff3d!2sKEMIRIGEDE%2C%20Kec.%20Kesamben%2C%20Kabupaten%20Blitar%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1698919198281!5m2!1sid!2sid"
                     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>

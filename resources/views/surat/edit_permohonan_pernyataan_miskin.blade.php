@@ -86,6 +86,12 @@
                                 <option value="Di cek"
                                     {{ old('status_surat', $surat->status_surat) == 'Di cek' ? 'selected' : '' }}>Di cek
                                 </option>
+                                <option value="Di Terima"
+                                    {{ old('status_surat', $surat->status_surat) == 'Di Terima' ? 'selected' : '' }}>Di Terima
+                                </option>
+                                <option value="Di Tolak"
+                                    {{ old('status_surat', $surat->status_surat) == 'Di Tolak' ? 'selected' : '' }}>Di Tolak
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-6">

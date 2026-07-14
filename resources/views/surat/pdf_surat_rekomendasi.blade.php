@@ -466,10 +466,10 @@
                 <p>Mengetahui</p>
                 <p>KEPALA DESA KEMIRIGEDE</p>
 
-                <div class="ttd-img-wrapper">
+                {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
-                </div>
-
+                </div> --}}
+<br><br><br>
                 <p class="nama-kades">
                     {!! nl2br(e($namaKadesFormatted)) !!}
                 </p>

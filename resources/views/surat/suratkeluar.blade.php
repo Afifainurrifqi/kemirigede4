@@ -259,7 +259,15 @@
                                                 'App\Models\SuratPerintahPerjalananDinas'
                                                     => 'SuratPerintahPerjalananDinas',
                                                 'App\Models\SuratUndangan' => 'SuratUndangan',
+
+                                                // Nota Angkutan
                                                 'App\Models\SuratNotaAngkutan' => 'SuratNotaAngkutan',
+                                                'App\Models\surat_nota_angkutan' => 'SuratNotaAngkutan',
+
+                                                // Rekomendasi BBM
+                                                'App\Models\SuratRekomendasiBbm' => 'SuratRekomendasiBbm',
+                                                'App\Models\surat_rekomendasi_bbm' => 'SuratRekomendasiBbm',
+
                                                 'App\Models\SuratPermohonanPernyataanMiskin'
                                                     => 'SuratPermohonanPernyataanMiskin',
                                                 'surat_permohonan_pernyataan_miskin'
@@ -275,6 +283,7 @@
 
                                                 'App\Models\surat_keterangan_ahli_waris_desa'
                                                     => 'surat_keterangan_ahli_waris_desa',
+                                                'App\Models\SuratRekomendasi' => 'SuratRekomendasi',
                                                 'App\Models\SuratIjinKeluarga' => 'SuratIjinKeluarga',
                                                 default => class_basename($item),
                                             };
@@ -295,8 +304,28 @@
                                         <tr class="surat-row" data-jenis-surat="{{ strtolower($jenisSurat) }}">
                                             <td class="nomor-urut">{{ $index + 1 }}</td>
                                             <td>
+                                                {{-- Tombol Export PDF tetap dipertahankan --}}
                                                 <a href="{{ route('surat.export-pdf', ['jenis' => strtolower($jenisSurat), 'id' => $item->_id]) }}"
-                                                    class="btn btn-success btn-sm" target="_blank">Export PDF</a>
+                                                    class="btn btn-success btn-sm" target="_blank">
+                                                    Export PDF
+                                                </a>
+
+                                                @php
+                                                    $docxJenisKey = strtolower(
+                                                        preg_replace('/[^a-z0-9]+/i', '', $jenisSurat)
+                                                    );
+                                                    $docxSupported = array_key_exists(
+                                                        $docxJenisKey,
+                                                        config('surat_docx.documents', [])
+                                                    );
+                                                @endphp
+
+                                                @if ($docxSupported)
+                                                    <a href="{{ route('surat.export-docx', ['jenis' => strtolower($jenisSurat), 'id' => $item->_id]) }}"
+                                                        class="btn btn-info btn-sm ms-1">
+                                                        Export DOCX
+                                                    </a>
+                                                @endif
 
                                                 @if ($jenisSurat === 'SuratKeteranganKehilangan')
                                                     <a href="{{ route('suratkehilangan.edit', $item->_id) }}"
@@ -455,6 +484,9 @@
                                                 @elseif ($jenisSurat === 'SuratRekomendasiBbm' || $jenisSurat === 'surat_rekomendasi_bbm')
                                                     <a href="{{ route('surat.rekomendasi_bbm.edit', $item->_id) }}"
                                                         class="btn btn-primary btn-sm ms-1">Edit</a>
+                                                @elseif ($jenisSurat === 'SuratRekomendasi')
+                                                    <a href="{{ route('surat.rekomendasi.edit', $item->_id) }}"
+                                                        class="btn btn-primary btn-sm ms-1">Edit</a>
                                                 @elseif ($jenisSurat === 'SuratIjinKeluarga')
                                                     <a href="{{ route('surat.ijin_keluarga.edit', $item->_id) }}"
                                                         class="btn btn-primary btn-sm ms-1">Edit</a>
@@ -563,6 +595,8 @@
                                                     {{ $item->nama_pemohon ?? '-' }}
                                                 @elseif ($jenisSurat === 'surat_sptjm_suami_istri')
                                                     {{ $item->nama_deklaran ?? '-' }}
+                                                @elseif ($jenisSurat === 'SuratRekomendasi')
+                                                    {{ $item->nama ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratIjinKeluarga')
                                                     {{ $item->nama_suami ?? ($item->nama_istri ?? '-') }}
                                                 @else
@@ -671,6 +705,8 @@
                                                 @elseif ($jenisSurat === 'surat_sptjm_suami_istri')
                                                     {{ $item->nik_deklaran ?? '-' }}
                                                 @elseif ($jenisSurat === 'surat_keterangan_numpang_nikah')
+                                                    {{ $item->nik ?? '-' }}
+                                                @elseif ($jenisSurat === 'SuratRekomendasi')
                                                     {{ $item->nik ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratIjinKeluarga')
                                                     {{ $item->nik_suami ?? ($item->nik_istri ?? '-') }}
@@ -872,10 +908,78 @@
                                                     $jenisSurat === 'surat_permohonan_pengantar_keabsahan_akta_kelahiran' ||
                                                         $jenisSurat === 'SuratPermohonanPengantarKeabsahanAktaKelahiran')
                                                     {{ $item->alamat ?? '-' }}
+                                                @elseif (
+                                                    $jenisSurat === 'SuratNotaAngkutan' ||
+                                                        $jenisSurat === 'surat_nota_angkutan')
+                                                    {{
+                                                        $item->alamat_pengirim
+                                                            ?? $item->alamat_penerima
+                                                            ?? $item->tempat_muat
+                                                            ?? '-'
+                                                    }}
+
+                                                @elseif (
+                                                    $jenisSurat === 'SuratRekomendasiBbm' ||
+                                                        $jenisSurat === 'surat_rekomendasi_bbm')
+                                                    {{
+                                                        $item->alamat_usaha
+                                                            ?? $item->lokasi_penyalur
+                                                            ?? $item->tempat_pengambilan
+                                                            ?? '-'
+                                                    }}
+
                                                 @elseif ($jenisSurat === 'SuratKuasa')
-                                                    {{ $item->p1_alamat ?? '-' }}
-                                                @elseif ($jenisSurat === 'PermohonanPembukaanRekening' || $jenisSurat === 'surat_permohonan_pembukaan_rekening')
-                                                    {{ $item->alamat_kepala_desa ?? '-' }}
+                                                    {{ $item->alamat_pihak1 ?? ($item->p1_alamat ?? '-') }}
+
+                                                @elseif (
+                                                    $jenisSurat === 'PermohonanPembukaanRekening' ||
+                                                        $jenisSurat === 'SuratPermohonanPembukaanRekening' ||
+                                                        $jenisSurat === 'surat_permohonan_pembukaan_rekening')
+                                                    {{
+                                                        $item->ybt_alamat
+                                                            ?? $item->rekening_alamat
+                                                            ?? $item->kepada_alamat
+                                                            ?? $item->alamat_kepala_desa
+                                                            ?? '-'
+                                                    }}
+
+                                                @elseif ($jenisSurat === 'SuratPerintahTugas')
+                                                    @php
+                                                        /*
+                                                         * Struktur penerima_tugas dapat berisi:
+                                                         * [
+                                                         *   ['nama' => '...', 'kedudukan' => '...', 'alamat' => '...']
+                                                         * ]
+                                                         *
+                                                         * Alamat digabung jika penerima lebih dari satu.
+                                                         */
+                                                        $alamatPenerimaTugas = collect(
+                                                            $item->penerima_tugas ?? []
+                                                        )
+                                                            ->pluck('alamat')
+                                                            ->filter(function ($alamat) {
+                                                                return filled($alamat);
+                                                            })
+                                                            ->map(function ($alamat) {
+                                                                return trim((string) $alamat);
+                                                            })
+                                                            ->unique()
+                                                            ->implode('; ');
+                                                    @endphp
+
+                                                    {{ $alamatPenerimaTugas !== '' ? $alamatPenerimaTugas : '-' }}
+
+                                                @elseif (
+                                                    $jenisSurat === 'SuratPerintahPerjalananDinas' ||
+                                                        $jenisSurat === 'surat_perintah_perjalanan_dinas')
+                                                    {{
+                                                        $item->alamat
+                                                            ?? $item->tempat_tujuan
+                                                            ?? $item->tempat_berangkat
+                                                            ?? $item->instansi
+                                                            ?? '-'
+                                                    }}
+
                                                 @elseif ($jenisSurat === 'SuratPernyataanBelumAkta')
                                                     {{ $item->ybt_alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanBedaNamaBukuNikah')
@@ -896,6 +1000,10 @@
                                                     {{ $item->alamat ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratPernyataanMengizinkanIkutKk')
                                                     {{ $item->alamat ?? '-' }}
+                                                @elseif ($jenisSurat === 'SuratRekomendasi')
+                                                    {{ $item->alamat ?? '-' }}
+
+
                                                 @elseif ($jenisSurat === 'SuratIjinKeluarga')
                                                     {{ $item->alamat_suami ?? ($item->alamat_istri ?? '-') }}
                                                 @else
@@ -1363,7 +1471,7 @@
                 "Rekomendasi",
                 "FORMAT BLANGKO NOTA ANGKUTAN",
                 "SURAT REKOMENDASI PEMBELIAN BBM JENIS TERTENTU",
-                "SURAT PENYELENGGARAAN KERAMAIAN",
+                // "SURAT PENYELENGGARAAN KERAMAIAN",
                 "Permohonan surat  Pernyataan miskin",
                 "Surat Permohonan Tebang pohon"
             ]

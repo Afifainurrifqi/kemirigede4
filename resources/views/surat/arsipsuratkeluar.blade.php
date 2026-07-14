@@ -7,7 +7,6 @@
 
 
                 {{-- FORM PEMBUATAN SURAT --}}
-                {{-- FORM PEMBUATAN SURAT: tetap ada tetapi disembunyikan --}}
                 <div id="formPembuatanSurat" class="card shadow-sm mb-4 d-none">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Pembuatan Surat</h5>
@@ -42,6 +41,7 @@
                         </form>
                     </div>
                 </div>
+
 
                 {{-- TABEL ARSIP SURAT --}}
                 <div class="card shadow-sm">
@@ -277,6 +277,7 @@
                                                 'App\Models\surat_keterangan_ahli_waris' => 'SuratKeteranganAhliWaris',
 
                                                 'App\Models\surat_keterangan_ahli_waris' => 'SuratKeteranganAhliWaris',
+                                                'App\Models\SuratPerintahTugas' => 'SuratPerintahTugas',
 
                                                 'App\Models\surat_keterangan_ahli_waris_desa'
                                                     => 'surat_keterangan_ahli_waris_desa',
@@ -300,8 +301,28 @@
                                         <tr class="surat-row" data-jenis-surat="{{ strtolower($jenisSurat) }}">
                                             <td class="nomor-urut">{{ $index + 1 }}</td>
                                             <td>
+                                                {{-- Tombol Export PDF tetap dipertahankan --}}
                                                 <a href="{{ route('surat.export-pdf', ['jenis' => strtolower($jenisSurat), 'id' => $item->_id]) }}"
-                                                    class="btn btn-success btn-sm" target="_blank">Export PDF</a>
+                                                    class="btn btn-success btn-sm" target="_blank">
+                                                    Export PDF
+                                                </a>
+
+                                                @php
+                                                    $docxJenisKey = strtolower(
+                                                        preg_replace('/[^a-z0-9]+/i', '', $jenisSurat),
+                                                    );
+                                                    $docxSupported = array_key_exists(
+                                                        $docxJenisKey,
+                                                        config('surat_docx.documents', []),
+                                                    );
+                                                @endphp
+
+                                                @if ($docxSupported)
+                                                    <a href="{{ route('surat.export-docx', ['jenis' => strtolower($jenisSurat), 'id' => $item->_id]) }}"
+                                                        class="btn btn-info btn-sm ms-1">
+                                                        Export DOCX
+                                                    </a>
+                                                @endif
 
                                                 @if ($jenisSurat === 'SuratKeteranganKehilangan')
                                                     <a href="{{ route('suratkehilangan.edit', $item->_id) }}"
@@ -333,6 +354,10 @@
                                                 @elseif ($jenisSurat === 'SuratUndangan' || $jenisSurat === 'surat_undangan')
                                                     <a href="{{ route('surat.undangan.edit', $item->_id) }}"
                                                         class="btn btn-primary btn-sm ms-1">Edit</a>
+                                                @elseif ($jenisSurat === 'SuratPerintahTugas')
+                                                    <a href="{{ route('surat.perintah_tugas.edit', $item->_id) }}"
+                                                        class="btn btn-primary btn-sm ms-1">
+                                                        Edit</a>
                                                 @elseif ($jenisSurat === 'SuratNotaAngkutan' || $jenisSurat === 'surat_nota_angkutan')
                                                     <a href="{{ route('surat.nota_angkutan.edit', $item->_id) }}"
                                                         class="btn btn-primary btn-sm ms-1">Edit</a>
@@ -517,7 +542,7 @@
                                                 @elseif ($jenisSurat === 'SuratRekomendasiBbm' || $jenisSurat === 'surat_rekomendasi_bbm')
                                                     {{ $item->nama_lengkap ?? '-' }}
                                                 @elseif ($jenisSurat === 'PermohonanPembukaanRekening' || $jenisSurat === 'surat_permohonan_pembukaan_rekening')
-                                                    {{ $item->nama_kepala_desa ?? '-' }}
+                                                    {{ $item->ybt_nama ?? '-' }}
                                                 @elseif ($jenisSurat === 'SuratKeteranganAhliWaris')
                                                     {{ $item->nama_lengkap ?? '-' }}
                                                 @elseif ($jenisSurat === 'surat_keterangan_ahli_waris_desa')
@@ -974,8 +999,8 @@
 
     <style>
         /* =========================================================
-               FILTER JENIS SURAT
-            ========================================================= */
+                       FILTER JENIS SURAT
+                    ========================================================= */
         .filter-surat-panel {
             margin-bottom: 22px;
             padding: 18px;
@@ -1177,8 +1202,8 @@
         }
 
         /* =========================================================
-               TABEL SURAT KELUAR
-            ========================================================= */
+                       TABEL SURAT KELUAR
+                    ========================================================= */
         .table-responsive {
             border: 1px solid #e4e9f0;
             border-radius: 12px;

@@ -53,6 +53,7 @@ use App\Models\SuratPernyataanTidakPunyaKartuJkn;
 use App\Models\SuratRekomendasi;
 use App\Models\SuratRekomendasiBbm;
 use App\Models\SuratUndangan;
+use App\Services\SuratDocxService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -77,17 +78,78 @@ class SuratmasukController extends Controller
     }
 
 
-    public function suratkeluar()
+    public function suratkeluar(Request $request)
     {
         $data = collect();
 
+        /*
+         * Hanya ambil surat yang BELUM memenuhi syarat arsip.
+         *
+         * Surat dengan:
+         * - status_surat = Di terima
+         * - status_verif = Terverifikasi
+         *
+         * tidak boleh tampil di Surat Keluar.
+         */
         foreach ($this->daftarModelSuratKeluar() as $model) {
-            $data = $data->merge($this->ambilSuratBelumArsip($model));
+            $data = $data->merge(
+                $this->ambilSuratBelumArsip($model)
+            );
         }
 
-        $data = $data->values();
+        $data = $data
+            ->unique(function ($item) {
+                return get_class($item)
+                    . '|'
+                    . (string) $item->getKey();
+            })
+            ->values();
 
-        return view('surat.suratkeluar', compact('data'));
+        /*
+         * Pemeriksaan opsional:
+         * /surat/suratkeluar?debug_surat=1
+         */
+        if ($request->boolean('debug_surat')) {
+            $notaSemua = SuratNotaAngkutan::all();
+            $bbmSemua = SuratRekomendasiBbm::all();
+
+            return response()->json([
+                'database' => config(
+                    'database.connections.mongodb.database'
+                ),
+
+                'nota_angkutan' => [
+                    'collection' => (new SuratNotaAngkutan())
+                        ->getCollection(),
+                    'semua' => $notaSemua->count(),
+                    'surat_keluar' => $notaSemua
+                        ->reject(fn ($item) => $this->sudahMasukArsip($item))
+                        ->count(),
+                    'arsip' => $notaSemua
+                        ->filter(fn ($item) => $this->sudahMasukArsip($item))
+                        ->count(),
+                ],
+
+                'rekomendasi_bbm' => [
+                    'collection' => (new SuratRekomendasiBbm())
+                        ->getCollection(),
+                    'semua' => $bbmSemua->count(),
+                    'surat_keluar' => $bbmSemua
+                        ->reject(fn ($item) => $this->sudahMasukArsip($item))
+                        ->count(),
+                    'arsip' => $bbmSemua
+                        ->filter(fn ($item) => $this->sudahMasukArsip($item))
+                        ->count(),
+                ],
+
+                'total_surat_keluar' => $data->count(),
+            ]);
+        }
+
+        return view(
+            'surat.suratkeluar',
+            compact('data')
+        );
     }
 
     public function arsipsuratkeluar()
@@ -95,12 +157,23 @@ class SuratmasukController extends Controller
         $data = collect();
 
         foreach ($this->daftarModelSuratKeluar() as $model) {
-            $data = $data->merge($this->ambilSuratSudahArsip($model));
+            $data = $data->merge(
+                $this->ambilSuratSudahArsip($model)
+            );
         }
 
-        $data = $data->values();
+        $data = $data
+            ->unique(function ($item) {
+                return get_class($item) .
+                    '|' .
+                    (string) $item->getKey();
+            })
+            ->values();
 
-        return view('surat.arsipsuratkeluar', compact('data'));
+        return view(
+            'surat.arsipsuratkeluar',
+            compact('data')
+        );
     }
 
     /**
@@ -172,26 +245,70 @@ class SuratmasukController extends Controller
      */
     private function ambilSuratBelumArsip(string $model)
     {
-        return $model::where(function ($query) {
-            $query->where('status_surat', '!=', 'Di terima')
-                ->orWhere('status_verif', '!=', 'Terverifikasi')
-                ->orWhereNull('status_surat')
-                ->orWhereNull('status_verif');
-        })->get();
+        return $model::all()
+            ->reject(function ($item) {
+                return $this->sudahMasukArsip($item);
+            })
+            ->values();
     }
 
     /**
      * Surat yang tampil di Arsip Surat Keluar.
      *
-     * Hanya tampil kalau sudah:
-     * - status_surat = Di terima
-     * - status_verif = Terverifikasi
+     * Hanya tampil jika kedua status sudah terpenuhi.
      */
     private function ambilSuratSudahArsip(string $model)
     {
-        return $model::where('status_surat', 'Di terima')
-            ->where('status_verif', 'Terverifikasi')
-            ->get();
+        return $model::all()
+            ->filter(function ($item) {
+                return $this->sudahMasukArsip($item);
+            })
+            ->values();
+    }
+
+    /**
+     * Normalisasi status agar perbedaan spasi dan kapitalisasi
+     * tidak mengganggu pemindahan surat ke arsip.
+     *
+     * Contoh yang dianggap sama:
+     * - "Di terima"
+     * - "di terima"
+     * - "Diterima"
+     */
+    private function sudahMasukArsip($item): bool
+    {
+        $statusSurat = preg_replace(
+            '/[^a-z0-9]+/',
+            '',
+            mb_strtolower(
+                trim(
+                    (string) data_get(
+                        $item,
+                        'status_surat',
+                        ''
+                    )
+                )
+            )
+        );
+
+        $statusVerif = preg_replace(
+            '/[^a-z0-9]+/',
+            '',
+            mb_strtolower(
+                trim(
+                    (string) data_get(
+                        $item,
+                        'status_verif',
+                        ''
+                    )
+                )
+            )
+        );
+
+        return (
+            $statusSurat === 'diterima'
+            && $statusVerif === 'terverifikasi'
+        );
     }
 
 
@@ -202,8 +319,69 @@ class SuratmasukController extends Controller
             'jenis_form' => 'required|string',
         ]);
 
-        $kategori   = $request->kategori;
-        $jenis_form = $request->jenis_form;
+        $kategori = Str::of($request->kategori)
+            ->lower()
+            ->trim()
+            ->toString();
+
+        /*
+         * Normalisasi nilai jenis_form agar nilai dari JavaScript,
+         * tulisan manual, spasi ganda, tanda hubung, dan kapitalisasi
+         * menghasilkan key yang konsisten.
+         *
+         * Contoh:
+         * "Permohonan surat  Pernyataan miskin"
+         * menjadi:
+         * "permohonan_surat_pernyataan_miskin"
+         */
+        $jenis_form = Str::of($request->jenis_form)
+            ->lower()
+            ->ascii()
+            ->replaceMatches('/[^a-z0-9]+/', '_')
+            ->trim('_')
+            ->toString();
+
+        /*
+         * =====================================================
+         * SURAT MISKIN
+         * =====================================================
+         *
+         * Dua surat ini berbeda dan harus diarahkan ke route
+         * yang berbeda:
+         *
+         * 1. Surat Pernyataan Miskin
+         * 2. Permohonan Surat Pernyataan Miskin
+         */
+
+        // SURAT PERNYATAAN MISKIN
+        if (
+            $kategori === 'pernyataan' &&
+            in_array($jenis_form, [
+                'surat_pernyataan_miskin',
+                'pernyataan_miskin',
+            ], true)
+        ) {
+            return redirect()->route(
+                'surat.pernyataan_miskin.index'
+            );
+        }
+
+        // PERMOHONAN SURAT PERNYATAAN MISKIN
+        if (
+            in_array($kategori, [
+                'pernyataan',
+                'keterangan',
+            ], true) &&
+            in_array($jenis_form, [
+                'permohonan_surat_pernyataan_miskin',
+                'surat_permohonan_pernyataan_miskin',
+                'permohonan_pernyataan_miskin',
+            ], true)
+        ) {
+            return redirect()->route(
+                'surat.permohonan_pernyataan_miskin.index'
+            );
+        }
 
         // =====================================================
         // ==================== ADMINDUK =======================
@@ -218,16 +396,6 @@ class SuratmasukController extends Controller
             return redirect()->route('surat.pengantar_keabsahan_anak.index');
         }
 
-        // SURAT PERMOHONAN PERNYATAAN MISKIN
-        if (
-            ($kategori === 'pernyataan' || $kategori === 'keterangan') &&
-            (Str::contains(strtolower($jenis_form), 'permohonan_pernyataan_miskin') ||
-                Str::contains(strtolower($jenis_form), 'pernyataan miskin') ||
-                Str::contains(strtolower($jenis_form), 'permohonan surat pernyataan miskin'))
-        ) {
-            return redirect()->route('surat.permohonan_pernyataan_miskin.index');
-        }
-
         // Formulir Pengajuan User ID (F-3.01)
         if ($kategori === 'adminduk' && Str::contains($jenis_form, 'formulir_pengajuan_user_id')) {
             return redirect()->route('surat.formulir_pengajuan_user_id.index');
@@ -240,10 +408,6 @@ class SuratmasukController extends Controller
                 Str::contains(strtolower($jenis_form), 'bbm'))
         ) {
             return redirect()->route('surat.rekomendasi_bbm.index');
-        }
-
-        if ($kategori === 'pernyataan' && $jenis_form === 'surat_pernyataan_miskin') {
-            return redirect()->route('surat.pernyataan_miskin.index');
         }
 
          if ($kategori === 'pernyataan' && $jenis_form === 'surat_perintah_tugas') {
@@ -1167,6 +1331,84 @@ class SuratmasukController extends Controller
 
 
         abort(404);
+    }
+
+
+    /**
+     * Halaman proses Export DOCX hybrid.
+     *
+     * Browser merender PDF yang sama menjadi gambar, lalu server membuat
+     * DOCX dengan halaman tersebut sebagai background. Hanya nilai nomor
+     * surat yang tetap menjadi teks Word dan dapat diedit.
+     */
+    public function exportDocx(
+        string $jenis,
+        string $id,
+        SuratDocxService $docxService
+    ) {
+        $docxService->prepare($jenis, $id);
+
+        return view('surat.export_docx_hybrid', [
+            'sourceUrl' => route(
+                'surat.export-docx.source',
+                ['jenis' => $jenis, 'id' => $id]
+            ),
+            'buildUrl' => route(
+                'surat.export-docx.build',
+                ['jenis' => $jenis, 'id' => $id]
+            ),
+            'backUrl' => route('surat.keluar'),
+        ]);
+    }
+
+    /**
+     * PDF sumber untuk proses hybrid.
+     */
+    public function exportDocxSource(
+        string $jenis,
+        string $id,
+        SuratDocxService $docxService
+    ) {
+        return $docxService->streamPdf($jenis, $id);
+    }
+
+    /**
+     * Terima hasil render halaman dari browser dan buat DOCX.
+     */
+    public function exportDocxBuild(
+        Request $request,
+        string $jenis,
+        string $id,
+        SuratDocxService $docxService
+    ) {
+        $validated = $request->validate([
+            'pages' => ['required', 'array', 'min:1', 'max:12'],
+            'pages.*' => [
+                'required',
+                'file',
+                'mimes:jpg,jpeg,png',
+                'max:12288',
+            ],
+            'metadata' => ['required', 'string', 'max:50000'],
+        ]);
+
+        $metadata = json_decode(
+            $validated['metadata'],
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        if (! is_array($metadata)) {
+            abort(422, 'Metadata DOCX tidak valid.');
+        }
+
+        return $docxService->buildDocx(
+            $jenis,
+            $id,
+            $request->file('pages', []),
+            $metadata
+        );
     }
 
     /**

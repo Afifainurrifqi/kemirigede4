@@ -29,7 +29,7 @@
             <div class="content-left-wrapper opacity-mask" data-opacity-mask="rgba(13, 110, 253, 0.8)">
                 <div>
                     <h1>SELAMAT DATANG DI</h1>
-                    <p>Sistem Informasi Data Mikro Desa KEMIRIGEDE Kecamatan Kanigoro Kabupaten Blitar</p>
+                    <p>Sistem Informasi Data Mikro Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar</p>
                     <a href="https://www.youtube.com/watch?v=l_nwLjT8Vzg"
                        class="btn_1 black rounded pulse_bt plus_icon btn_play" target="_blank">
                         Profil SITAKRO <i class="arrow_triangle-right"></i>

@@ -509,13 +509,13 @@
                 </td>
             </tr>
 
-            <tr>
+            {{-- <tr>
                 <td class="ruang-ttd-pemohon"></td>
                 <td>
                     <img src="{{ public_path('assets/images/ttd.png') }}" alt="TTD" class="ttd-img">
                 </td>
-            </tr>
-
+            </tr> --}}
+<br><br><br>
             <tr>
                 <td>
                     <p class="nama-pemohon">

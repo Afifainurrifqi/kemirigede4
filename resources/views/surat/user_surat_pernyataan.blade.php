@@ -66,8 +66,7 @@
                     'SURAT PENYELENGGARAAN KERAMAIAN',
                     'Permohonan surat  Pernyataan miskin',
                     'Surat Permohonan Tebang pohon',
-                    'SURAT KETERANGAN USAHA',
-                    'SURAT KETERANGAN DESA MISKIN',
+
                 ];
 
                 $titles = collect($rawTitles)

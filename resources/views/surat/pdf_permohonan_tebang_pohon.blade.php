@@ -296,8 +296,8 @@
             $alasanList = $alasanDefault;
         }
 
-        $ttdKades = public_path('assets/images/ttd.png');
-        $barcodeSurat = public_path('assets/images/barcode.png');
+        // $ttdKades = public_path('assets/images/ttd.png');
+        // $barcodeSurat = public_path('assets/images/barcode.png');
     @endphp
 
     {{-- KOP SURAT --}}

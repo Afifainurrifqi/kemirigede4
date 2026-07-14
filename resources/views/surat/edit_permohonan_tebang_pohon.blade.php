@@ -30,12 +30,14 @@
 
                     <div class="mb-3">
                         <label>Nama Lengkap <span class="text-danger">*</span></label>
-                        <input type="text" name="nama" id="nama" class="form-control" required value="{{ old('nama', $surat->nama) }}">
+                        <input type="text" name="nama" id="nama" class="form-control" required
+                            value="{{ old('nama', $surat->nama) }}">
                     </div>
 
                     <div class="mb-3">
                         <label>Jabatan / Posisi <span class="text-danger">*</span></label>
-                        <input type="text" name="jabatan" class="form-control" required value="{{ old('jabatan', $surat->jabatan) }}">
+                        <input type="text" name="jabatan" class="form-control" required
+                            value="{{ old('jabatan', $surat->jabatan) }}">
                     </div>
 
                     <div class="mb-3">
@@ -46,11 +48,13 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label>No. HP <span class="text-danger">*</span></label>
-                            <input type="text" name="no_hp" class="form-control" required value="{{ old('no_hp', $surat->no_hp) }}">
+                            <input type="text" name="no_hp" class="form-control" required
+                                value="{{ old('no_hp', $surat->no_hp) }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Nomor WhatsApp <span class="text-danger">*</span></label>
-                            <input type="text" name="nowa" class="form-control" required value="{{ old('nowa', $surat->nowa) }}">
+                            <input type="text" name="nowa" class="form-control" required
+                                value="{{ old('nowa', $surat->nowa) }}">
                         </div>
                     </div>
 
@@ -65,15 +69,31 @@
                         <div class="col-md-6">
                             <label>Status Surat</label>
                             <select name="status_surat" class="form-control">
-                                <option value="Pending" {{ old('status_surat', $surat->status_surat) == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="Di cek" {{ old('status_surat', $surat->status_surat) == 'Di cek' ? 'selected' : '' }}>Di cek</option>
+                                <option value="Pending"
+                                    {{ old('status_surat', $surat->status_surat) == 'Pending' ? 'selected' : '' }}>Pending
+                                </option>
+                                <option value="Di cek"
+                                    {{ old('status_surat', $surat->status_surat) == 'Di cek' ? 'selected' : '' }}>Di cek
+                                </option>
+                                <option value="Di Terima"
+                                    {{ old('status_surat', $surat->status_surat) == 'Di Terima' ? 'selected' : '' }}>Di
+                                    Terima
+                                </option>
+                                <option value="Di Tolak"
+                                    {{ old('status_surat', $surat->status_surat) == 'Di Tolak' ? 'selected' : '' }}>Di
+                                    Tolak
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label>Status Verifikasi</label>
                             <select name="status_verif" class="form-control" required>
-                                <option value="Belum Verifikasi" {{ old('status_verif', $surat->status_verif) == 'Belum Verifikasi' ? 'selected' : '' }}>Belum Verifikasi</option>
-                                <option value="Terverifikasi" {{ old('status_verif', $surat->status_verif) == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                                <option value="Belum Verifikasi"
+                                    {{ old('status_verif', $surat->status_verif) == 'Belum Verifikasi' ? 'selected' : '' }}>
+                                    Belum Verifikasi</option>
+                                <option value="Terverifikasi"
+                                    {{ old('status_verif', $surat->status_verif) == 'Terverifikasi' ? 'selected' : '' }}>
+                                    Terverifikasi</option>
                             </select>
                         </div>
                     </div>

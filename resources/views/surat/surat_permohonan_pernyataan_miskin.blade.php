@@ -80,6 +80,8 @@
                             <select name="status_surat" class="form-control">
                                 <option value="Pending">Pending</option>
                                 <option value="Di cek">Di cek</option>
+                                <option value="Di Terima">Di Terima</option>
+                                <option value="Di tolak">Di tolak</option>
                             </select>
                         </div>
                         <div class="col-md-6">
