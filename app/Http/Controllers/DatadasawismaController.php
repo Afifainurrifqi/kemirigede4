@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class DatadasawismaController extends Controller
 {
@@ -139,86 +140,339 @@ class DatadasawismaController extends Controller
     /** API tombol "Cari" NIK → balikan JSON untuk autofill */
     public function findPendudukByNik(Request $request)
     {
-        $request->validate([
-            'nik' => ['required', 'regex:/^\d{8,20}$/'],
-        ], [
-            'nik.required' => 'NIK wajib diisi.',
-            'nik.regex'    => 'NIK harus 8–20 digit angka.',
-        ]);
+        $validated = $request->validate(
+            [
+                'nik' => [
+                    'required',
+                    'digits:16',
+                ],
 
-        $nik = trim($request->input('nik'));
-        Log::debug('[findPendudukByNik] searching nik=' . $nik . ' by user=' . auth()->id());
+                'current_nik' => [
+                    'nullable',
+                    'digits:16',
+                ],
+            ],
+            [
+                'nik.required' => 'NIK wajib diisi.',
+                'nik.digits' => 'NIK harus terdiri dari tepat 16 digit.',
+                'current_nik.digits' =>
+                'NIK akun saat ini tidak valid.',
+            ]
+        );
 
-        $penduduk = Datapenduduk::where('nik', $nik)->first();
+        $nik = trim($validated['nik']);
+
+        $currentNik = isset($validated['current_nik'])
+            ? trim($validated['current_nik'])
+            : null;
+
+        $penduduk = Datapenduduk::query()
+            ->where('nik', $nik)
+            ->first();
 
         if (!$penduduk) {
-            Log::debug('[findPendudukByNik] not found nik=' . $nik);
-            return response()->json(['ok' => false, 'message' => 'NIK tidak ditemukan.'], 404);
+            return response()->json(
+                [
+                    'ok' => false,
+                    'message' =>
+                    'NIK tidak ditemukan pada data penduduk.',
+                ],
+                404
+            );
         }
 
-        return response()->json([
-            'ok'   => true,
-            'data' => [
-                'id'     => $penduduk->id,
-                'nik'    => $penduduk->nik,
-                'nama'   => $penduduk->nama,
-                'alamat' => $penduduk->alamat,
-                'rt'     => $penduduk->rt,
-                'rw'     => $penduduk->rw,
+        /*
+     * Cari akun yang saat ini sedang diedit.
+     */
+        $currentUser = null;
+
+        if ($currentNik) {
+            $currentUser = User::query()
+                ->where('nik', $currentNik)
+                ->first();
+        }
+
+        /*
+     * Periksa apakah target NIK sudah digunakan akun lain.
+     */
+        $targetUser = User::query()
+            ->where('nik', $nik)
+            ->first();
+
+        if (
+            $targetUser &&
+            (!$currentUser || $targetUser->id !== $currentUser->id)
+        ) {
+            return response()->json(
+                [
+                    'ok' => false,
+                    'message' =>
+                    'NIK ini sudah digunakan oleh akun pengguna lain.',
+                ],
+                409
+            );
+        }
+
+        /*
+     * Periksa tautan user_id pada penduduk target.
+     */
+        if (
+            !is_null($penduduk->user_id) &&
+            (!$currentUser || $penduduk->user_id !== $currentUser->id)
+        ) {
+            return response()->json(
+                [
+                    'ok' => false,
+                    'message' =>
+                    'Penduduk ini sudah terdaftar sebagai anggota pengguna lain.',
+                ],
+                409
+            );
+        }
+
+        return response()->json(
+            [
+                'ok' => true,
+
+                'data' => [
+                    'id' => $penduduk->id,
+                    'nik' => $penduduk->nik,
+                    'nama' => $penduduk->nama ?? '',
+                    'alamat' => $penduduk->alamat ?? '',
+                    'rt' => $penduduk->rt
+                        ?? $penduduk->RT
+                        ?? '',
+                    'rw' => $penduduk->rw
+                        ?? $penduduk->RW
+                        ?? '',
+                ],
             ],
-        ], 200);
+            200
+        );
     }
 
 
 
     public function show($nik)
     {
-        // ➜ Tampilan EDIT = Code B
-        $penduduk = Datapenduduk::where('nik', $nik)->firstOrFail();
-        $user     = User::where('nik', $nik)->first(); // boleh null
+        $penduduk = Datapenduduk::query()
+            ->with('user')
+            ->where('nik', $nik)
+            ->firstOrFail();
+
+        /*
+     * Prioritaskan akun dari relasi user_id.
+     * Fallback berdasarkan NIK untuk data lama.
+     */
+        $user = $penduduk->user;
+
+        if (!$user) {
+            $user = User::query()
+                ->where('nik', $nik)
+                ->first();
+        }
 
         return view('datadasawisma.editdatadw', [
             'nik'       => $nik,
             'penduduk'  => $penduduk,
             'user'      => $user,
-            // nilai default untuk isi form
-            'valNIK'    => $nik,
-            'valNama'   => $penduduk->nama   ?? '',
+            'valNIK'    => $penduduk->nik ?? '',
+            'valNama'   => $penduduk->nama ?? '',
             'valAlamat' => $penduduk->alamat ?? '',
-            'valRT'     => $penduduk->rt     ?? '',
-            'valRW'     => $penduduk->rw     ?? '',
-            'valEmail'  => optional($user)->email ?? '',
-            'valRole'   => optional($user)->role  ?? 'dasawisma',
+            'valRT'     => $penduduk->rt ?? $penduduk->RT ?? '',
+            'valRW'     => $penduduk->rw ?? $penduduk->RW ?? '',
+            'valEmail'  => $user?->email ?? '',
+            'valRole'   => $user?->role ?? 'dasawisma',
         ]);
     }
 
 
     public function update(Request $request, $nik)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|min:6',
-            'role'     => 'required'
-        ]);
+        $pendudukLama = Datapenduduk::query()
+            ->where('nik', $nik)
+            ->firstOrFail();
 
-        $penduduk = Datapenduduk::where('nik', $nik)->firstOrFail();
-        $user     = User::where('nik', $nik)->first();
+        /*
+     * Temukan akun Dasawisma yang sedang diedit.
+     */
+        $user = null;
 
-        if (!$user) {
-            $user = new User();
-            $user->nik = $penduduk->nik;
+        if ($pendudukLama->user_id) {
+            $user = User::query()
+                ->find($pendudukLama->user_id);
         }
 
-        $user->name     = $penduduk->nama;
-        $user->email    = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->role     = $request->role;
-        $user->save();
+        if (!$user) {
+            $user = User::query()
+                ->where('nik', $nik)
+                ->first();
+        }
 
-        $penduduk->user_id = $user->id;
-        $penduduk->save();
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'ValNIK' =>
+                'Akun Dasawisma tidak ditemukan.',
+            ]);
+        }
 
-        return redirect()->route('dasawisma.index_admin')->with('success', 'Data berhasil diperbarui');
+        $validated = $request->validate(
+            [
+                'ValNIK' => [
+                    'required',
+                    'digits:16',
+                    'exists:datapenduduks,nik',
+
+                    Rule::unique('users', 'nik')
+                        ->ignore($user->id),
+                ],
+
+                'email' => [
+                    'required',
+                    'email',
+                    'max:255',
+
+                    Rule::unique('users', 'email')
+                        ->ignore($user->id),
+                ],
+
+                /*
+             * Password tidak wajib pada edit.
+             */
+                'password' => [
+                    'nullable',
+                    'string',
+                    'min:6',
+                    'confirmed',
+                ],
+            ],
+            [
+                'ValNIK.required' =>
+                'NIK wajib diisi.',
+
+                'ValNIK.digits' =>
+                'NIK harus terdiri dari tepat 16 digit.',
+
+                'ValNIK.exists' =>
+                'NIK tidak ditemukan pada data penduduk.',
+
+                'ValNIK.unique' =>
+                'NIK sudah digunakan oleh akun lain.',
+
+                'email.required' =>
+                'Email wajib diisi.',
+
+                'email.email' =>
+                'Format email tidak valid.',
+
+                'email.unique' =>
+                'Email sudah digunakan oleh akun lain.',
+
+                'password.min' =>
+                'Password minimal 6 karakter.',
+
+                'password.confirmed' =>
+                'Konfirmasi password tidak sama.',
+            ]
+        );
+
+        DB::transaction(function () use (
+            $pendudukLama,
+            $user,
+            $validated
+        ): void {
+            $pendudukLama = Datapenduduk::query()
+                ->whereKey($pendudukLama->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $user = User::query()
+                ->whereKey($user->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            /*
+         * Penduduk yang dipilih melalui pencarian NIK.
+         */
+            $pendudukBaru = Datapenduduk::query()
+                ->where('nik', $validated['ValNIK'])
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            /*
+         * Pastikan NIK target tidak dimiliki akun lain.
+         */
+            $akunLain = User::query()
+                ->where('nik', $validated['ValNIK'])
+                ->where('id', '!=', $user->id)
+                ->exists();
+
+            if ($akunLain) {
+                throw ValidationException::withMessages([
+                    'ValNIK' =>
+                    'NIK sudah digunakan oleh akun lain.',
+                ]);
+            }
+
+            /*
+         * Pastikan penduduk target belum tertaut ke user lain.
+         */
+            if (
+                !is_null($pendudukBaru->user_id) &&
+                $pendudukBaru->user_id !== $user->id
+            ) {
+                throw ValidationException::withMessages([
+                    'ValNIK' =>
+                    'Penduduk tersebut sudah terdaftar sebagai pengguna lain.',
+                ]);
+            }
+
+            /*
+         * Jika NIK berubah, lepaskan akun dari penduduk lama.
+         */
+            if (
+                $pendudukLama->id !== $pendudukBaru->id &&
+                $pendudukLama->user_id === $user->id
+            ) {
+                $pendudukLama->user_id = null;
+                $pendudukLama->save();
+            }
+
+            /*
+         * Data akun mengikuti penduduk hasil autofill.
+         */
+            $user->nik = $pendudukBaru->nik;
+            $user->name = $pendudukBaru->nama;
+            $user->email = strtolower(
+                trim($validated['email'])
+            );
+
+            $user->role = 'dasawisma';
+
+            /*
+         * Password hanya diperbarui apabila diisi.
+         */
+            if (!empty($validated['password'])) {
+                $user->password = Hash::make(
+                    $validated['password']
+                );
+            }
+
+            $user->save();
+
+            /*
+         * Tautkan penduduk baru ke akun Dasawisma.
+         */
+            $pendudukBaru->user_id = $user->id;
+            $pendudukBaru->save();
+        }, 3);
+
+        return redirect()
+            ->route('dasawisma.index_admin')
+            ->with(
+                'msg',
+                'Data Dasawisma berhasil diperbarui.'
+            );
     }
 
     public function destroy($nik)

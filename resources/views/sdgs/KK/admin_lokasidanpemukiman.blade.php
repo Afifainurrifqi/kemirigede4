@@ -8,7 +8,7 @@
                     <div class="card-body">
                         <div class="card-header">
                             @if (session('msg'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <div class="alert alert-success #search_nokkalert-dismissible fade show" role="alert">
                                     <strong>Berhasil</strong> {{ session('msg') }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
@@ -22,7 +22,21 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="file" name="file" class="form-control" required>
+                                    <input type="file" name="file"
+                                        class="form-control @error('file') is-invalid @enderror"
+                                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                        required>
+
+                                    @error('file')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
+                                    <small class="form-text text-muted">
+                                        File harus berformat XLSX dan mengikuti susunan kolom hasil
+                                        Export Lokasi dan Pemukiman.
+                                    </small>
                                 </div>
                                 <div class="col-md-2">
                                     <button class="btn btn-success" type="submit">
@@ -106,7 +120,8 @@
                                         </th>
                                         <th colspan="3" style="background-color: #e8f5e9; text-align: center;">APOTIK
                                         </th>
-                                        <th colspan="3" style="background-color: #e8f5e9; text-align: center;">TOKO OBAT
+                                        <th colspan="3" style="background-color: #e8f5e9; text-align: center;">TOKO
+                                            OBAT
                                         </th>
 
                                         <th colspan="3" style="background-color: #fff3e0; text-align: center;">DOKTER
@@ -216,7 +231,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: function(d) {
-                        d.nik = $('#search_nokk').val();
+                        d.nokk = $('#search_nokk').val();
                     }
                 },
                 buttons: [{
@@ -265,7 +280,8 @@
                     },
                     {
                         data: 'nik_kepala',
-                        name: 'nik_kepala'
+                        name: 'nik_kepala',
+                        defaultContent: ''
                     },
                     {
                         data: 'tempat_tinggal',

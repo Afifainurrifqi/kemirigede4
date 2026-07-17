@@ -1294,7 +1294,7 @@ Route::middleware(['checkrole:admin,dasawisma'])->group(
 
 Route::middleware(['checkrole:admin'])->group(
     function () {
-        Route::get('datapenduduk/export/datapenduduk', [DatapendudukController::class, 'export_excel']);
+        Route::get('datapenduduk/export/datapenduduk', [DatapendudukController::class, 'export_excel'])->name('export_excel');;
     }
 );
 

@@ -22,6 +22,7 @@ use App\Models\dataindividu;
 use App\Models\laink;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class LokasipemukimanController extends Controller
 {
@@ -45,53 +46,155 @@ class LokasipemukimanController extends Controller
 
     private function baseKkQuery(Request $request)
     {
-        $allowedDatakValues = ['tetap', 'tidaktetap'];
+        /*
+    |--------------------------------------------------------------------------
+    | Subquery kepala keluarga
+    |--------------------------------------------------------------------------
+    |
+    | Menghasilkan tepat satu ID penduduk untuk setiap ID KK.
+    | MIN(dp.id) digunakan sebagai pengaman apabila satu KK secara tidak
+    | sengaja memiliki lebih dari satu data berstatus Kepala Keluarga.
+    |
+    */
+        $kepalaPerKk = DB::table('datapenduduks as dp')
+            ->join(
+                'detailkks as dkk',
+                'dkk.idpenduduk',
+                '=',
+                'dp.id'
+            )
+            ->whereRaw(
+                'LOWER(TRIM(dp.Datak)) IN (?, ?)',
+                [
+                    'tetap',
+                    'tidaktetap',
+                ]
+            )
+            ->whereRaw(
+                'LOWER(TRIM(dp.hubungan)) = ?',
+                [
+                    'kepala keluarga',
+                ]
+            )
+            ->selectRaw(
+                '
+                dkk.idkk,
+                MIN(dp.id) AS penduduk_id
+            '
+            )
+            ->groupBy('dkk.idkk');
 
-        $q = Datapenduduk::query()
-            ->whereIn('datapenduduks.Datak', $allowedDatakValues)
-            ->where('datapenduduks.hubungan', 'Kepala Keluarga') // ✅ sesuaikan value kalau beda
-            ->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
-            ->join('kks', 'kks.id', '=', 'detailkks.idkk')
+        /*
+    |--------------------------------------------------------------------------
+    | Query utama
+    |--------------------------------------------------------------------------
+    |
+    | Hanya mengambil penduduk yang terpilih sebagai Kepala Keluarga
+    | pada setiap KK.
+    |
+    */
+        $query = Datapenduduk::query()
+            ->joinSub(
+                $kepalaPerKk,
+                'kepala_per_kk',
+                function ($join) {
+                    $join->on(
+                        'kepala_per_kk.penduduk_id',
+                        '=',
+                        'datapenduduks.id'
+                    );
+                }
+            )
+            ->join(
+                'kks',
+                'kks.id',
+                '=',
+                'kepala_per_kk.idkk'
+            )
             ->select([
                 'datapenduduks.*',
+                'kks.id as kk_id',
                 'kks.nokk as nokk',
             ]);
 
-        /**
-         * ✅ OPTIONAL: kalau kamu punya filter noKK khusus (misal dari input)
-         */
+        /*
+    |--------------------------------------------------------------------------
+    | Filter No KK
+    |--------------------------------------------------------------------------
+    */
         if ($request->filled('nokk')) {
-            $nokk = $request->input('nokk');
-            $q->where('kks.nokk', 'like', "%{$nokk}%");
+            $nokk = trim($request->input('nokk'));
+
+            $query->where(
+                'kks.nokk',
+                'like',
+                '%' . $nokk . '%'
+            );
         }
 
-        /**
-         * ✅ OPTIONAL: kalau kamu mau filter by nik kepala juga
-         */
+        /*
+    |--------------------------------------------------------------------------
+    | Filter NIK Kepala Keluarga
+    |--------------------------------------------------------------------------
+    */
         if ($request->filled('nik')) {
-            $nik = $request->input('nik');
-            $q->where('datapenduduks.nik', 'like', "%{$nik}%");
+            $nik = trim($request->input('nik'));
+
+            $query->where(
+                'datapenduduks.nik',
+                'like',
+                '%' . $nik . '%'
+            );
         }
 
-        return $q;
+        return $query;
     }
 
     public function admin_index(Request $request)
     {
-        $totalKK = (clone $this->baseKkQuery(new Request()))
-            ->distinct('nokk')
-            ->count('nokk');
+        /*
+     * Satu baris query = satu KK.
+     */
+        $kepalaKeluarga = $this->baseKkQuery(
+            new Request()
+        );
 
-        $nikKepalaList = (clone $this->baseKkQuery(new Request()))
+        $totalKK = (clone $kepalaKeluarga)->count();
+
+        /*
+     * Daftar NIK kepala keluarga.
+     */
+        $nikKepalaList = (clone $kepalaKeluarga)
             ->pluck('datapenduduks.nik')
+            ->filter()
             ->unique()
             ->values();
 
-        $terisiKK = lokasipemukiman::whereIn('nik_kepala', $nikKepalaList)->count();
+        /*
+     * Data lokasi disimpan berdasarkan NIK penduduk yang menjadi
+     * kepala keluarga.
+     */
+        $terisiKK = lokasipemukiman::query()
+            ->whereIn('nik', $nikKepalaList)
+            ->distinct()
+            ->count('nik');
 
-        $presentase = $totalKK > 0 ? ($terisiKK / $totalKK) * 100 : 0;
+        $presentase = $totalKK > 0
+            ? ($terisiKK / $totalKK) * 100
+            : 0;
 
-        return view('sdgs.KK.admin_lokasidanpemukiman', compact('presentase'));
+        /*
+     * Mencegah persentase lebih dari 100%.
+     */
+        $presentase = min(
+            $presentase,
+            100
+        );
+
+        return view(
+            'sdgs.KK.admin_lokasidanpemukiman',
+            compact('presentase')
+        );
     }
 
     public function export(Request $request)
@@ -116,29 +219,33 @@ class LokasipemukimanController extends Controller
 
     public function jsonadmin(Request $request)
     {
-        $allowedDatakValues = ['tetap', 'tidaktetap'];
-
-        $query = Datapenduduk::with(['detailkk.kk'])
-            ->whereIn('Datak', $allowedDatakValues)
-            ->where('hubungan', 'Kepala Keluarga')   // ← Hanya Kepala Keluarga
-            ->distinct('datapenduduks.nik');         // Hindari duplikasi
+        /*
+     * Query ini sudah menghasilkan:
+     * - satu baris untuk satu No KK;
+     * - hanya penduduk berstatus Kepala Keluarga.
+     */
+        $query = $this->baseKkQuery($request);
 
         return DataTables::of($query)
 
-            // ================== KOLOM DASAR ==================
-            ->addColumn('nokk', function ($row) {
-                return optional($row->detailkk?->kk)->nokk ?? '';
+            /*
+         * No KK sudah tersedia dari select:
+         * kks.nokk as nokk
+         */
+            ->editColumn('nokk', function ($row) {
+                return (string) ($row->nokk ?? '');
             })
-            ->filterColumn('nokk', function ($q, $keyword) {
-                $q->whereHas('detailkk.kk', function ($qq) use ($keyword) {
-                    $qq->where('nokk', 'like', "%{$keyword}%");
-                });
+
+            ->filterColumn('nokk', function ($query, $keyword) {
+                $query->where(
+                    'kks.nokk',
+                    'like',
+                    '%' . $keyword . '%'
+                );
             })
-            ->orderColumn('nokk', function ($q, $order) {
-                $q->join('detailkks', 'detailkks.idpenduduk', '=', 'datapenduduks.id')
-                    ->join('kks', 'kks.id', '=', 'detailkks.idkk')
-                    ->orderBy('kks.nokk', $order)
-                    ->select('datapenduduks.*');
+
+            ->orderColumn('nokk', function ($query, $order) {
+                $query->orderBy('kks.nokk', $order);
             })
 
             ->addColumn('action', function ($row) {

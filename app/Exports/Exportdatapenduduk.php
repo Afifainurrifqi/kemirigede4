@@ -3,61 +3,117 @@
 namespace App\Exports;
 
 use App\Models\Datapenduduk;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 
-class Exportdatapenduduk implements FromCollection, WithHeadings
+class Exportdatapenduduk extends StringValueBinder implements
+    FromQuery,
+    WithHeadings,
+    WithMapping,
+    WithCustomValueBinder
 {
-    public function collection()
-{
-    $datapenduduk = Datapenduduk::with('detailkk.kk')->get();
+    /**
+     * Query data yang akan diekspor.
+     *
+     * FromQuery membuat data diproses secara bertahap/chunk,
+     * sehingga lebih aman untuk jumlah data besar.
+     */
+    public function query()
+    {
+        return Datapenduduk::query()
+            ->with([
+                'detailkk.kk',
+                'agama',
+                'pendidikan',
+                'pekerjaan',
+                'goldar',
+                'status',
+            ])
+            ->whereIn('Datak', [
+                'tetap',
+                'tidaktetap',
+            ])
+            ->orderBy('id', 'asc');
+    }
 
-    // Modify NIK column values
-    $modifiedData = $datapenduduk->map(function ($item) {
-        $item->nik = "'" . $item->nik;
-        $item->agama_id = optional($item->agama)->nama;
-        $item->pendidikan_id = optional($item->pendidikan)->nama;
-        $item->pekerjaan_id = optional($item->pekerjaan)->nama;
-        $item->goldar_id = optional($item->goldar)->nama;
-        $item->status_id = optional($item->status)->nama;
+    /**
+     * Menentukan isi dan urutan setiap baris Excel.
+     */
+    public function map($penduduk): array
+    {
+        return [
+            // (string) $penduduk->id,
 
-        // Create an associative array with the correct order of columns
-        $data = [
-            'ID' => $item->id,
-            'No KK' => "'" . optional($item->detailkk->kk)->nokk,
-            'NIK' => $item->nik,
-            'Gelar Awal' => $item->gelar_awal,
-            'Nama' => $item->nama,
-            'Gelar Akhir' => $item->gelar_akhir,
-            'Jenis Kelamin' => $item->jenis_kelamin,
-            'Tempat Lahir' => $item->tempat_lahir,
-            'Tanggal Lahir' => $item->tanggal_lahir,
-            'Agama' => $item->agama_id,
-            'Pendidikan' => $item->pendidikan_id,
-            'Pekerjaan' => $item->pekerjaan_id,
-            'Golongan Darah' => $item->goldar_id,
-            'Status' => $item->status_id,
-            'Tanggal Perkawinan' => $item->tanggal_perkawinan,
-            'Hubungan' => $item->hubungan,
-            'Ayah' => $item->ayah,
-            'Ibu' => $item->ibu,
-            'Alamat' => $item->alamat,
-            'RT' => $item->rt,
-            'RW' => $item->rw,
-            'Status Kependudukan' => $item->datak,
+            // No KK dibuat string agar 16 digit tidak berubah.
+            (string) ($penduduk->detailkk?->kk?->nokk ?? ''),
+
+            // NIK dibuat string agar 16 digit tidak berubah.
+            (string) ($penduduk->nik ?? ''),
+
+            $penduduk->gelarawal ?? '',
+            $penduduk->nama ?? '',
+            $penduduk->gelarakhir ?? '',
+
+            $this->formatJenisKelamin(
+                $penduduk->jenis_kelamin
+            ),
+
+            $penduduk->tempat_lahir ?? '',
+
+            $penduduk->tanggal_lahir
+                ? date(
+                    'Y-m-d',
+                    strtotime($penduduk->tanggal_lahir)
+                )
+                : '',
+
+            $penduduk->agama?->nama ?? '',
+            $penduduk->pendidikan?->nama ?? '',
+            $penduduk->pekerjaan?->nama ?? '',
+            $penduduk->goldar?->nama ?? '',
+            $penduduk->status?->nama ?? '',
+
+            // Mengikuti tampilan DataTables: hanya tahun.
+            $penduduk->tanggal_perkawinan
+                ? date(
+                    'Y',
+                    strtotime($penduduk->tanggal_perkawinan)
+                )
+                : '',
+
+            $penduduk->hubungan ?? '',
+            $penduduk->ayah ?? '',
+            $penduduk->ibu ?? '',
+            $penduduk->alamat ?? '',
+
+            (string) (
+                $penduduk->RT
+                ?? $penduduk->rt
+                ?? ''
+            ),
+
+            (string) (
+                $penduduk->RW
+                ?? $penduduk->rw
+                ?? ''
+            ),
+
+            $penduduk->Datak
+                ?? $penduduk->datak
+                ?? '',
         ];
+    }
 
-        return $data;
-    });
-
-    return $modifiedData;
-}
-
-
+    /**
+     * Header Excel.
+     */
     public function headings(): array
     {
         return [
-            'ID',
+            // 'ID',
             'No KK',
             'NIK',
             'Gelar Awal',
@@ -70,15 +126,43 @@ class Exportdatapenduduk implements FromCollection, WithHeadings
             'Pendidikan',
             'Pekerjaan',
             'Golongan Darah',
-            'Status',
-            'Tanggal Perkawinan',
-            'Hubungan',
-            'Ayah',
-            'Ibu',
+            'Status Perkawinan',
+            'Tahun Perkawinan',
+            'Hubungan Dalam Keluarga',
+            'Nama Ayah',
+            'Nama Ibu',
             'Alamat',
             'RT',
             'RW',
             'Status Kependudukan',
         ];
+    }
+
+    /**
+     * Mengubah kode jenis kelamin menjadi keterangan.
+     */
+    private function formatJenisKelamin($jenisKelamin): string
+    {
+        $jenisKelamin = strtoupper(
+            trim((string) $jenisKelamin)
+        );
+
+        return match ($jenisKelamin) {
+            '1',
+            'L',
+            'LK',
+            'LAKI-LAKI',
+            'LAKI LAKI',
+            'PRIA' => 'Laki-laki',
+
+            '0',
+            '2',
+            'P',
+            'PR',
+            'PEREMPUAN',
+            'WANITA' => 'Perempuan',
+
+            default => $jenisKelamin,
+        };
     }
 }
