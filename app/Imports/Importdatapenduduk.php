@@ -3,7 +3,7 @@
 namespace App\Imports;
 
 use App\Models\agama;
-use App\Models\Datapenduduk;
+use App\Models\datapenduduk as DataPendudukModel;
 use App\Models\detailkk;
 use App\Models\goldar;
 use App\Models\kk;
@@ -31,17 +31,17 @@ class Importdatapenduduk implements
     use Importable;
 
     /**
-     * Menyimpan NIK yang sudah diproses dalam file yang sama.
+     * NIK yang sudah diproses pada file yang sedang diimpor.
      */
     private array $processedNiks = [];
 
     /**
-     * Menyimpan daftar NIK yang sudah ada di database.
+     * Cache pemeriksaan NIK di database.
      */
-    private ?array $databaseNiks = null;
+    private array $databaseNikCache = [];
 
     /**
-     * Cache data master.
+     * Cache isi tabel master.
      */
     private array $referenceMaps = [];
 
@@ -54,22 +54,107 @@ class Importdatapenduduk implements
     private int $invalid = 0;
 
     /**
-     * Peringatan.
+     * Jumlah status kependudukan kosong yang otomatis diisi Tetap.
+     */
+    private int $defaultedStatusKependudukan = 0;
+
+    /**
+     * Jumlah pekerjaan yang tidak ada di master dan diarahkan ke Lainnya.
+     */
+    private int $fallbackPekerjaanLainnya = 0;
+
+    /**
+     * Peringatan yang ditampilkan kepada pengguna.
      */
     private array $warnings = [];
     private int $warningLimit = 150;
     private int $warningOverflow = 0;
 
     /**
-     * Memproses setiap baris XLSX.
+     * Status kependudukan default untuk baris yang kolomnya kosong.
+     * Dataset Kemirigede pada file ini merupakan penduduk tetap.
+     */
+    private const DEFAULT_STATUS_KEPENDUDUKAN = 'tetap';
+
+    /**
+     * Alias nilai file XLSX ke nama yang tersedia pada data master.
+     *
+     * Nilai sebelah kanan harus sesuai dengan kolom "nama"
+     * pada tabel master di database.
+     */
+    private const REFERENCE_ALIASES = [
+        agama::class => [
+            'katholik' => 'katolik',
+        ],
+
+        pekerjaan::class => [
+            'mengurus rumah tangga' => 'ibu rumah tangga',
+            'perdagangan' => 'pedagang',
+
+            /*
+             * File hanya menuliskan PETANI/PEKEBUN tanpa
+             * membedakan pemilik lahan atau penyewa.
+             */
+            'petani/pekebun' => 'petani/pekebun pemilik lahan',
+
+            'tukang batu' => 'konstruksi',
+            'tukang kayu' => 'konstruksi',
+            'tukang cukur' => 'lainnya',
+            'pastor' => 'lainnya',
+            'imam masjid' => 'ustadz/mubaligh',
+            'tukang jahit' => 'lainnya',
+            'transportasi' => 'sopir',
+            'tukang sol sepatu' => 'lainnya',
+            'pendeta' => 'lainnya',
+            'wartawan' => 'lainnya',
+            'jurnalis' => 'lainnya',
+        ],
+
+        status::class => [
+            /*
+             * Master status:
+             * 1 = Kawin
+             * 2 = Belum Kawin
+             * 3 = Cerai Hidup
+             * 4 = Cerai
+             *
+             * Karena tidak ada "Cerai Mati", nilai tersebut
+             * diarahkan ke master "Cerai".
+             */
+            'cerai mati' => 'cerai',
+            'cerai karena mati' => 'cerai',
+            'cerai karena pasangan meninggal' => 'cerai',
+
+            'cerai hidup' => 'cerai hidup',
+            'cerai karena perceraian' => 'cerai hidup',
+        ],
+    ];
+
+    /**
+     * Header XLSX berada pada baris pertama.
+     */
+    public function headingRow(): int
+    {
+        return 1;
+    }
+
+    /**
+     * Membaca file per 500 baris agar lebih ringan di hosting.
+     */
+    public function chunkSize(): int
+    {
+        return 500;
+    }
+
+    /**
+     * Memproses satu baris XLSX.
      */
     public function onRow(Row $excelRow): void
     {
         $rowNumber = $excelRow->getIndex();
 
         /*
-         * Normalisasi nama header agar tetap terbaca walaupun
-         * konfigurasi heading Laravel Excel berbeda.
+         * Normalisasi nama header agar konsisten di lokal dan hosting.
          */
         $row = $this->normalizeRowKeys(
             $excelRow->toArray()
@@ -83,7 +168,6 @@ class Importdatapenduduk implements
              * NO KK DAN NIK
              * =====================================================
              */
-
             $nokk = $this->normalizeIdentity(
                 $this->rowValue($row, [
                     'no_kk',
@@ -103,22 +187,21 @@ class Importdatapenduduk implements
             );
 
             /*
-             * Apabila NIK sudah berhasil diproses dalam file ini,
-             * baris berikutnya dengan NIK yang sama dilewati.
+             * NIK ganda dalam file hanya diproses satu kali.
              */
             if (isset($this->processedNiks[$nik])) {
                 $this->skippedDuplicateFile++;
 
                 $this->addWarning(
                     "Baris {$rowNumber}: NIK {$nik} muncul lebih dari " .
-                        'satu kali dalam file dan dilewati.'
+                    'satu kali dalam file dan dilewati.'
                 );
 
                 return;
             }
 
             /*
-             * Apabila NIK sudah ada di database, jangan diperbarui.
+             * NIK yang sudah tersedia tidak diperbarui.
              */
             if ($this->nikExistsInDatabase($nik)) {
                 $this->processedNiks[$nik] = true;
@@ -126,7 +209,7 @@ class Importdatapenduduk implements
 
                 $this->addWarning(
                     "Baris {$rowNumber}: NIK {$nik} sudah ada " .
-                        'di database dan dilewati.'
+                    'di database dan dilewati.'
                 );
 
                 return;
@@ -137,7 +220,6 @@ class Importdatapenduduk implements
              * DATA WAJIB
              * =====================================================
              */
-
             $nama = $this->cleanText(
                 $this->rowValue($row, ['nama'])
             );
@@ -177,7 +259,6 @@ class Importdatapenduduk implements
              * DATA MASTER
              * =====================================================
              */
-
             $agamaId = $this->resolveReferenceId(
                 agama::class,
                 $this->rowValue($row, [
@@ -237,7 +318,6 @@ class Importdatapenduduk implements
              * SIMPAN DATA
              * =====================================================
              */
-
             DB::transaction(function () use (
                 $row,
                 $nokk,
@@ -254,23 +334,22 @@ class Importdatapenduduk implements
                 $statusKependudukan
             ): void {
                 /*
-                 * Cek kembali di dalam transaction untuk mencegah
-                 * duplikasi ketika ada proses import bersamaan.
+                 * Cek ulang dalam transaction untuk mencegah
+                 * duplikasi pada import yang berjalan bersamaan.
                  */
                 if (
-                    Datapenduduk::query()
-                    ->where('nik', $nik)
-                    ->exists()
+                    DataPendudukModel::query()
+                        ->where('nik', $nik)
+                        ->exists()
                 ) {
                     throw new \RuntimeException(
                         'NIK sudah tersedia di database.'
                     );
                 }
 
-                $penduduk = new Datapenduduk();
+                $penduduk = new DataPendudukModel();
 
-                $penduduk->user_id = null;
-
+                $penduduk->user_id = auth()->id();
                 $penduduk->nik = $nik;
 
                 $penduduk->gelarawal = $this->cleanText(
@@ -368,41 +447,12 @@ class Importdatapenduduk implements
              * Tandai NIK setelah transaksi berhasil.
              */
             $this->processedNiks[$nik] = true;
-
-            if ($this->databaseNiks === null) {
-                $this->databaseNiks = [];
-            }
-
-            $this->databaseNiks[$nik] = true;
+            $this->databaseNikCache[$nik] = true;
             $this->inserted++;
         } catch (Throwable $e) {
             /*
-             * Apabila NIK ternyata sudah dimasukkan oleh proses lain,
-             * catat sebagai NIK yang sudah ada.
+             * Error satu baris tidak menghentikan seluruh import.
              */
-            if (
-                $nik !== null &&
-                Datapenduduk::query()
-                ->where('nik', $nik)
-                ->exists()
-            ) {
-                $this->processedNiks[$nik] = true;
-
-                if ($this->databaseNiks === null) {
-                    $this->databaseNiks = [];
-                }
-
-                $this->databaseNiks[$nik] = true;
-                $this->skippedExisting++;
-
-                $this->addWarning(
-                    "Baris {$rowNumber}: NIK {$nik} sudah ada " .
-                        'di database dan dilewati.'
-                );
-
-                return;
-            }
-
             $this->invalid++;
 
             $identity = $nik !== null
@@ -411,17 +461,9 @@ class Importdatapenduduk implements
 
             $this->addWarning(
                 "Baris {$rowNumber} ({$identity}): " .
-                    $e->getMessage()
+                $e->getMessage()
             );
         }
-    }
-
-    /**
-     * Membaca XLSX per 500 baris.
-     */
-    public function chunkSize(): int
-    {
-        return 500;
     }
 
     /**
@@ -436,6 +478,10 @@ class Importdatapenduduk implements
                 (string) $key
             );
 
+            if ($normalizedKey === '') {
+                continue;
+            }
+
             $normalized[$normalizedKey] = $value;
         }
 
@@ -443,10 +489,19 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Mengubah nama header menjadi snake_case sederhana.
+     * Mengubah nama header menjadi snake_case.
      */
     private function normalizeHeader(string $header): string
     {
+        /*
+         * Hilangkan BOM apabila terbawa pada header pertama.
+         */
+        $header = preg_replace(
+            '/^\xEF\xBB\xBF/',
+            '',
+            $header
+        );
+
         $header = mb_strtolower(
             trim($header),
             'UTF-8'
@@ -462,7 +517,7 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Mengambil nilai berdasarkan beberapa kemungkinan header.
+     * Mengambil nilai dari beberapa kemungkinan nama header.
      */
     private function rowValue(
         array $row,
@@ -471,7 +526,7 @@ class Importdatapenduduk implements
         foreach ($keys as $key) {
             $normalizedKey = $this->normalizeHeader($key);
 
-            if (! array_key_exists($normalizedKey, $row)) {
+            if (!array_key_exists($normalizedKey, $row)) {
                 continue;
             }
 
@@ -495,13 +550,7 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Membersihkan teks dan mengganti enter/tab/spasi ganda
-     * menjadi satu spasi.
-     *
-     * Contoh:
-     * "BELUM/TIDAK \nBEKERJA"
-     * menjadi:
-     * "BELUM/TIDAK BEKERJA"
+     * Membersihkan teks, tab, enter, dan spasi ganda.
      */
     private function cleanText(mixed $value): ?string
     {
@@ -519,7 +568,7 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Membersihkan kode RT/RW tanpa menghilangkan nol di depan.
+     * Membersihkan RT/RW tanpa menghilangkan nol di depan.
      */
     private function cleanCode(mixed $value): ?string
     {
@@ -546,6 +595,19 @@ class Importdatapenduduk implements
             );
         }
 
+        /*
+         * Float besar berpotensi sudah kehilangan digit di Excel.
+         */
+        if (
+            is_float($value) &&
+            abs($value) >= 100000000000000
+        ) {
+            throw new \InvalidArgumentException(
+                "{$fieldName} dibaca sebagai angka Excel dan " .
+                'berpotensi kehilangan digit. Gunakan format Text.'
+            );
+        }
+
         $rawValue = trim((string) $value);
 
         if ($rawValue === '') {
@@ -555,21 +617,12 @@ class Importdatapenduduk implements
         }
 
         /*
-         * Hilangkan apostrof pembuka dari Excel.
+         * Hilangkan apostrof pembuka Excel.
          */
         $rawValue = ltrim($rawValue, "'");
 
         /*
-         * Hilangkan akhiran .0 apabila terbaca sebagai angka.
-         */
-        $rawValue = preg_replace(
-            '/\.0+$/',
-            '',
-            $rawValue
-        );
-
-        /*
-         * Scientific notation tidak aman untuk NIK 16 digit.
+         * Notasi ilmiah tidak aman untuk identitas 16 digit.
          */
         if (
             preg_match(
@@ -579,9 +632,18 @@ class Importdatapenduduk implements
         ) {
             throw new \InvalidArgumentException(
                 "{$fieldName} menggunakan notasi ilmiah " .
-                    "\"{$rawValue}\". Atur kolom menjadi Text di Excel."
+                "\"{$rawValue}\". Gunakan format Text di Excel."
             );
         }
+
+        /*
+         * Hilangkan akhiran .0.
+         */
+        $rawValue = preg_replace(
+            '/\.0+$/',
+            '',
+            $rawValue
+        );
 
         $digits = preg_replace(
             '/\D+/',
@@ -592,7 +654,7 @@ class Importdatapenduduk implements
         if (strlen($digits) !== 16) {
             throw new \InvalidArgumentException(
                 "{$fieldName} harus tepat 16 digit. " .
-                    "Nilai diterima: \"{$rawValue}\"."
+                "Nilai diterima: \"{$rawValue}\"."
             );
         }
 
@@ -642,36 +704,57 @@ class Importdatapenduduk implements
     private function normalizeDatak(
         mixed $value
     ): string {
-        $value = mb_strtolower(
-            $this->cleanText($value) ?? '',
+        $cleanValue = $this->cleanText($value);
+
+        /*
+         * Pada file sumber, mulai baris tertentu kolom status
+         * kependudukan memang kosong. Karena seluruh dataset ini
+         * merupakan data penduduk Kemirigede, nilai kosong otomatis
+         * disimpan sebagai penduduk tetap.
+         */
+        if ($cleanValue === null) {
+            $this->defaultedStatusKependudukan++;
+
+            return self::DEFAULT_STATUS_KEPENDUDUKAN;
+        }
+
+        $normalized = mb_strtolower(
+            $cleanValue,
             'UTF-8'
         );
 
-        $value = preg_replace(
-            '/[^a-z]/',
+        $normalized = preg_replace(
+            '/[^a-z0-9]/',
             '',
-            $value
+            $normalized
         );
 
-        return match ($value) {
-            'tetap' => 'tetap',
+        return match ($normalized) {
+            'tetap',
+            'penduduktetap',
+            'wargatetap',
+            'domisili',
+            '1' => 'tetap',
 
-            'tidaktetap' => 'tidaktetap',
+            'tidaktetap',
+            'penduduktidaktetap',
+            'wargatidaktetap',
+            'pendatang',
+            'sementara',
+            'nondomisili',
+            'nonpermanen',
+            '0',
+            '2' => 'tidaktetap',
 
             default => throw new \InvalidArgumentException(
-                'Status kependudukan harus Tetap atau Tidak Tetap.'
+                'Status kependudukan "' . $cleanValue . '" tidak dikenali. ' .
+                'Gunakan Tetap, Tidak Tetap, atau kosongkan untuk default Tetap.'
             ),
         };
     }
 
     /**
-     * Menyelesaikan nama data master menjadi ID.
-     *
-     * Pencocokan tidak membedakan:
-     * - huruf besar dan kecil;
-     * - enter;
-     * - tab;
-     * - spasi ganda.
+     * Menyelesaikan nilai data master menjadi ID.
      */
     private function resolveReferenceId(
         string $modelClass,
@@ -680,20 +763,23 @@ class Importdatapenduduk implements
     ): ?int {
         $value = $this->cleanText($value);
 
+        /*
+         * Nilai master boleh kosong.
+         */
         if ($value === null) {
             return null;
         }
 
         /*
-         * Apabila XLSX berisi ID data master.
+         * File boleh langsung berisi ID master.
          */
         if (ctype_digit($value)) {
             $id = (int) $value;
 
             if (
                 $modelClass::query()
-                ->whereKey($id)
-                ->exists()
+                    ->whereKey($id)
+                    ->exists()
             ) {
                 return $id;
             }
@@ -702,18 +788,79 @@ class Importdatapenduduk implements
         $lookupValue = $this->normalizeLookup($value);
         $referenceMap = $this->getReferenceMap($modelClass);
 
+        /*
+         * Coba nama persis terlebih dahulu.
+         */
         if (array_key_exists($lookupValue, $referenceMap)) {
             return $referenceMap[$lookupValue];
         }
 
+        /*
+         * Coba alias.
+         */
+        $aliasCandidates = $this->getAliasCandidates(
+            $modelClass,
+            $lookupValue
+        );
+
+        foreach ($aliasCandidates as $candidate) {
+            $normalizedCandidate = $this->normalizeLookup(
+                $candidate
+            );
+
+            if (
+                array_key_exists(
+                    $normalizedCandidate,
+                    $referenceMap
+                )
+            ) {
+                return $referenceMap[$normalizedCandidate];
+            }
+        }
+
+        /*
+         * Master pekerjaan menyediakan kategori Lainnya.
+         * Pekerjaan baru yang belum ada pada master tidak perlu
+         * menggagalkan seluruh baris; data diarahkan ke Lainnya.
+         */
+        if (
+            $modelClass === pekerjaan::class &&
+            array_key_exists('lainnya', $referenceMap)
+        ) {
+            $this->fallbackPekerjaanLainnya++;
+
+            return $referenceMap['lainnya'];
+        }
+
         throw new \InvalidArgumentException(
             "{$fieldName} \"{$value}\" tidak ditemukan " .
-                'pada data master.'
+            'pada data master.'
         );
     }
 
     /**
-     * Memuat data master ke cache.
+     * Mengambil kandidat alias data master.
+     */
+    private function getAliasCandidates(
+        string $modelClass,
+        string $lookupValue
+    ): array {
+        $modelAliases = self::REFERENCE_ALIASES[$modelClass]
+            ?? [];
+
+        if (!array_key_exists($lookupValue, $modelAliases)) {
+            return [];
+        }
+
+        $aliases = $modelAliases[$lookupValue];
+
+        return is_array($aliases)
+            ? $aliases
+            : [$aliases];
+    }
+
+    /**
+     * Memuat data master satu kali ke cache.
      */
     private function getReferenceMap(
         string $modelClass
@@ -743,7 +890,7 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Normalisasi nilai untuk pencocokan data master.
+     * Normalisasi pencocokan data master.
      */
     private function normalizeLookup(
         mixed $value
@@ -757,7 +904,7 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Parsing tanggal.
+     * Parsing tanggal lahir atau tanggal lain.
      */
     private function parseDate(
         mixed $value,
@@ -802,10 +949,6 @@ class Importdatapenduduk implements
 
         $dateValue = trim((string) $value);
 
-        /*
-         * Tahun 0000 tidak disimpan karena merupakan tanggal
-         * yang tidak valid.
-         */
         if (
             preg_match(
                 '/^0000[-\/]/',
@@ -813,8 +956,7 @@ class Importdatapenduduk implements
             )
         ) {
             throw new \InvalidArgumentException(
-                "{$fieldName} \"{$dateValue}\" memiliki tahun 0000. " .
-                    'Perbaiki tahun kelahirannya pada file XLSX.'
+                "{$fieldName} \"{$dateValue}\" memiliki tahun 0000."
             );
         }
 
@@ -846,7 +988,7 @@ class Importdatapenduduk implements
                     return $date->format('Y-m-d');
                 }
             } catch (Throwable $e) {
-                // Lanjut ke format berikutnya.
+                // Coba format berikutnya.
             }
         }
 
@@ -856,7 +998,7 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Tahun perkawinan dapat berisi tahun atau tanggal lengkap.
+     * Tahun perkawinan dapat berupa tahun atau tanggal lengkap.
      */
     private function parseMarriageDate(
         mixed $value
@@ -872,14 +1014,13 @@ class Importdatapenduduk implements
         }
 
         $stringValue = trim((string) $value);
-        $stringValue = preg_replace('/\.0+$/', '', $stringValue);
+        $stringValue = preg_replace(
+            '/\.0+$/',
+            '',
+            $stringValue
+        );
 
-        if (
-            preg_match(
-                '/^\d{4}$/',
-                $stringValue
-            )
-        ) {
+        if (preg_match('/^\d{4}$/', $stringValue)) {
             $year = (int) $stringValue;
 
             if (
@@ -902,50 +1043,31 @@ class Importdatapenduduk implements
     }
 
     /**
-     * Memuat NIK database satu kali.
-     */
-    private function loadDatabaseNiks(): void
-    {
-        if ($this->databaseNiks !== null) {
-            return;
-        }
-
-        $this->databaseNiks = [];
-
-        Datapenduduk::query()
-            ->select('nik')
-            ->orderBy('id')
-            ->chunkById(
-                1000,
-                function ($records): void {
-                    foreach ($records as $record) {
-                        $nik = preg_replace(
-                            '/\D+/',
-                            '',
-                            (string) $record->nik
-                        );
-
-                        if ($nik !== '') {
-                            $this->databaseNiks[$nik] = true;
-                        }
-                    }
-                }
-            );
-    }
-
-    /**
-     * Memeriksa NIK di database.
+     * Memeriksa NIK pada database dengan cache.
      */
     private function nikExistsInDatabase(
         string $nik
     ): bool {
-        $this->loadDatabaseNiks();
+        if (
+            array_key_exists(
+                $nik,
+                $this->databaseNikCache
+            )
+        ) {
+            return $this->databaseNikCache[$nik];
+        }
 
-        return isset($this->databaseNiks[$nik]);
+        $exists = DataPendudukModel::query()
+            ->where('nik', $nik)
+            ->exists();
+
+        $this->databaseNikCache[$nik] = $exists;
+
+        return $exists;
     }
 
     /**
-     * Menambahkan pesan peringatan.
+     * Menambahkan peringatan.
      */
     private function addWarning(
         string $message
@@ -968,22 +1090,28 @@ class Importdatapenduduk implements
             'inserted' => $this->inserted,
 
             'skipped_existing' =>
-            $this->skippedExisting,
+                $this->skippedExisting,
 
             'skipped_duplicate_file' =>
-            $this->skippedDuplicateFile,
+                $this->skippedDuplicateFile,
 
             'invalid' => $this->invalid,
 
+            'defaulted_status_kependudukan' =>
+                $this->defaultedStatusKependudukan,
+
+            'fallback_pekerjaan_lainnya' =>
+                $this->fallbackPekerjaanLainnya,
+
             'skipped' =>
-            $this->skippedExisting +
+                $this->skippedExisting +
                 $this->skippedDuplicateFile +
                 $this->invalid,
 
             'warnings' => $this->warnings,
 
             'warning_overflow' =>
-            $this->warningOverflow,
+                $this->warningOverflow,
         ];
     }
 }

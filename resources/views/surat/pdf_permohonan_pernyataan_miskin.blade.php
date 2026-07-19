@@ -267,7 +267,7 @@
     @php
         $sapaan = $data->sapaan_pasien ?? 'Tn.';
         $namaPasien = $data->nama_pasien ?? 'Cornelius Tri Utomo';
-        $alamatPasien = $data->alamat_pasien ?? 'Dusun KEMIRIGEDE RT 02 RW 03 Desa KEMIRIGEDE Kec. KEMIRIGEDE Kab. Blitar';
+        $alamatPasien = $data->alamat_pasien ?? 'Dusun Kemirigede RT 02 RW 03 Desa Kemirigede Kec. Kemirigede Kab. Blitar';
         $rumahSakit = $data->rumah_sakit_tujuan ?? 'Ngudi Waluyo';
         $lokasiRumahSakit = $data->lokasi_rumah_sakit ?? 'Wlingi';
 
@@ -289,7 +289,7 @@
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA Kemirigede</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
                         email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
@@ -297,7 +297,7 @@
                 </td>
 
                 {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
                 </td> --}}
             </tr>
         </table>
@@ -357,7 +357,7 @@
         </p>
 
         <p class="paragraf-tanpa-indent">
-            Sehubungan dengan kondisi tersebut, kami atas nama KEPALA DESA KEMIRIGEDE Kecamatan Kesamben
+            Sehubungan dengan kondisi tersebut, kami atas nama KEPALA DESA Kemirigede Kecamatan Kesamben
             Kabupaten Blitar, sangat berharap bantuan Bapak untuk bias memberikan keringanan berobat
         </p>
 
@@ -376,7 +376,7 @@
             <tr>
                 <td class="ttd-spacer"></td>
                 <td class="ttd-cell">
-                    <p>KEPALA DESA KEMIRIGEDE</p>
+                    <p>KEPALA DESA Kemirigede</p>
 
                     <div class="ttd-img-wrapper">
                         @if (file_exists($ttdKades))
@@ -390,7 +390,7 @@
                         <div class="barcode">
                             <img src="{{ $barcodeSurat }}" alt="Barcode Surat">
                             <br>
-                            <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                            <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
                         </div>
                     @endif
                 </td>

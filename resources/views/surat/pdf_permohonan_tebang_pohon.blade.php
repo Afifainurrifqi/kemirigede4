@@ -276,7 +276,7 @@
 
         $namaPemohon = $data->nama ?? 'SUTAJI';
 
-        $jabatanPemohon = $data->jabatan ?? ($data->alamat ?? 'Dsn.KEMIRIGEDE RT 01 RW 01 Ds. KEMIRIGEDE Kec.KEMIRIGEDE Kab.Blitar');
+        $jabatanPemohon = $data->jabatan ?? ($data->alamat ?? 'Dsn.Kemirigede RT 01 RW 01 Ds. Kemirigede Kec.Kemirigede Kab.Blitar');
 
         $alasanDefault = [
             'Pohon besar yang berada di pinggir jalan sudah terlalu besar sehingga jika terjadi hujan deras di sertai angina kencang di khawatirkan akan tumbang dan membahayakan bagi pengguna jalan, rumah sekitarnya dan fasilitas umum.',
@@ -311,7 +311,7 @@
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA Kemirigede</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
                         email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
@@ -319,7 +319,7 @@
                 </td>
 
                 {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
                 </td> --}}
             </tr>
         </table>
@@ -392,7 +392,7 @@
                     <p>Yang Membuat pernyataan</p>
                 </td>
                 <td class="ttd-kanan ttd-title">
-                    <p>KEPALA DESA KEMIRIGEDE</p>
+                    <p>KEPALA DESA Kemirigede</p>
                 </td>
             </tr>
             <tr>
@@ -414,7 +414,7 @@
                         <div class="barcode">
                             <img src="{{ $barcodeSurat }}" alt="Barcode Surat">
                             <br>
-                            <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                            <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
                         </div>
                     @endif
                 </td>

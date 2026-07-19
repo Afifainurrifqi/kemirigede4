@@ -206,16 +206,122 @@ class LokasipemukimanController extends Controller
         return Excel::download(new LokasidanPemukimanExport($filterNik), $file);
     }
 
-    public function import(\Illuminate\Http\Request $request)
+    public function import(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:10240'
-        ]);
+        $request->validate(
+            [
+                'file' => [
+                    'required',
+                    'file',
+                    'mimes:xlsx',
+                    'max:20480',
+                ],
+            ],
+            [
+                'file.required' =>
+                'File XLSX wajib dipilih.',
 
-        Excel::import(new LokasidanPemukimanImport, $request->file('file'));
+                'file.file' =>
+                'File import tidak valid.',
 
-        return back()->with('msg', 'Import Lokasi & Pemukiman berhasil.');
+                'file.mimes' =>
+                'File import harus berformat XLSX.',
+
+                'file.max' =>
+                'Ukuran file maksimal 20 MB.',
+            ]
+        );
+
+        $file = $request->file('file');
+
+        if (
+            !$file ||
+            !$file->isValid()
+        ) {
+            return back()->withErrors([
+                'file' =>
+                'File gagal diunggah. Silakan pilih ulang file XLSX.',
+            ]);
+        }
+
+        $import = new LokasidanPemukimanImport();
+
+        try {
+            /*
+         * Satu instance import dipakai untuk seluruh file agar
+         * ringkasan, cache, dan daftar No KK tetap konsisten.
+         */
+            Excel::import(
+                $import,
+                $file
+            );
+        } catch (Throwable $e) {
+            Log::error(
+                'Import Lokasi dan Pemukiman gagal',
+                [
+                    'exception' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'exception_file' => $e->getFile(),
+                    'exception_line' => $e->getLine(),
+                    'uploaded_name' =>
+                    $file->getClientOriginalName(),
+                    'uploaded_size' =>
+                    $file->getSize(),
+                    'uploaded_mime' =>
+                    $file->getMimeType(),
+                    'user_id' =>
+                    auth()->id(),
+                    'trace' =>
+                    $e->getTraceAsString(),
+                ]
+            );
+
+            $message = config('app.debug')
+                ? 'Import gagal: ' . $e->getMessage()
+                : (
+                    'Import gagal diproses. Detail kesalahan telah ' .
+                    'disimpan pada storage/logs/laravel.log.'
+                );
+
+            return back()->with('error', $message);
+        }
+
+        $summary = $import->getSummary();
+
+        $message =
+            'Import selesai: ' .
+            $summary['inserted'] .
+            ' KK baru, ' .
+            $summary['updated'] .
+            ' KK diperbarui, ' .
+            $summary['documents_written'] .
+            ' dokumen MongoDB berhasil ditulis ke tujuh collection, ' .
+            $summary['skipped_non_head'] .
+            ' baris bukan kepala keluarga dilewati, ' .
+            $summary['skipped_duplicate_kk'] .
+            ' No KK ganda dilewati, dan ' .
+            $summary['invalid'] .
+            ' baris tidak valid.';
+
+        $flashKey = (
+            $summary['successful_kk'] === 0 &&
+            $summary['invalid'] > 0
+        )
+            ? 'error'
+            : 'msg';
+
+        return back()
+            ->with($flashKey, $message)
+            ->with(
+                'import_warnings',
+                $summary['warnings']
+            )
+            ->with(
+                'import_warning_overflow',
+                $summary['warning_overflow']
+            );
     }
+
 
     public function jsonadmin(Request $request)
     {

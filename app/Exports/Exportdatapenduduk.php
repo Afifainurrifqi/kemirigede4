@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Datapenduduk;
+use App\Models\datapenduduk;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -23,7 +23,7 @@ class Exportdatapenduduk extends StringValueBinder implements
      */
     public function query()
     {
-        return Datapenduduk::query()
+        return datapenduduk::query()
             ->with([
                 'detailkk.kk',
                 'agama',

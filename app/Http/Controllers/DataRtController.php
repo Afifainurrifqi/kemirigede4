@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataRtExport;
+use App\Imports\DataRtImport;
+
 use App\Models\data_rt;
 use App\Http\Requests\Storedata_rtRequest;
 use App\Http\Requests\Updatedata_rtRequest;
@@ -28,6 +31,7 @@ use App\Models\rtpuengurus;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
+use Throwable;
 
 class DataRtController extends Controller
 {
@@ -40,12 +44,66 @@ class DataRtController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:10240'
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls,csv',
+                'max:51200',
+            ],
+            'skip_blank_updates' => [
+                'nullable',
+                'boolean',
+            ],
+        ], [
+            'file.required' => 'Pilih file hasil Export Excel Data RT.',
+            'file.mimes' => 'File harus berformat XLSX, XLS, atau CSV.',
+            'file.max' => 'Ukuran file maksimal 50 MB.',
         ]);
 
-        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\DataRtImport, $request->file('file'));
+        $import = new DataRtImport(
+            $request->boolean('skip_blank_updates')
+        );
 
-        return back()->with('msg', 'Data RT berhasil diimport ke MongoDB!');
+        try {
+            Excel::import(
+                $import,
+                $request->file('file')
+            );
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'file' => $exception instanceof \RuntimeException
+                        ? $exception->getMessage()
+                        : 'Import gagal. Periksa storage/logs/laravel.log.',
+                ]);
+        }
+
+        $summary = $import->summary();
+
+        $message = sprintf(
+            'Import selesai. Berhasil: %d, gagal: %d, '
+            . 'baris kosong: %d, NIK duplikat: %d.',
+            $summary['imported'],
+            $summary['failed'],
+            $summary['skipped'],
+            $summary['duplicates']
+        );
+
+        return back()
+            ->with('msg', $message)
+            ->with('import_summary', $summary)
+            ->with('import_errors', $import->errors());
+    }
+
+    public function export()
+    {
+        return Excel::download(
+            new DataRtExport(),
+            'data-rt-' . now()->format('Ymd-His') . '.xlsx'
+        );
     }
 
     public function index()

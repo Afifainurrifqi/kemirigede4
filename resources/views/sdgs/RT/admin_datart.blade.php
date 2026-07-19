@@ -14,26 +14,78 @@
                                         aria-label="Close"></button>
                                 </div>
                             @endif
-                            <h2 class="card-title">DATA RT</h2>
-                            <form action="{{ route('data-rt.import') }}" method="POST" enctype="multipart/form-data"
-                                class="mb-3">
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Import gagal.</strong>
+                                    <ul class="mb-0 mt-2">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                            @endif
+
+                            @if (session('import_errors'))
+                                <div class="alert alert-warning">
+                                    <strong>Detail baris gagal:</strong>
+                                    <ul class="mb-0 mt-2">
+                                        @foreach (session('import_errors') as $item)
+                                            <li>
+                                                Baris {{ $item['row'] ?? '-' }}
+                                                @if (!empty($item['nik']))
+                                                    , NIK {{ $item['nik'] }}
+                                                @endif
+                                                : {{ $item['message'] }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            <form id="data-rt-import-form" action="{{ route('data-rt.import') }}" method="POST"
+                                enctype="multipart/form-data" class="mb-3">
                                 @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="file" name="file" class="form-control" required>
+                                <div class="row align-items-center">
+                                    <div class="col-md-5 mb-2">
+                                        <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv"
+                                            required>
+                                        <small class="text-muted">
+                                            Gunakan file hasil tombol Export Excel Data RT.
+                                        </small>
                                     </div>
-                                    <div class="col-md-2">
-                                        <button class="btn btn-success" type="submit">
+
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="skip_blank_updates"
+                                                value="1" id="skip-blank-updates">
+                                            <label class="form-check-label" for="skip-blank-updates">
+                                                Abaikan sel kosong
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">
+                                            Centang agar nilai lama tidak dihapus oleh sel kosong.
+                                        </small>
+                                    </div>
+
+                                    <div class="col-md-3 mb-2">
+                                        <button id="data-rt-import-button" class="btn btn-success" type="submit">
                                             <i class="fa fa-upload"></i> Import Excel
                                         </button>
                                     </div>
                                 </div>
                             </form>
-
                             <button type="button" class="btn mb-1 btn-primary"
                                 onclick="window.location='{{ route('datart.create') }}'">
                                 Tambah Data RT<span class="btn-icon-right"><i class="fa fa-plus-circle"></i></span>
                             </button>
+                            <a href="{{ route('data-rt.export') }}" class="btn mb-1 btn-success">
+                                Export Excel
+                                <span class="btn-icon-right">
+                                    <i class="fa fa-file-excel-o"></i>
+                                </span>
+                            </a>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered" id="tabledatart">
@@ -97,7 +149,8 @@
                                             style="border-bottom: 1px solid #000; border-right: 1px solid #000;">AGEN
                                             PENGERAHAN TKI KE LUAR NEGERI</th>
                                         <th colspan="3"
-                                            style="border-bottom: 1px solid #000; border-right: 1px solid #000;">JUMLAH TATA
+                                            style="border-bottom: 1px solid #000; border-right: 1px solid #000;">JUMLAH
+                                            TATA
                                             RUANG INDUSTRI</th>
                                         <th colspan="2"
                                             style="border-bottom: 1px solid #000; border-right: 1px solid #000;">KEBERADAAN
@@ -109,7 +162,8 @@
                                             style="border-bottom: 1px solid #000; border-right: 1px solid #000;">JUMLAH
                                             KEBERADAAN KOPERASI</th>
                                         <th colspan="3"
-                                            style="border-bottom: 1px solid #000; border-right: 1px solid #000;">KIOS SARANA
+                                            style="border-bottom: 1px solid #000; border-right: 1px solid #000;">KIOS
+                                            SARANA
                                             PRODUKSI PETANI/NELAYAN</th>
                                         <th colspan="4"
                                             style="border-bottom: 1px solid #000; border-right: 1px solid #000;">Industri
@@ -1602,7 +1656,7 @@
         $(function() {
             $('#tabledatart').DataTable({
                 processing: true,
-                dom: 'Bfrtip',
+                // dom: 'Bfrtip',
                 scrollX: true,
                 searching: true,
                 ajax: {

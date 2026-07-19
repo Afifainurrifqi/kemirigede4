@@ -34,6 +34,12 @@
                                 onclick="window.location='{{ route('datart.create') }}'">
                                 Tambah Data RT<span class="btn-icon-right"><i class="fa fa-plus-circle"></i></span>
                             </button>
+                               <a href="{{ route('data-rt.export') }}" class="btn mb-1 btn-success">
+                                        Export Excel
+                                        <span class="btn-icon-right">
+                                            <i class="fa fa-file-excel-o"></i>
+                                        </span>
+                                    </a>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered" id="tabledatart">
@@ -1602,11 +1608,11 @@
         $(function() {
             $('#tabledatart').DataTable({
                 processing: true,
-                dom: 'Bfrtip',
+                // dom: 'Bfrtip',
                 scrollX: true,
                 searching: true,
                 ajax: {
-                    url: '{!! route('datart.jsonadmin') !!}',
+                    url: '{!! route('datart.json') !!}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

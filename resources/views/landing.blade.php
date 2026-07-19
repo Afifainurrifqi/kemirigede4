@@ -59,9 +59,9 @@
                 <div class="double-items text-light">
                     <div class="info col-md-7">
                         <img src="/assets/images/logositakro.png" class="wow slideInLeft" style="width: 30%">
-                        <h2 class="wow slideInLeft">SITAKRO KEMIRIGEDE </h2>
+                        <h2 class="wow slideInLeft">SITAKRO Kemirigede </h2>
                         <p class="wow fadeInLeft">
-                            Sistem Informasi Data Mikro yang dimiliki oleh Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten
+                            Sistem Informasi Data Mikro yang dimiliki oleh Desa Kemirigede Kecamatan Kesamben Kabupaten
                             Blitar
                         </p>
                         <a class="wow fadeInDown btn btn-light border btn-md" href="{{ route('login') }}">LOGIN
@@ -177,8 +177,8 @@
                                     <img src="assets2/img/illustrations/5.svg" alt="Thumb">
                                 </div>
                                 <div class="col-md-6 left-info wow fadeInLeft">
-                                    <h4>Desa KEMIRIGEDE</h4>
-                                    <h2>Sistem Informasi Data Mikro Desa KEMIRIGEDE</h2>
+                                    <h4>Desa Kemirigede</h4>
+                                    <h2>Sistem Informasi Data Mikro Desa Kemirigede</h2>
                                     <p>
                                         Merupakan Aplikasi layanan data mikro dan SDG’s Desa yang berfungsi untuk
                                         penguatan IPM & IDM, Perencanaan Pembangunan Desa Cerdas, serta Tata Niaga
@@ -224,7 +224,7 @@
                 <div class="col-md-8 col-md-offset-2">
                     <div class="site-heading text-center">
                         <h4>Fitur</h4>
-                        <h2>SITAKRO<strong> DESA KEMIRIGEDE</strong></h2>
+                        <h2>SITAKRO<strong> DESA Kemirigede</strong></h2>
                     </div>
                 </div>
             </div>
@@ -294,7 +294,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <p>&copy; Desa KEMIRIGEDE 2023</p>
+                        <p>&copy; Desa Kemirigede 2023</p>
                     </div>
                     <div class="col-md-6 text-right link">
                         <ul>

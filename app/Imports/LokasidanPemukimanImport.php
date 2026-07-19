@@ -7,11 +7,11 @@ use App\Models\akseskesehatan;
 use App\Models\aksessarpras;
 use App\Models\aksestenagakerja;
 use App\Models\dataindividu;
+use App\Models\datapenduduk;
 use App\Models\laink;
 use App\Models\lokasipemukiman;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Jenssegers\Mongodb\Eloquent\Model as MongoModel;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
@@ -26,8 +26,10 @@ class LokasidanPemukimanImport implements
     SkipsEmptyRows
 {
     /**
-     * Urutan kelompok pendidikan sesuai file export.
+     * File export Lokasi dan Pemukiman mempunyai 135 kolom.
      */
+    private const EXPECTED_COLUMNS = 135;
+
     private const PENDIDIKAN = [
         'paud',
         'tk',
@@ -40,9 +42,6 @@ class LokasidanPemukimanImport implements
         'pagamalain',
     ];
 
-    /**
-     * Urutan fasilitas kesehatan sesuai file export.
-     */
     private const FASILITAS_KESEHATAN = [
         'rumahs',
         'rumahb',
@@ -54,9 +53,6 @@ class LokasidanPemukimanImport implements
         'toko_obat',
     ];
 
-    /**
-     * Urutan tenaga kesehatan sesuai file export.
-     */
     private const TENAGA_KESEHATAN = [
         'dr_spesialis',
         'dr_umum',
@@ -65,9 +61,6 @@ class LokasidanPemukimanImport implements
         'dukun',
     ];
 
-    /**
-     * Urutan sarana dan prasarana sesuai file export.
-     */
     private const SARPRAS = [
         'lokasipu',
         'lahanpertanian',
@@ -77,9 +70,6 @@ class LokasidanPemukimanImport implements
         'rekreasi',
     ];
 
-    /**
-     * Program pemerintah.
-     */
     private const PROGRAM_PEMERINTAH = [
         'blt',
         'pkh',
@@ -92,22 +82,17 @@ class LokasidanPemukimanImport implements
     ];
 
     /**
-     * No KK yang telah berhasil diproses dalam file ini.
+     * Satu No KK hanya diproses satu kali dalam satu file.
      */
     private array $processedNoKk = [];
 
     /**
-     * Cache data kepala keluarga berdasarkan No KK.
+     * Cache kepala keluarga dari database relasional.
      */
     private ?array $kepalaKeluargaMap = null;
 
     /**
-     * Cache daftar kolom tabel.
-     */
-    private array $tableColumns = [];
-
-    /**
-     * Ringkasan proses import.
+     * Ringkasan hasil import.
      */
     private int $inserted = 0;
     private int $updated = 0;
@@ -116,14 +101,14 @@ class LokasidanPemukimanImport implements
     private int $invalid = 0;
 
     /**
-     * Peringatan.
+     * Peringatan yang dikirim ke halaman.
      */
     private array $warnings = [];
     private int $warningLimit = 150;
     private int $warningOverflow = 0;
 
     /**
-     * Baris pertama adalah heading.
+     * Baris pertama adalah header.
      */
     public function startRow(): int
     {
@@ -131,15 +116,23 @@ class LokasidanPemukimanImport implements
     }
 
     /**
-     * Membaca file secara bertahap.
+     * Chunk dibuat kecil karena satu baris berisi 135 kolom
+     * dan ditulis ke tujuh collection MongoDB.
      */
     public function chunkSize(): int
     {
-        return 300;
+        return 150;
     }
 
     /**
-     * Memproses setiap baris.
+     * Satu baris Excel akan ditulis ke:
+     * 1. dataindividu
+     * 2. aksespendidikan
+     * 3. akseskesehatan
+     * 4. aksestenagakerja
+     * 5. aksessarpras
+     * 6. kk_lain
+     * 7. lokasipemukiman
      */
     public function onRow(Row $excelRow): void
     {
@@ -147,11 +140,27 @@ class LokasidanPemukimanImport implements
         $row = array_values($excelRow->toArray());
 
         try {
+            if ($this->isEmptyRow($row)) {
+                return;
+            }
+
+            if (count($row) < self::EXPECTED_COLUMNS) {
+                throw new \InvalidArgumentException(
+                    'Jumlah kolom tidak sesuai. Ditemukan ' .
+                    count($row) . ' kolom, seharusnya minimal ' .
+                    self::EXPECTED_COLUMNS .
+                    ' kolom sesuai hasil export Lokasi dan Pemukiman.'
+                );
+            }
+
             /*
-             * =====================================================
-             * IDENTITAS FILE
-             * =====================================================
+             * Pastikan indeks 0 sampai 134 selalu tersedia.
              */
+            $row = array_pad(
+                $row,
+                self::EXPECTED_COLUMNS,
+                null
+            );
 
             $noKk = $this->normalizeIdentity(
                 $row[0] ?? null,
@@ -168,24 +177,19 @@ class LokasidanPemukimanImport implements
                 'NIK Kepala Keluarga'
             );
 
-            /*
-             * Cari kepala keluarga yang benar berdasarkan No KK
-             * pada database.
-             */
             $kepala = $this->findKepalaKeluarga($noKk);
 
-            if (!$kepala) {
+            if ($kepala === null) {
                 throw new \InvalidArgumentException(
                     "No KK {$noKk} tidak mempunyai penduduk " .
-                    'berstatus Kepala Keluarga di database.'
+                    'berstatus Kepala Keluarga di database penduduk.'
                 );
             }
 
             $nikKepala = (string) $kepala['nik'];
 
             /*
-             * Jika NIK pada kolom NIK adalah anggota keluarga
-             * selain kepala keluarga, baris dilewati.
+             * File export semestinya hanya berisi kepala keluarga.
              */
             if (
                 $nikBaris !== null &&
@@ -195,436 +199,60 @@ class LokasidanPemukimanImport implements
 
                 $this->addWarning(
                     "Baris {$rowNumber}: NIK {$nikBaris} bukan " .
-                    "Kepala Keluarga untuk No KK {$noKk}. " .
-                    'Baris dilewati.'
+                    "Kepala Keluarga untuk No KK {$noKk}; baris dilewati."
                 );
 
                 return;
             }
 
-            /*
-             * Kolom NIK kepala keluarga pada file harus sesuai
-             * dengan database.
-             */
             if (
                 $nikKepalaFile !== null &&
                 $nikKepalaFile !== $nikKepala
             ) {
                 $this->addWarning(
-                    "Baris {$rowNumber}: NIK Kepala Keluarga pada " .
-                    "file ({$nikKepalaFile}) berbeda dengan database " .
-                    "({$nikKepala}). Sistem menggunakan NIK database."
+                    "Baris {$rowNumber}: NIK Kepala Keluarga pada file " .
+                    "({$nikKepalaFile}) berbeda dengan database " .
+                    "({$nikKepala}); sistem menggunakan NIK database."
                 );
             }
 
-            /*
-             * Satu No KK hanya diproses satu kali.
-             */
             if (isset($this->processedNoKk[$noKk])) {
                 $this->skippedDuplicateKk++;
 
                 $this->addWarning(
                     "Baris {$rowNumber}: No KK {$noKk} muncul " .
-                    'lebih dari satu kali dan dilewati.'
+                    'lebih dari satu kali; baris berikutnya dilewati.'
                 );
 
                 return;
             }
 
+            /*
+             * Collection lokasipemukiman digunakan sebagai penanda
+             * bahwa satu paket data KK pernah berhasil disimpan.
+             */
             $alreadyExists = lokasipemukiman::query()
                 ->where('nik', $nikKepala)
                 ->exists();
 
-            /*
-             * =====================================================
-             * SIMPAN SELURUH DATA
-             * =====================================================
-             */
-
-            DB::transaction(function () use (
+            $documents = $this->buildDocuments(
                 $row,
                 $noKk,
                 $nikKepala,
                 $kepala
-            ): void {
-                $namaKepala = $this->cleanText(
-                    $kepala['nama'] ?? ''
-                );
-
-                $alamatKepala = $this->cleanText(
-                    $kepala['alamat'] ?? ''
-                );
-
-                $noHp = $this->cellString($row[4] ?? null);
-
-                /*
-                 * Kolom ke-5 pada export saat ini berjudul
-                 * NO. TELPON RUMAH dan berasal dari field nowa.
-                 */
-                $noTeleponRumah = $this->cellString(
-                    $row[5] ?? null
-                );
-
-                /*
-                 * =================================================
-                 * LOKASI DAN PEMUKIMAN
-                 * =================================================
-                 */
-
-                $lokasiValues = [
-                    'nokk' => $noKk,
-                    'kk' => $noKk,
-
-                    'nik' => $nikKepala,
-                    'nama' => $namaKepala,
-                    'alamat' => $alamatKepala,
-
-                    'nohp' => $noHp,
-                    'nowa' => $noTeleponRumah,
-                    'telpon_rumah' => $noTeleponRumah,
-
-                    /*
-                     * Selalu gunakan NIK kepala keluarga yang
-                     * diperoleh dari database.
-                     */
-                    'nik_kepala' => $nikKepala,
-
-                    'tempat_tinggal' =>
-                        $this->cellString($row[7] ?? null),
-
-                    'status_lahan' =>
-                        $this->cellString($row[8] ?? null),
-
-                    'luas_lantai_tinggal' =>
-                        $this->cellString($row[9] ?? null),
-
-                    'luas_tanah_tinggal' =>
-                        $this->cellString($row[10] ?? null),
-
-                    'jenis_lantai_tinggal' =>
-                        $this->cellString($row[11] ?? null),
-
-                    'dinding_sebagian' =>
-                        $this->cellString($row[12] ?? null),
-
-                    'jendela' =>
-                        $this->cellString($row[13] ?? null),
-
-                    'atap' =>
-                        $this->cellString($row[14] ?? null),
-
-                    'penerangan' =>
-                        $this->cellString($row[15] ?? null),
-
-                    'energi_masak' =>
-                        $this->cellString($row[16] ?? null),
-
-                    'jika_kayu_jenis' =>
-                        $this->cellString($row[17] ?? null),
-
-                    'tempat_sampah' =>
-                        $this->cellString($row[18] ?? null),
-
-                    'mck' =>
-                        $this->cellString($row[19] ?? null),
-
-                    'sumber_air_mandi' =>
-                        $this->cellString($row[20] ?? null),
-
-                    'sumber_air_mck' =>
-                        $this->cellString($row[21] ?? null),
-
-                    'sumber_air_minum' =>
-                        $this->cellString($row[22] ?? null),
-
-                    'tempat_pembuangan_limbah' =>
-                        $this->cellString($row[23] ?? null),
-
-                    'rumah_sutet' =>
-                        $this->cellString($row[24] ?? null),
-
-                    'rumah_sungai' =>
-                        $this->cellString($row[25] ?? null),
-
-                    'rumah_lereng_gunung' =>
-                        $this->cellString($row[26] ?? null),
-
-                    'kondi_rumah_kumuh' =>
-                        $this->cellString($row[27] ?? null),
-                ];
-
-                $this->upsertByNik(
-                    new lokasipemukiman(),
-                    $nikKepala,
-                    $lokasiValues
-                );
-
-                /*
-                 * =================================================
-                 * DATA INDIVIDU
-                 * =================================================
-                 *
-                 * Nomor HP pada DataTables diambil dari tabel
-                 * dataindividu, sehingga perlu ikut diperbarui.
-                 */
-
-                $individuValues = [
-                    'nokk' => $noKk,
-                    'kk' => $noKk,
-
-                    'nik' => $nikKepala,
-                    'nama' => $namaKepala,
-                    'alamat' => $alamatKepala,
-
-                    'nohp' => $noHp,
-                    'nowa' => $noTeleponRumah,
-                    'telpon_rumah' => $noTeleponRumah,
-                ];
-
-                $this->upsertByNik(
-                    new dataindividu(),
-                    $nikKepala,
-                    $individuValues
-                );
-
-                /*
-                 * =================================================
-                 * AKSES PENDIDIKAN
-                 *
-                 * Indeks 28 sampai 54
-                 * 9 kelompok x 3 kolom.
-                 * =================================================
-                 */
-
-                $pendidikanValues = $this->identityValues(
-                    $noKk,
-                    $nikKepala,
-                    $namaKepala
-                );
-
-                $offset = 28;
-
-                foreach (self::PENDIDIKAN as $prefix) {
-                    $pendidikanValues[
-                        'jaraktempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset] ?? null
-                    );
-
-                    $pendidikanValues[
-                        'waktutempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 1] ?? null
-                    );
-
-                    $pendidikanValues[
-                        'kemudahan_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 2] ?? null
-                    );
-
-                    $offset += 3;
-                }
-
-                $this->upsertByNik(
-                    new akses_pendidikan(),
-                    $nikKepala,
-                    $pendidikanValues
-                );
-
-                /*
-                 * =================================================
-                 * AKSES FASILITAS KESEHATAN
-                 *
-                 * Indeks 55 sampai 78
-                 * 8 kelompok x 3 kolom.
-                 * =================================================
-                 */
-
-                $kesehatanValues = $this->identityValues(
-                    $noKk,
-                    $nikKepala,
-                    $namaKepala
-                );
-
-                $offset = 55;
-
-                foreach (self::FASILITAS_KESEHATAN as $prefix) {
-                    $kesehatanValues[
-                        'jaraktempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset] ?? null
-                    );
-
-                    $kesehatanValues[
-                        'waktutempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 1] ?? null
-                    );
-
-                    $kesehatanValues[
-                        'kemudahan_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 2] ?? null
-                    );
-
-                    $offset += 3;
-                }
-
-                $this->upsertByNik(
-                    new akseskesehatan(),
-                    $nikKepala,
-                    $kesehatanValues
-                );
-
-                /*
-                 * =================================================
-                 * AKSES TENAGA KESEHATAN
-                 *
-                 * Indeks 79 sampai 93
-                 * 5 kelompok x 3 kolom.
-                 * =================================================
-                 */
-
-                $tenagaValues = $this->identityValues(
-                    $noKk,
-                    $nikKepala,
-                    $namaKepala
-                );
-
-                $offset = 79;
-
-                foreach (self::TENAGA_KESEHATAN as $prefix) {
-                    $tenagaValues[
-                        'jaraktempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset] ?? null
-                    );
-
-                    $tenagaValues[
-                        'waktutempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 1] ?? null
-                    );
-
-                    $tenagaValues[
-                        'kemudahan_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 2] ?? null
-                    );
-
-                    $offset += 3;
-                }
-
-                $this->upsertByNik(
-                    new aksestenagakerja(),
-                    $nikKepala,
-                    $tenagaValues
-                );
-
-                /*
-                 * =================================================
-                 * AKSES SARANA DAN PRASARANA
-                 *
-                 * Indeks 94 sampai 123
-                 * 6 kelompok x 5 kolom.
-                 * =================================================
-                 */
-
-                $sarprasValues = $this->identityValues(
-                    $noKk,
-                    $nikKepala,
-                    $namaKepala
-                );
-
-                $offset = 94;
-
-                foreach (self::SARPRAS as $prefix) {
-                    $sarprasValues[
-                        'jenistrasport_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset] ?? null
-                    );
-
-                    $sarprasValues[
-                        'pengtransportumum_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 1] ?? null
-                    );
-
-                    $sarprasValues[
-                        'waktutempuh_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 2] ?? null
-                    );
-
-                    $sarprasValues[
-                        'biaya_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 3] ?? null
-                    );
-
-                    $sarprasValues[
-                        'kemudahan_' . $prefix
-                    ] = $this->cellString(
-                        $row[$offset + 4] ?? null
-                    );
-
-                    $offset += 5;
-                }
-
-                $this->upsertByNik(
-                    new aksessarpras(),
-                    $nikKepala,
-                    $sarprasValues
-                );
-
-                /*
-                 * =================================================
-                 * TRANSPORTASI, PROGRAM PEMERINTAH DAN PENGELUARAN
-                 *
-                 * Transportasi: indeks 124–125
-                 * Program:      indeks 126–133
-                 * Pengeluaran:  indeks 134
-                 * =================================================
-                 */
-
-                $lainValues = $this->identityValues(
-                    $noKk,
-                    $nikKepala,
-                    $namaKepala
-                );
-
-                $lainValues['pengtransportsebelum'] =
-                    $this->cellString($row[124] ?? null);
-
-                $lainValues['pengtransportsesudah'] =
-                    $this->cellString($row[125] ?? null);
-
-                $offset = 126;
-
-                foreach (self::PROGRAM_PEMERINTAH as $field) {
-                    $lainValues[$field] =
-                        $this->cellString(
-                            $row[$offset] ?? null
-                        );
-
-                    $offset++;
-                }
-
-                $lainValues['rata_rata'] =
-                    $this->cellString($row[134] ?? null);
-
-                $this->upsertByNik(
-                    new laink(),
-                    $nikKepala,
-                    $lainValues
-                );
-            }, 3);
+            );
 
             /*
-             * No KK baru ditandai setelah seluruh transaksi berhasil.
+             * Seluruh collection ditulis dalam satu alur.
+             *
+             * filterExistingColumns() dan Schema::getColumnListing()
+             * sengaja tidak digunakan karena MongoDB bersifat schemaless.
              */
+            $this->persistAllMongoDocuments(
+                $nikKepala,
+                $documents
+            );
+
             $this->processedNoKk[$noKk] = true;
 
             if ($alreadyExists) {
@@ -642,77 +270,376 @@ class LokasidanPemukimanImport implements
     }
 
     /**
-     * Data dasar untuk tabel-tabel relasi.
+     * Membangun tujuh dokumen MongoDB dari satu baris Excel.
+     */
+    private function buildDocuments(
+        array $row,
+        string $noKk,
+        string $nikKepala,
+        array $kepala
+    ): array {
+        $namaKepala = $this->cleanText(
+            $kepala['nama'] ?? ''
+        );
+
+        $alamatKepala = $this->cleanText(
+            $kepala['alamat'] ?? ''
+        );
+
+        $identity = $this->identityValues(
+            $noKk,
+            $nikKepala,
+            $namaKepala,
+            $alamatKepala
+        );
+
+        $noHp = $this->cellString($row[4] ?? null);
+        $noTeleponRumah = $this->cellString($row[5] ?? null);
+
+        /*
+         * =========================================================
+         * DATA INDIVIDU
+         * =========================================================
+         */
+        $individu = array_merge(
+            $identity,
+            [
+                'nohp' => $noHp,
+                'nowa' => $noTeleponRumah,
+                'telpon_rumah' => $noTeleponRumah,
+            ]
+        );
+
+        /*
+         * =========================================================
+         * LOKASI DAN PEMUKIMAN — indeks 7 sampai 27
+         * =========================================================
+         */
+        $lokasi = array_merge(
+            $identity,
+            [
+                'nohp' => $noHp,
+                'nowa' => $noTeleponRumah,
+                'telpon_rumah' => $noTeleponRumah,
+                'nik_kepala' => $nikKepala,
+
+                'tempat_tinggal' =>
+                    $this->cellString($row[7] ?? null),
+
+                'status_lahan' =>
+                    $this->cellString($row[8] ?? null),
+
+                'luas_lantai_tinggal' =>
+                    $this->cellString($row[9] ?? null),
+
+                'luas_tanah_tinggal' =>
+                    $this->cellString($row[10] ?? null),
+
+                'jenis_lantai_tinggal' =>
+                    $this->cellString($row[11] ?? null),
+
+                'dinding_sebagian' =>
+                    $this->cellString($row[12] ?? null),
+
+                'jendela' =>
+                    $this->cellString($row[13] ?? null),
+
+                'atap' =>
+                    $this->cellString($row[14] ?? null),
+
+                'penerangan' =>
+                    $this->cellString($row[15] ?? null),
+
+                'energi_masak' =>
+                    $this->cellString($row[16] ?? null),
+
+                'jika_kayu_jenis' =>
+                    $this->cellString($row[17] ?? null),
+
+                'tempat_sampah' =>
+                    $this->cellString($row[18] ?? null),
+
+                'mck' =>
+                    $this->cellString($row[19] ?? null),
+
+                'sumber_air_mandi' =>
+                    $this->cellString($row[20] ?? null),
+
+                'sumber_air_mck' =>
+                    $this->cellString($row[21] ?? null),
+
+                'sumber_air_minum' =>
+                    $this->cellString($row[22] ?? null),
+
+                'tempat_pembuangan_limbah' =>
+                    $this->cellString($row[23] ?? null),
+
+                'rumah_sutet' =>
+                    $this->cellString($row[24] ?? null),
+
+                'rumah_sungai' =>
+                    $this->cellString($row[25] ?? null),
+
+                'rumah_lereng_gunung' =>
+                    $this->cellString($row[26] ?? null),
+
+                'kondi_rumah_kumuh' =>
+                    $this->cellString($row[27] ?? null),
+            ]
+        );
+
+        /*
+         * =========================================================
+         * AKSES PENDIDIKAN — indeks 28 sampai 54
+         * =========================================================
+         */
+        $pendidikan = $identity;
+        $offset = 28;
+
+        foreach (self::PENDIDIKAN as $prefix) {
+            $pendidikan['jaraktempuh_' . $prefix] =
+                $this->cellString($row[$offset] ?? null);
+
+            $pendidikan['waktutempuh_' . $prefix] =
+                $this->cellString($row[$offset + 1] ?? null);
+
+            $pendidikan['kemudahan_' . $prefix] =
+                $this->cellString($row[$offset + 2] ?? null);
+
+            $offset += 3;
+        }
+
+        /*
+         * =========================================================
+         * AKSES FASILITAS KESEHATAN — indeks 55 sampai 78
+         * =========================================================
+         */
+        $kesehatan = $identity;
+        $offset = 55;
+
+        foreach (self::FASILITAS_KESEHATAN as $prefix) {
+            $kesehatan['jaraktempuh_' . $prefix] =
+                $this->cellString($row[$offset] ?? null);
+
+            $kesehatan['waktutempuh_' . $prefix] =
+                $this->cellString($row[$offset + 1] ?? null);
+
+            $kesehatan['kemudahan_' . $prefix] =
+                $this->cellString($row[$offset + 2] ?? null);
+
+            $offset += 3;
+        }
+
+        /*
+         * =========================================================
+         * AKSES TENAGA KESEHATAN — indeks 79 sampai 93
+         * =========================================================
+         */
+        $tenaga = $identity;
+        $offset = 79;
+
+        foreach (self::TENAGA_KESEHATAN as $prefix) {
+            $tenaga['jaraktempuh_' . $prefix] =
+                $this->cellString($row[$offset] ?? null);
+
+            $tenaga['waktutempuh_' . $prefix] =
+                $this->cellString($row[$offset + 1] ?? null);
+
+            $tenaga['kemudahan_' . $prefix] =
+                $this->cellString($row[$offset + 2] ?? null);
+
+            $offset += 3;
+        }
+
+        /*
+         * =========================================================
+         * AKSES SARANA PRASARANA — indeks 94 sampai 123
+         * =========================================================
+         */
+        $sarpras = $identity;
+        $offset = 94;
+
+        foreach (self::SARPRAS as $prefix) {
+            /*
+             * Nama field "jenistrasport" mengikuti model lama.
+             */
+            $sarpras['jenistrasport_' . $prefix] =
+                $this->cellString($row[$offset] ?? null);
+
+            $sarpras['pengtransportumum_' . $prefix] =
+                $this->cellString($row[$offset + 1] ?? null);
+
+            $sarpras['waktutempuh_' . $prefix] =
+                $this->cellString($row[$offset + 2] ?? null);
+
+            $sarpras['biaya_' . $prefix] =
+                $this->cellString($row[$offset + 3] ?? null);
+
+            $sarpras['kemudahan_' . $prefix] =
+                $this->cellString($row[$offset + 4] ?? null);
+
+            $offset += 5;
+        }
+
+        /*
+         * =========================================================
+         * DATA LAIN — indeks 124 sampai 134
+         * =========================================================
+         */
+        $lain = $identity;
+
+        $lain['pengtransportsebelum'] =
+            $this->cellString($row[124] ?? null);
+
+        $lain['pengtransportsesudah'] =
+            $this->cellString($row[125] ?? null);
+
+        $offset = 126;
+
+        foreach (self::PROGRAM_PEMERINTAH as $field) {
+            $lain[$field] =
+                $this->cellString($row[$offset] ?? null);
+
+            $offset++;
+        }
+
+        $lain['rata_rata'] =
+            $this->cellString($row[134] ?? null);
+
+        return [
+            'individu' => $individu,
+            'pendidikan' => $pendidikan,
+            'kesehatan' => $kesehatan,
+            'tenaga' => $tenaga,
+            'sarpras' => $sarpras,
+            'lain' => $lain,
+            'lokasi' => $lokasi,
+        ];
+    }
+
+    /**
+     * Menulis satu paket data ke tujuh collection MongoDB.
+     *
+     * lokasipemukiman disimpan terakhir dan menjadi penanda bahwa
+     * seluruh model pada baris tersebut telah melewati proses simpan.
+     */
+    private function persistAllMongoDocuments(
+        string $nik,
+        array $documents
+    ): void {
+        $this->upsertMongoByNik(
+            new dataindividu(),
+            $nik,
+            $documents['individu']
+        );
+
+        $this->upsertMongoByNik(
+            new akses_pendidikan(),
+            $nik,
+            $documents['pendidikan']
+        );
+
+        $this->upsertMongoByNik(
+            new akseskesehatan(),
+            $nik,
+            $documents['kesehatan']
+        );
+
+        $this->upsertMongoByNik(
+            new aksestenagakerja(),
+            $nik,
+            $documents['tenaga']
+        );
+
+        $this->upsertMongoByNik(
+            new aksessarpras(),
+            $nik,
+            $documents['sarpras']
+        );
+
+        $this->upsertMongoByNik(
+            new laink(),
+            $nik,
+            $documents['lain']
+        );
+
+        /*
+         * Penanda paket lengkap disimpan terakhir.
+         */
+        $this->upsertMongoByNik(
+            new lokasipemukiman(),
+            $nik,
+            $documents['lokasi']
+        );
+    }
+
+    /**
+     * Insert atau update dokumen MongoDB berdasarkan NIK.
+     *
+     * Tidak memakai Schema::getColumnListing() karena MongoDB
+     * tidak mempunyai daftar kolom seperti MySQL.
+     */
+    private function upsertMongoByNik(
+        MongoModel $model,
+        string $nik,
+        array $values
+    ): void {
+        $connectionName = $model->getConnectionName()
+            ?: (string) config('database.default');
+
+        if ($connectionName !== 'mongodb') {
+            throw new \RuntimeException(
+                'Model ' . get_class($model) .
+                ' tidak menggunakan connection mongodb. ' .
+                "Connection saat ini: {$connectionName}."
+            );
+        }
+
+        $values['nik'] = $nik;
+
+        $record = $model->newQuery()
+            ->where('nik', $nik)
+            ->first();
+
+        if ($record === null) {
+            $record = $model->newInstance();
+        }
+
+        /*
+         * forceFill memastikan field identitas tetap tersimpan
+         * walaupun fillable model lama belum lengkap.
+         */
+        $record->forceFill($values);
+
+        if (!$record->save()) {
+            throw new \RuntimeException(
+                'Gagal menyimpan model ' .
+                class_basename($model) .
+                " untuk NIK {$nik}."
+            );
+        }
+    }
+
+    /**
+     * Field identitas yang ditanam pada setiap collection.
      */
     private function identityValues(
         string $noKk,
         string $nik,
-        string $nama
+        string $nama,
+        string $alamat
     ): array {
         return [
             'nokk' => $noKk,
             'kk' => $noKk,
             'nik' => $nik,
             'nama' => $nama,
+            'alamat' => $alamat,
         ];
     }
 
     /**
-     * Insert atau update berdasarkan NIK.
-     *
-     * Hanya kolom yang benar-benar ada di tabel yang akan disimpan.
-     */
-    private function upsertByNik(
-        Model $model,
-        string $nik,
-        array $values
-    ): void {
-        $values['nik'] = $nik;
-
-        $values = $this->filterExistingColumns(
-            $model,
-            $values
-        );
-
-        $record = $model->newQuery()
-            ->firstOrNew([
-                'nik' => $nik,
-            ]);
-
-        /*
-         * forceFill dipakai agar tidak terganggu pengaturan
-         * fillable yang belum lengkap pada model lama.
-         */
-        $record->forceFill($values);
-        $record->save();
-    }
-
-    /**
-     * Hanya ambil field yang tersedia pada tabel.
-     *
-     * Hal ini membuat kode tetap berjalan apabila suatu tabel
-     * menggunakan kolom "kk", sedangkan tabel lain memakai "nokk".
-     */
-    private function filterExistingColumns(
-        Model $model,
-        array $values
-    ): array {
-        $table = $model->getTable();
-
-        if (!isset($this->tableColumns[$table])) {
-            $this->tableColumns[$table] = array_flip(
-                Schema::getColumnListing($table)
-            );
-        }
-
-        return array_intersect_key(
-            $values,
-            $this->tableColumns[$table]
-        );
-    }
-
-    /**
-     * Cari kepala keluarga yang benar dari database.
+     * Mencari kepala keluarga berdasarkan No KK.
      */
     private function findKepalaKeluarga(
         string $noKk
@@ -724,7 +651,7 @@ class LokasidanPemukimanImport implements
     }
 
     /**
-     * Memuat seluruh kepala keluarga satu kali.
+     * Memuat seluruh kepala keluarga dari database relasional satu kali.
      */
     private function loadKepalaKeluargaMap(): void
     {
@@ -734,7 +661,15 @@ class LokasidanPemukimanImport implements
 
         $this->kepalaKeluargaMap = [];
 
-        $records = DB::table('datapenduduks as dp')
+        $pendudukModel = new datapenduduk();
+        $sqlConnection = $pendudukModel->getConnectionName();
+
+        $query = $sqlConnection
+            ? DB::connection($sqlConnection)
+            : DB::connection();
+
+        $records = $query
+            ->table('datapenduduks as dp')
             ->join(
                 'detailkks as dkk',
                 'dkk.idpenduduk',
@@ -779,13 +714,16 @@ class LokasidanPemukimanImport implements
                 $record->nik
             );
 
-            if ($noKk === '' || $nik === '') {
+            if (
+                strlen($noKk) !== 16 ||
+                strlen($nik) !== 16
+            ) {
                 continue;
             }
 
             /*
-             * Jika satu No KK memiliki dua kepala keluarga,
-             * gunakan data dengan ID paling kecil.
+             * Apabila terdapat dua kepala keluarga pada satu KK,
+             * gunakan record dengan ID paling kecil.
              */
             if (isset($this->kepalaKeluargaMap[$noKk])) {
                 continue;
@@ -801,28 +739,28 @@ class LokasidanPemukimanImport implements
     }
 
     /**
-     * Normalisasi No KK dan NIK.
+     * Normalisasi No KK/NIK wajib.
      */
     private function normalizeIdentity(
         mixed $value,
         string $fieldName
     ): string {
-        $value = $this->normalizeOptionalIdentity(
+        $normalized = $this->normalizeOptionalIdentity(
             $value,
             $fieldName
         );
 
-        if ($value === null) {
+        if ($normalized === null) {
             throw new \InvalidArgumentException(
                 "{$fieldName} kosong."
             );
         }
 
-        return $value;
+        return $normalized;
     }
 
     /**
-     * Normalisasi identitas yang boleh kosong.
+     * Normalisasi No KK/NIK opsional.
      */
     private function normalizeOptionalIdentity(
         mixed $value,
@@ -832,18 +770,13 @@ class LokasidanPemukimanImport implements
             return null;
         }
 
-        /*
-         * Excel hanya mempertahankan presisi sampai sekitar
-         * 15 digit. Float besar tidak boleh dipaksakan karena
-         * berpotensi telah kehilangan digit.
-         */
         if (
             is_float($value) &&
             abs($value) >= 100000000000000
         ) {
             throw new \InvalidArgumentException(
                 "{$fieldName} dibaca sebagai angka Excel dan " .
-                'berpotensi kehilangan digit. Ubah kolom menjadi Text.'
+                'berpotensi kehilangan digit. Gunakan format Text.'
             );
         }
 
@@ -863,27 +796,16 @@ class LokasidanPemukimanImport implements
         ) {
             throw new \InvalidArgumentException(
                 "{$fieldName} menggunakan notasi ilmiah " .
-                "\"{$raw}\". Ubah format kolom menjadi Text."
+                "\"{$raw}\". Gunakan format Text."
             );
         }
 
-        $raw = preg_replace(
-            '/\.0+$/',
-            '',
-            $raw
-        );
-
+        $raw = preg_replace('/\.0+$/', '', $raw);
         $digits = $this->digitsOnly($raw);
 
-        /*
-         * Dibuat 8–20 digit agar tetap menerima data lama,
-         * tetapi NIK dan No KK sebaiknya 16 digit.
-         */
-        $length = strlen($digits);
-
-        if ($length < 8 || $length > 20) {
+        if (strlen($digits) !== 16) {
             throw new \InvalidArgumentException(
-                "{$fieldName} harus terdiri dari 8–20 digit. " .
+                "{$fieldName} harus tepat 16 digit. " .
                 "Nilai diterima: \"{$raw}\"."
             );
         }
@@ -892,8 +814,19 @@ class LokasidanPemukimanImport implements
     }
 
     /**
-     * Hanya mengambil angka.
+     * Memeriksa apakah satu baris benar-benar kosong.
      */
+    private function isEmptyRow(array $row): bool
+    {
+        foreach ($row as $value) {
+            if ($this->cleanText($value) !== '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function digitsOnly(
         mixed $value
     ): string {
@@ -904,9 +837,6 @@ class LokasidanPemukimanImport implements
         );
     }
 
-    /**
-     * Membersihkan teks.
-     */
     private function cleanText(
         mixed $value
     ): string {
@@ -914,17 +844,15 @@ class LokasidanPemukimanImport implements
             return '';
         }
 
-        $value = preg_replace(
+        return preg_replace(
             '/\s+/u',
             ' ',
             trim((string) $value)
         );
-
-        return $value;
     }
 
     /**
-     * Menyiapkan nilai umum untuk disimpan.
+     * Menjaga angka Excel agar tidak berubah ke notasi ilmiah.
      */
     private function cellString(
         mixed $value
@@ -938,10 +866,6 @@ class LokasidanPemukimanImport implements
         }
 
         if (is_float($value)) {
-            /*
-             * Menghindari notasi ilmiah untuk angka jarak,
-             * waktu, biaya, atau luas.
-             */
             return rtrim(
                 rtrim(
                     sprintf('%.10F', $value),
@@ -954,9 +878,6 @@ class LokasidanPemukimanImport implements
         return $this->cleanText($value);
     }
 
-    /**
-     * Menambahkan peringatan.
-     */
     private function addWarning(
         string $message
     ): void {
@@ -969,14 +890,20 @@ class LokasidanPemukimanImport implements
         $this->warningOverflow++;
     }
 
-    /**
-     * Ringkasan hasil import.
-     */
     public function getSummary(): array
     {
+        $successfulKk = $this->inserted + $this->updated;
+
         return [
             'inserted' => $this->inserted,
             'updated' => $this->updated,
+
+            'successful_kk' => $successfulKk,
+
+            /*
+             * Setiap KK yang berhasil ditulis ke tujuh collection.
+             */
+            'documents_written' => $successfulKk * 7,
 
             'skipped_non_head' =>
                 $this->skippedNonHead,

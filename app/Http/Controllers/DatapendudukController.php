@@ -422,87 +422,131 @@ class DatapendudukController extends Controller
         );
     }
 
-   public function import_excel(Request $request)
-{
-    $request->validate(
-        [
-            'file' => [
-                'required',
-                'file',
-                'mimes:xlsx',
-                'max:20480',
+    public function import_excel(Request $request)
+    {
+        $request->validate(
+            [
+                'file' => [
+                    'required',
+                    'file',
+                    'mimes:xlsx',
+                    'max:20480',
+                ],
             ],
-        ],
-        [
-            'file.required' =>
+            [
+                'file.required' =>
                 'File XLSX wajib dipilih.',
 
-            'file.file' =>
+                'file.file' =>
                 'File import tidak valid.',
 
-            'file.mimes' =>
+                'file.mimes' =>
                 'File import harus berformat XLSX.',
 
-            'file.max' =>
+                'file.max' =>
                 'Ukuran file maksimal 20 MB.',
-        ]
-    );
-
-    $import = new Importdatapenduduk();
-
-    try {
-        /*
-         * Gunakan satu instance import untuk seluruh file.
-         * Jangan membuat instance baru pada setiap baris.
-         */
-        Excel::import(
-            $import,
-            $request->file('file')
+            ]
         );
-    } catch (\Throwable $e) {
-        report($e);
+
+        $file = $request->file('file');
+
+        if (
+            !$file ||
+            !$file->isValid()
+        ) {
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'file' =>
+                    'File gagal diunggah. Silakan pilih ulang file XLSX.',
+                ]);
+        }
+
+        $import = new Importdatapenduduk();
+
+        try {
+            Excel::import(
+                $import,
+                $file
+            );
+        } catch (Throwable $e) {
+            Log::error('Import data penduduk gagal', [
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'exception_file' => $e->getFile(),
+                'exception_line' => $e->getLine(),
+
+                'uploaded_name' =>
+                $file->getClientOriginalName(),
+
+                'uploaded_size' =>
+                $file->getSize(),
+
+                'uploaded_mime' =>
+                $file->getMimeType(),
+
+                'user_id' =>
+                auth()->id(),
+
+                'trace' =>
+                $e->getTraceAsString(),
+            ]);
+
+            $message = config('app.debug')
+                ? 'Import gagal: ' . $e->getMessage()
+                : (
+                    'Import gagal diproses. Detail kesalahan telah ' .
+                    'disimpan pada log aplikasi.'
+                );
+
+            return redirect()
+                ->back()
+                ->with('error', $message);
+        }
+
+        $summary = $import->getSummary();
+
+        $message =
+            'Import selesai: ' .
+            $summary['inserted'] .
+            ' data baru berhasil diimpor, ' .
+            $summary['skipped_existing'] .
+            ' NIK sudah tersedia, ' .
+            $summary['skipped_duplicate_file'] .
+            ' NIK ganda dalam file, dan ' .
+            $summary['invalid'] .
+            ' baris tidak valid.';
+
+        $routeName = (
+            auth()->check() &&
+            auth()->user()->role === 'admin'
+        )
+            ? 'datapenduduk.index_admin'
+            : 'datapenduduk.index';
+
+        /*
+     * Tampilkan pesan merah apabila tidak ada satu pun data
+     * berhasil masuk dan terdapat baris tidak valid.
+     */
+        $flashKey = (
+            $summary['inserted'] === 0 &&
+            $summary['invalid'] > 0
+        )
+            ? 'error'
+            : 'msg';
 
         return redirect()
-            ->back()
+            ->route($routeName)
+            ->with($flashKey, $message)
             ->with(
-                'error',
-                'Import gagal diproses. Periksa format file XLSX ' .
-                'dan pastikan baris pertama berisi header yang benar.'
+                'import_warnings',
+                $summary['warnings']
+            )
+            ->with(
+                'import_warning_overflow',
+                $summary['warning_overflow']
             );
     }
-
-    $summary = $import->getSummary();
-
-    $message =
-        'Import selesai: ' .
-        $summary['inserted'] .
-        ' data baru berhasil diimpor, ' .
-        $summary['skipped_existing'] .
-        ' NIK sudah ada di database, ' .
-        $summary['skipped_duplicate_file'] .
-        ' NIK ganda dalam file, dan ' .
-        $summary['invalid'] .
-        ' baris tidak valid.';
-
-    $routeName = (
-        auth()->check() &&
-        auth()->user()->role === 'admin'
-    )
-        ? 'datapenduduk.index_admin'
-        : 'datapenduduk.index';
-
-    return redirect()
-        ->route($routeName)
-        ->with('msg', $message)
-        ->with(
-            'import_warnings',
-            $summary['warnings']
-        )
-        ->with(
-            'import_warning_overflow',
-            $summary['warning_overflow']
-        );
-}
 
 
 

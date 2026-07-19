@@ -194,7 +194,7 @@
                                         name="ybt_jabatan"
                                         id="ybt_jabatan"
                                         class="form-control @error('ybt_jabatan') is-invalid @enderror"
-                                        value="{{ old('ybt_jabatan', $surat->ybt_jabatan ?? $surat->jabatan ?? 'KEPALA DESA KEMIRIGEDE') }}"
+                                        value="{{ old('ybt_jabatan', $surat->ybt_jabatan ?? $surat->jabatan ?? 'KEPALA DESA Kemirigede') }}"
                                         maxlength="255"
                                         required
                                     >

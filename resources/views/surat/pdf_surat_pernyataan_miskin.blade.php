@@ -228,7 +228,7 @@
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA Kemirigede</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
                         email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
@@ -236,7 +236,7 @@
                 </td>
 
                 {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
                 </td> --}}
             </tr>
         </table>
@@ -304,7 +304,7 @@
         <tr>
             <td>
                 <div>Mengetahui</div>
-                <div class="ttd-jabatan">KEPALA DESA KEMIRIGEDE</div>
+                <div class="ttd-jabatan">KEPALA DESA Kemirigede</div>
 
                 {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan Kepala Desa">
@@ -315,7 +315,7 @@
                 {{--
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
-                    <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                    <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
                 </div> --}} --}}
             </td>
 

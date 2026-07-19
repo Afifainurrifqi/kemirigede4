@@ -21,7 +21,7 @@
     <div class="kop">
         <strong>PEMERINTAH KABUPATEN BLITAR<br>
         KECAMATAN KESAMBEN<br>
-        KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
+        KANTOR KEPALA DESA Kemirigede</strong><br>
         <small>Jln. Merdeka No. 74 Telp. 082139324445</small>
     </div>
 
@@ -74,7 +74,7 @@
         <tr>
             <td width="55%"></td>
             <td width="45%" style="text-align: center;">
-                KEMIRIGEDE, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}<br>
+                Kemirigede, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}<br>
                 Yang Mengajukan,<br><br><br><br>
                 <u><strong>{{ $data->nama_pemohon ?? '...........................................' }}</strong></u><br>
                 NIK. {{ $data->nik_pemohon ?? '...........................................' }}

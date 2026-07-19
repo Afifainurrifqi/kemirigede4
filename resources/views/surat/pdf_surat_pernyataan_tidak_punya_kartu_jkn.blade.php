@@ -234,7 +234,7 @@
                     </div>
 
                     <div class="kop-desa-3">
-                        PEMERINTAH DESA KEMIRIGEDE
+                        PEMERINTAH DESA Kemirigede
                     </div>
 
                     <div class="kop-desa-alamat">
@@ -325,7 +325,7 @@
                 <div>Mengetahui,</div>
 
                 <div class="ttd-jabatan">
-                    KEPALA DESA KEMIRIGEDE
+                    KEPALA DESA Kemirigede
                 </div>
 
                 <div class="ttd-img-wrapper">

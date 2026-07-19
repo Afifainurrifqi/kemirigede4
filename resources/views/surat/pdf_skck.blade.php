@@ -216,7 +216,7 @@
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA Kemirigede</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
                         email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
@@ -224,7 +224,7 @@
                 </td>
 
                 {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
                 </td> --}}
             </tr>
         </table>
@@ -242,7 +242,7 @@
 
     <div class="isi">
         <p>
-            Yang bertanda tangan dibawah ini KEPALA DESA KEMIRIGEDE, Kec. KEMIRIGEDE,
+            Yang bertanda tangan dibawah ini KEPALA DESA Kemirigede, Kec. Kemirigede,
             Kab. Blitar, menerangkan bahwa :
         </p>
 
@@ -300,7 +300,7 @@
         </table>
 
         <p>
-            Orang tersebut diatas adalah benar-benar penduduk Desa KEMIRIGEDE dan sepanjang
+            Orang tersebut diatas adalah benar-benar penduduk Desa Kemirigede dan sepanjang
             pengetahuan dan pengamatan kami belum pernah melakukan Pelanggaran Kejahatan,
             pelanggaran polisi, selalu taat dan patuh pada Peraturan Pemerintah yang berlaku.
         </p>
@@ -319,11 +319,11 @@
     <table class="ttd-table">
         <tr>
             <td></td>
-            <td>KEMIRIGEDE, {{ $tanggalSurat }}</td>
+            <td>Kemirigede, {{ $tanggalSurat }}</td>
         </tr>
         <tr>
             <td>Pemegang surat</td>
-            <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
+            <td><strong>KEPALA DESA Kemirigede</strong></td>
         </tr>
         <tr>
             <td>
@@ -343,14 +343,14 @@
 {{--
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
-                    <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                    <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
                 </div> --}}
             </td>
         </tr>
     </table>
 
     <div class="kapolsek">
-        KAPOLSEK KEMIRIGEDE
+        KAPOLSEK Kemirigede
     </div>
 
     <div class="kapolsek-line">

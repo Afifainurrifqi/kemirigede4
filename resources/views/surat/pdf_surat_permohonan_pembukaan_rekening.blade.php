@@ -343,11 +343,11 @@
          */
         $kepadaNamaInstansi =
             $data->kepada_nama_instansi ??
-            'PT Bank BRI Unit KEMIRIGEDE';
+            'PT Bank BRI Unit Kemirigede';
 
         $kepadaAlamat =
             $data->kepada_alamat ??
-            'KEMIRIGEDE';
+            'Kemirigede';
 
         $ybtNama =
             $data->ybt_nama ??
@@ -357,7 +357,7 @@
         $ybtJabatan =
             $data->ybt_jabatan ??
             $data->jabatan ??
-            'KEPALA DESA KEMIRIGEDE';
+            'KEPALA DESA Kemirigede';
 
         $ybtAlamat =
             $data->ybt_alamat ??
@@ -462,7 +462,7 @@
                     </div>
 
                     <div class="kop-desa-3">
-                        PEMERINTAH DESA KEMIRIGEDE
+                        PEMERINTAH DESA Kemirigede
                     </div>
 
                     <div class="kop-desa-alamat">

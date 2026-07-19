@@ -2,55 +2,90 @@
 
 namespace App\Exports;
 
-use App\Models\datapenduduk;
-use App\Models\lokasipemukiman;
-use App\Models\dataindividu;
 use App\Models\akses_pendidikan;
 use App\Models\akseskesehatan;
-
+use App\Models\aksessarpras;
+use App\Models\aksestenagakerja;
+use App\Models\dataindividu;
+use App\Models\datapenduduk as DataPendudukModel;
+use App\Models\laink;
+use App\Models\lokasipemukiman;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\DefaultValueBinder;
-
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use RuntimeException;
 
 class LokasidanPemukimanExport extends DefaultValueBinder implements
     FromQuery,
     WithHeadings,
     WithMapping,
-    ShouldAutoSize,
     WithColumnFormatting,
-    WithCustomValueBinder
+    WithCustomValueBinder,
+    WithStrictNullComparison,
+    WithEvents
 {
+    /**
+     * Jumlah kolom harus sama dengan susunan importer:
+     * indeks 0 sampai 134 = 135 kolom.
+     */
+    private const EXPECTED_COLUMN_COUNT = 135;
+
+    /**
+     * Cache MongoDB dimuat per 1.000 NIK.
+     */
+    private const CACHE_CHUNK_SIZE = 1000;
+
+    /**
+     * Nilai status kependudukan MySQL yang dapat diekspor.
+     */
     protected array $allowedDatak = [
         'tetap',
         'tidaktetap',
     ];
 
-    protected array $nikList = [];
+    /**
+     * Filter satu NIK kepala keluarga.
+     */
+    protected ?string $filterNik;
 
+    /**
+     * Daftar NIK kepala keluarga dari query MySQL.
+     */
+    protected array $nikList = [];
+    protected bool $nikListLoaded = false;
+
+    /**
+     * Penanda cache MongoDB.
+     */
     protected bool $cacheReady = false;
 
+    /**
+     * Cache dokumen MongoDB berdasarkan NIK.
+     */
     protected Collection $lokasiMap;
     protected Collection $individuMap;
-    protected Collection $pendMap;
-    protected Collection $kesMap;
+    protected Collection $pendidikanMap;
+    protected Collection $kesehatanMap;
     protected Collection $tenagaMap;
     protected Collection $sarprasMap;
     protected Collection $lainMap;
 
     /**
      * Kelompok akses pendidikan.
-     *
-     * label  = judul kolom Excel
-     * prefix = akhiran nama field database
      */
     protected const PENDIDIKAN = [
         ['label' => 'PAUD', 'prefix' => 'paud'],
@@ -61,11 +96,14 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
         ['label' => 'PERGURUAN TINGGI', 'prefix' => 'pt'],
         ['label' => 'PESANTREN', 'prefix' => 'ps'],
         ['label' => 'SEMINARI', 'prefix' => 'seminari'],
-        ['label' => 'PENDIDIKAN KEAGAMAAN LAIN', 'prefix' => 'pagamalain'],
+        [
+            'label' => 'PENDIDIKAN KEAGAMAAN LAIN',
+            'prefix' => 'pagamalain',
+        ],
     ];
 
     /**
-     * Akses fasilitas kesehatan.
+     * Kelompok fasilitas kesehatan.
      */
     protected const FASILITAS_KESEHATAN = [
         ['label' => 'RUMAH SAKIT', 'prefix' => 'rumahs'],
@@ -79,99 +117,144 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
     ];
 
     /**
-     * Akses tenaga kesehatan.
+     * Kelompok tenaga kesehatan.
      */
     protected const TENAGA_KESEHATAN = [
         ['label' => 'DOKTER SPESIALIS', 'prefix' => 'dr_spesialis'],
         ['label' => 'DOKTER UMUM', 'prefix' => 'dr_umum'],
         ['label' => 'BIDAN', 'prefix' => 'bidan'],
-        ['label' => 'TENAGA KESEHATAN / PERAWAT', 'prefix' => 'tenagakes'],
+        [
+            'label' => 'TENAGA KESEHATAN / PERAWAT',
+            'prefix' => 'tenagakes',
+        ],
         ['label' => 'DUKUN', 'prefix' => 'dukun'],
     ];
 
     /**
-     * Akses sarana dan prasarana.
+     * Kelompok sarana/prasarana dan transportasi.
      */
     protected const SARPRAS = [
-        ['label' => 'LOKASI PEKERJAAN UTAMA', 'prefix' => 'lokasipu'],
-        ['label' => 'LAHAN PERTANIAN YANG DIUSAHAKAN', 'prefix' => 'lahanpertanian'],
+        [
+            'label' => 'LOKASI PEKERJAAN UTAMA',
+            'prefix' => 'lokasipu',
+        ],
+        [
+            'label' => 'LAHAN PERTANIAN YANG DIUSAHAKAN',
+            'prefix' => 'lahanpertanian',
+        ],
         ['label' => 'SEKOLAH', 'prefix' => 'sekolah'],
         ['label' => 'BEROBAT', 'prefix' => 'berobat'],
-        ['label' => 'BERIBADAH MINGGUAN/BULANAN/TAHUNAN', 'prefix' => 'beribadah'],
+        [
+            'label' => 'BERIBADAH MINGGUAN/BULANAN/TAHUNAN',
+            'prefix' => 'beribadah',
+        ],
         ['label' => 'REKREASI TERDEKAT', 'prefix' => 'rekreasi'],
     ];
 
     /**
-     * Program pemerintah dan data lainnya.
+     * Program pemerintah.
      */
     protected const PROGRAM_PEMERINTAH = [
         ['label' => 'BLT', 'field' => 'blt'],
         ['label' => 'PKH', 'field' => 'pkh'],
         ['label' => 'BST', 'field' => 'bst'],
-        ['label' => 'BANTUAN PRESIDEN', 'field' => 'bantuan_presiden'],
+        [
+            'label' => 'BANTUAN PRESIDEN',
+            'field' => 'bantuan_presiden',
+        ],
         ['label' => 'BANTUAN UMKM', 'field' => 'bantuan_umkm'],
-        ['label' => 'BANTUAN PEKERJA', 'field' => 'bantuan_pekerja'],
+        [
+            'label' => 'BANTUAN PEKERJA',
+            'field' => 'bantuan_pekerja',
+        ],
         ['label' => 'BANTUAN ANAK', 'field' => 'bantuan_anak'],
         ['label' => 'LAINNYA', 'field' => 'lainnya'],
     ];
 
-    public function __construct(protected ?string $filterNik = null)
+    public function __construct(?string $filterNik = null)
     {
-        $this->filterNik = $this->filterNik !== null
-            ? trim((string) $this->filterNik)
+        $filterNik = trim((string) $filterNik);
+        $filterNik = preg_replace('/\D+/', '', $filterNik);
+
+        $this->filterNik = $filterNik !== ''
+            ? $filterNik
             : null;
-
-        /*
-         * Ambil semua NIK yang mempunyai data lokasi/pemukiman
-         * dan NIK kepala keluarga yang terisi.
-         */
-        $this->nikList = lokasipemukiman::whereNotNull('nik_kepala')
-            ->where('nik_kepala', '!=', '')
-            ->pluck('nik')
-            ->filter(function ($nik) {
-                return $nik !== null && trim((string) $nik) !== '';
-            })
-            ->map(function ($nik) {
-                return trim((string) $nik);
-            })
-            ->unique()
-            ->values()
-            ->toArray();
-
-        /*
-         * Export satu NIK.
-         */
-        if ($this->filterNik !== null && $this->filterNik !== '') {
-            $this->nikList = in_array(
-                $this->filterNik,
-                $this->nikList,
-                true
-            )
-                ? [$this->filterNik]
-                : [];
-        }
     }
 
     /**
-     * Query utama data penduduk MySQL.
+     * Query satu Kepala Keluarga untuk setiap No KK.
+     *
+     * Query tidak bergantung pada collection lokasipemukiman.
+     * Karena itu, KK yang belum mengisi data MongoDB tetap ikut
+     * diekspor dan kolom surveinya akan kosong.
+     */
+    protected function baseHeadQuery()
+    {
+        $kepalaPerKk = DB::table('datapenduduks as dp')
+            ->join(
+                'detailkks as dkk',
+                'dkk.idpenduduk',
+                '=',
+                'dp.id'
+            )
+            ->whereRaw(
+                'LOWER(TRIM(dp.Datak)) IN (?, ?)',
+                $this->allowedDatak
+            )
+            ->whereRaw(
+                'LOWER(TRIM(dp.hubungan)) = ?',
+                ['kepala keluarga']
+            )
+            ->selectRaw(
+                'dkk.idkk, MIN(dp.id) AS penduduk_id'
+            )
+            ->groupBy('dkk.idkk');
+
+        $query = DataPendudukModel::query()
+            ->joinSub(
+                $kepalaPerKk,
+                'kepala_per_kk',
+                function ($join): void {
+                    $join->on(
+                        'kepala_per_kk.penduduk_id',
+                        '=',
+                        'datapenduduks.id'
+                    );
+                }
+            )
+            ->join(
+                'kks',
+                'kks.id',
+                '=',
+                'kepala_per_kk.idkk'
+            )
+            ->select([
+                'datapenduduks.*',
+                'kks.nokk as nokk',
+            ]);
+
+        if ($this->filterNik !== null) {
+            $query->where(
+                'datapenduduks.nik',
+                $this->filterNik
+            );
+        }
+
+        return $query;
+    }
+
+    /**
+     * Query utama Laravel Excel.
      */
     public function query()
     {
-        if (empty($this->nikList)) {
-            return datapenduduk::query()->whereRaw('1 = 0');
-        }
-
-        return datapenduduk::query()
-            ->with(['detailkk.kk'])
-            ->whereIn('Datak', $this->allowedDatak)
-            ->whereIn('nik', $this->nikList)
-            ->orderBy('nama');
+        return $this->baseHeadQuery()
+            ->orderBy('kks.nokk')
+            ->orderBy('datapenduduks.nama');
     }
 
     /**
-     * Header lengkap Excel.
-     *
-     * Total: 135 kolom.
+     * Header lengkap. Urutan wajib sama dengan importer.
      */
     public function headings(): array
     {
@@ -231,21 +314,41 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
         foreach (self::SARPRAS as $item) {
             $label = $item['label'];
 
-            $headings[] = $label . ' - JENIS TRANSPORTASI';
-            $headings[] = $label . ' - TRANSPORTASI UMUM';
-            $headings[] = $label . ' - WAKTU (JAM)';
-            $headings[] = $label . ' - BIAYA (Rp)';
-            $headings[] = $label . ' - KEMUDAHAN';
+            $headings[] =
+                $label . ' - JENIS TRANSPORTASI';
+
+            $headings[] =
+                $label . ' - TRANSPORTASI UMUM';
+
+            $headings[] =
+                $label . ' - WAKTU (JAM)';
+
+            $headings[] =
+                $label . ' - BIAYA (Rp)';
+
+            $headings[] =
+                $label . ' - KEMUDAHAN';
         }
 
-        $headings[] = 'TRANSPORTASI UMUM - SEBELUMNYA';
-        $headings[] = 'TRANSPORTASI UMUM - SEKARANG';
+        $headings[] =
+            'TRANSPORTASI UMUM - SEBELUMNYA';
+
+        $headings[] =
+            'TRANSPORTASI UMUM - SEKARANG';
 
         foreach (self::PROGRAM_PEMERINTAH as $item) {
             $headings[] = $item['label'];
         }
 
-        $headings[] = 'RATA-RATA PENGELUARAN / BULAN (Rp)';
+        $headings[] =
+            'RATA-RATA PENGELUARAN / BULAN (Rp)';
+
+        if (count($headings) !== self::EXPECTED_COLUMN_COUNT) {
+            throw new RuntimeException(
+                'Jumlah heading export harus 135 kolom, tetapi ditemukan ' .
+                count($headings) . ' kolom.'
+            );
+        }
 
         return $headings;
     }
@@ -260,7 +363,7 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
     }
 
     /**
-     * Format identitas dan nomor telepon sebagai teks.
+     * Format kolom identitas sebagai teks.
      */
     public function columnFormats(): array
     {
@@ -274,26 +377,39 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
     }
 
     /**
-     * Paksa KK, NIK, nomor HP, dan angka panjang sebagai teks.
+     * Mempertahankan No KK, NIK, dan nomor telepon.
      */
     public function bindValue(Cell $cell, $value)
     {
+        $textColumns = [
+            'A',
+            'B',
+            'E',
+            'F',
+            'G',
+        ];
+
         if (
             in_array(
                 $cell->getColumn(),
-                ['A', 'B', 'E', 'F', 'G'],
+                $textColumns,
                 true
             )
         ) {
             $cell->setValueExplicit(
-                (string) $value,
+                (string) ($value ?? ''),
                 DataType::TYPE_STRING
             );
 
             return true;
         }
 
+        /*
+         * Angka panjang lain dipaksa sebagai teks agar tidak
+         * berubah menjadi notasi ilmiah.
+         */
         if (
+            $value !== null &&
             is_numeric($value) &&
             strlen((string) $value) >= 12
         ) {
@@ -309,7 +425,92 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
     }
 
     /**
-     * Bangun seluruh cache satu kali untuk mencegah N+1 query.
+     * Styling ringan. ShouldAutoSize sengaja tidak digunakan
+     * karena 135 kolom dan ribuan baris sangat berat di hosting.
+     */
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (
+                AfterSheet $event
+            ): void {
+                $sheet = $event->sheet->getDelegate();
+
+                $lastColumn = Coordinate::stringFromColumnIndex(
+                    self::EXPECTED_COLUMN_COUNT
+                );
+
+                $headerRange = 'A1:' . $lastColumn . '1';
+
+                $sheet->freezePane('A2');
+                $sheet->setAutoFilter($headerRange);
+                $sheet->getRowDimension(1)->setRowHeight(36);
+
+                $sheet->getDefaultColumnDimension()
+                    ->setWidth(15);
+
+                $sheet->getColumnDimension('A')->setWidth(20);
+                $sheet->getColumnDimension('B')->setWidth(20);
+                $sheet->getColumnDimension('C')->setWidth(28);
+                $sheet->getColumnDimension('D')->setWidth(38);
+                $sheet->getColumnDimension('E')->setWidth(18);
+                $sheet->getColumnDimension('F')->setWidth(20);
+                $sheet->getColumnDimension('G')->setWidth(22);
+
+                $sheet->getStyle($headerRange)
+                    ->getFont()
+                    ->setBold(true)
+                    ->getColor()
+                    ->setARGB('FFFFFFFF');
+
+                $sheet->getStyle($headerRange)
+                    ->getFill()
+                    ->setFillType(Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('FF1F4E78');
+
+                $sheet->getStyle($headerRange)
+                    ->getAlignment()
+                    ->setHorizontal(
+                        Alignment::HORIZONTAL_CENTER
+                    )
+                    ->setVertical(
+                        Alignment::VERTICAL_CENTER
+                    )
+                    ->setWrapText(true);
+            },
+        ];
+    }
+
+    /**
+     * Daftar NIK kepala keluarga berdasarkan query MySQL.
+     */
+    protected function getNikList(): array
+    {
+        if ($this->nikListLoaded) {
+            return $this->nikList;
+        }
+
+        $this->nikList = (clone $this->baseHeadQuery())
+            ->pluck('datapenduduks.nik')
+            ->filter(function ($nik): bool {
+                return $nik !== null &&
+                    trim((string) $nik) !== '';
+            })
+            ->map(function ($nik): string {
+                return trim((string) $nik);
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $this->nikListLoaded = true;
+
+        return $this->nikList;
+    }
+
+    /**
+     * Bangun cache seluruh collection MongoDB satu kali.
      */
     protected function buildCache(): void
     {
@@ -317,64 +518,40 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
             return;
         }
 
-        $niks = $this->nikList;
+        $niks = $this->getNikList();
 
-        $this->lokasiMap = lokasipemukiman::whereIn(
-            'nik',
+        $this->lokasiMap = $this->fetchMap(
+            lokasipemukiman::class,
             $niks
-        )->get()->keyBy(function ($item) {
-            return trim((string) data_get($item, 'nik', ''));
-        });
+        );
 
-        $this->individuMap = dataindividu::whereIn(
-            'nik',
+        $this->individuMap = $this->fetchMap(
+            dataindividu::class,
             $niks
-        )->get()->keyBy(function ($item) {
-            return trim((string) data_get($item, 'nik', ''));
-        });
+        );
 
-        $this->pendMap = akses_pendidikan::whereIn(
-            'nik',
+        $this->pendidikanMap = $this->fetchMap(
+            akses_pendidikan::class,
             $niks
-        )->get()->keyBy(function ($item) {
-            return trim((string) data_get($item, 'nik', ''));
-        });
+        );
 
-        $this->kesMap = akseskesehatan::whereIn(
-            'nik',
+        $this->kesehatanMap = $this->fetchMap(
+            akseskesehatan::class,
             $niks
-        )->get()->keyBy(function ($item) {
-            return trim((string) data_get($item, 'nik', ''));
-        });
+        );
 
-        /*
-         * Beberapa project memakai nama model huruf kecil,
-         * beberapa memakai StudlyCase. Daftar kandidat ini
-         * membuat export tetap berjalan pada keduanya.
-         */
         $this->tenagaMap = $this->fetchMap(
-            [
-                'App\\Models\\aksestenagakerja',
-                'App\\Models\\Aksestenagakerja',
-                'App\\Models\\AksesTenagaKerja',
-            ],
+            aksestenagakerja::class,
             $niks
         );
 
         $this->sarprasMap = $this->fetchMap(
-            [
-                'App\\Models\\aksessarpras',
-                'App\\Models\\Aksessarpras',
-                'App\\Models\\AksesSarpras',
-            ],
+            aksessarpras::class,
             $niks
         );
 
         $this->lainMap = $this->fetchMap(
-            [
-                'App\\Models\\laink',
-                'App\\Models\\Laink',
-            ],
+            laink::class,
             $niks
         );
 
@@ -382,150 +559,252 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
     }
 
     /**
-     * Ambil data berdasarkan kandidat nama model.
-     *
-     * Collection kosong dikembalikan bila model belum tersedia,
-     * sehingga proses export tidak langsung gagal.
+     * Mengambil dokumen MongoDB berdasarkan NIK secara bertahap.
      */
     protected function fetchMap(
-        array $modelCandidates,
+        string $modelClass,
         array $niks
     ): Collection {
-        foreach ($modelCandidates as $modelClass) {
-            if (!class_exists($modelClass)) {
-                continue;
-            }
+        $map = collect();
 
-            return $modelClass::whereIn('nik', $niks)
+        if (empty($niks)) {
+            return $map;
+        }
+
+        foreach (
+            array_chunk(
+                $niks,
+                self::CACHE_CHUNK_SIZE
+            ) as $nikChunk
+        ) {
+            $modelClass::query()
+                ->whereIn('nik', $nikChunk)
                 ->get()
-                ->keyBy(function ($item) {
-                    return trim(
-                        (string) data_get($item, 'nik', '')
+                ->each(function ($item) use ($map): void {
+                    $nik = trim(
+                        (string) data_get(
+                            $item,
+                            'nik',
+                            ''
+                        )
                     );
+
+                    if ($nik !== '') {
+                        /*
+                         * Jika ada dokumen lama ganda, dokumen
+                         * terakhir yang dibaca digunakan.
+                         */
+                        $map->put($nik, $item);
+                    }
                 });
         }
 
-        return collect();
+        return $map;
     }
 
     /**
-     * Mapping lengkap per baris.
+     * Mapping satu Kepala Keluarga menjadi tepat 135 kolom.
      */
     public function map($row): array
     {
         $this->buildCache();
 
-        $nik = trim((string) $row->nik);
+        $nik = trim((string) ($row->nik ?? ''));
+        $noKk = trim((string) ($row->nokk ?? ''));
 
-        $kk = optional(
-            optional($row->detailkk)->kk
-        )->nokk ?? '';
-
-        $lok = $this->lokasiMap->get($nik);
-        $ind = $this->individuMap->get($nik);
-        $pend = $this->pendMap->get($nik);
-        $kes = $this->kesMap->get($nik);
+        $lokasi = $this->lokasiMap->get($nik);
+        $individu = $this->individuMap->get($nik);
+        $pendidikan = $this->pendidikanMap->get($nik);
+        $kesehatan = $this->kesehatanMap->get($nik);
         $tenaga = $this->tenagaMap->get($nik);
         $sarpras = $this->sarprasMap->get($nik);
         $lain = $this->lainMap->get($nik);
 
+        $nikKepala = $this->firstAvailable(
+            [$lokasi, $individu],
+            ['nik_kepala']
+        );
+
+        if ($nikKepala === '') {
+            /*
+             * Karena baris SQL sudah pasti kepala keluarga,
+             * NIK baris digunakan sebagai default.
+             */
+            $nikKepala = $nik;
+        }
+
+        $noHp = $this->firstAvailable(
+            [$individu, $lokasi],
+            ['nohp']
+        );
+
+        $teleponRumah = $this->firstAvailable(
+            [$individu, $lokasi],
+            [
+                'telpon_rumah',
+                'telepon_rumah',
+                'nowa',
+            ]
+        );
+
         $values = [
-            (string) $kk,
+            $noKk,
             $nik,
             $this->cellValue($row->nama ?? ''),
             $this->cellValue($row->alamat ?? ''),
-            (string) data_get($ind, 'nohp', ''),
-            (string) data_get($ind, 'nowa', ''),
+            $noHp,
+            $teleponRumah,
 
-            (string) data_get($lok, 'nik_kepala', ''),
-            $this->cellValue(data_get($lok, 'tempat_tinggal', '')),
-            $this->cellValue(data_get($lok, 'status_lahan', '')),
-            $this->cellValue(data_get($lok, 'luas_lantai_tinggal', '')),
-            $this->cellValue(data_get($lok, 'luas_tanah_tinggal', '')),
-            $this->cellValue(data_get($lok, 'jenis_lantai_tinggal', '')),
-            $this->cellValue(data_get($lok, 'dinding_sebagian', '')),
-            $this->cellValue(data_get($lok, 'jendela', '')),
-            $this->cellValue(data_get($lok, 'atap', '')),
-            $this->cellValue(data_get($lok, 'penerangan', '')),
-            $this->cellValue(data_get($lok, 'energi_masak', '')),
-            $this->cellValue(data_get($lok, 'jika_kayu_jenis', '')),
-            $this->cellValue(data_get($lok, 'tempat_sampah', '')),
-            $this->cellValue(data_get($lok, 'mck', '')),
-            $this->cellValue(data_get($lok, 'sumber_air_mandi', '')),
-            $this->cellValue(data_get($lok, 'sumber_air_mck', '')),
-            $this->cellValue(data_get($lok, 'sumber_air_minum', '')),
-            $this->cellValue(data_get($lok, 'tempat_pembuangan_limbah', '')),
-            $this->cellValue(data_get($lok, 'rumah_sutet', '')),
-            $this->cellValue(data_get($lok, 'rumah_sungai', '')),
-            $this->cellValue(data_get($lok, 'rumah_lereng_gunung', '')),
-            $this->cellValue(data_get($lok, 'kondi_rumah_kumuh', '')),
+            $nikKepala,
+            $this->firstValue(
+                [$lokasi],
+                'tempat_tinggal'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'status_lahan'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'luas_lantai_tinggal'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'luas_tanah_tinggal'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'jenis_lantai_tinggal'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'dinding_sebagian'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'jendela'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'atap'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'penerangan'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'energi_masak'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'jika_kayu_jenis'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'tempat_sampah'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'mck'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'sumber_air_mandi'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'sumber_air_mck'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'sumber_air_minum'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'tempat_pembuangan_limbah'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'rumah_sutet'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'rumah_sungai'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'rumah_lereng_gunung'
+            ),
+            $this->firstValue(
+                [$lokasi],
+                'kondi_rumah_kumuh'
+            ),
         ];
 
         /*
-         * Pendidikan: 9 kelompok x 3 kolom.
+         * Pendidikan: 9 x 3 = 27 kolom.
          */
         foreach (self::PENDIDIKAN as $item) {
             $this->appendTripletValues(
                 $values,
-                [$pend],
+                [$pendidikan],
                 $item['prefix']
             );
         }
 
         /*
-         * Fasilitas kesehatan: 8 kelompok x 3 kolom.
+         * Fasilitas kesehatan: 8 x 3 = 24 kolom.
          */
         foreach (self::FASILITAS_KESEHATAN as $item) {
             $this->appendTripletValues(
                 $values,
-                [$kes],
+                [$kesehatan],
                 $item['prefix']
             );
         }
 
         /*
-         * Tenaga kesehatan: 5 kelompok x 3 kolom.
+         * Tenaga kesehatan: 5 x 3 = 15 kolom.
          *
-         * Fallback ke akseskesehatan untuk project lama
-         * yang masih menyimpan field tenaga kesehatan di sana.
+         * $kesehatan disertakan sebagai fallback untuk data lama.
          */
         foreach (self::TENAGA_KESEHATAN as $item) {
             $this->appendTripletValues(
                 $values,
-                [$tenaga, $kes],
+                [$tenaga, $kesehatan],
                 $item['prefix']
             );
         }
 
         /*
-         * Sarana/prasarana: 6 kelompok x 5 kolom.
+         * Sarana/prasarana: 6 x 5 = 30 kolom.
          */
         foreach (self::SARPRAS as $item) {
             $prefix = $item['prefix'];
-            $sources = [$sarpras, $lok, $ind];
 
             $values[] = $this->firstValue(
-                $sources,
+                [$sarpras, $lokasi, $individu],
                 'jenistrasport_' . $prefix
             );
 
             $values[] = $this->firstValue(
-                $sources,
+                [$sarpras, $lokasi, $individu],
                 'pengtransportumum_' . $prefix
             );
 
             $values[] = $this->firstValue(
-                $sources,
+                [$sarpras, $lokasi, $individu],
                 'waktutempuh_' . $prefix
             );
 
             $values[] = $this->firstValue(
-                $sources,
+                [$sarpras, $lokasi, $individu],
                 'biaya_' . $prefix
             );
 
             $values[] = $this->firstValue(
-                $sources,
+                [$sarpras, $lokasi, $individu],
                 'kemudahan_' . $prefix
             );
         }
@@ -534,32 +813,41 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
          * Transportasi umum sebelum dan sekarang.
          */
         $values[] = $this->firstValue(
-            [$sarpras, $lain, $lok, $ind],
+            [$lain, $sarpras, $lokasi, $individu],
             'pengtransportsebelum'
         );
 
         $values[] = $this->firstValue(
-            [$sarpras, $lain, $lok, $ind],
+            [$lain, $sarpras, $lokasi, $individu],
             'pengtransportsesudah'
         );
 
         /*
-         * Pemanfaat program pemerintah.
+         * Delapan program pemerintah.
          */
         foreach (self::PROGRAM_PEMERINTAH as $item) {
             $values[] = $this->firstValue(
-                [$lain, $ind, $lok],
+                [$lain, $individu, $lokasi],
                 $item['field']
             );
         }
 
         /*
-         * Pengeluaran rata-rata per bulan.
+         * Rata-rata pengeluaran.
          */
         $values[] = $this->firstValue(
-            [$lain, $ind, $lok],
+            [$lain, $individu, $lokasi],
             'rata_rata'
         );
+
+        if (count($values) !== self::EXPECTED_COLUMN_COUNT) {
+            throw new RuntimeException(
+                "Mapping NIK {$nik} harus menghasilkan 135 kolom, " .
+                'tetapi menghasilkan ' .
+                count($values) .
+                ' kolom.'
+            );
+        }
 
         return $values;
     }
@@ -602,21 +890,49 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
 
             $value = data_get($source, $field);
 
-            if ($value === null) {
-                continue;
+            if ($this->hasValue($value)) {
+                return $this->cellValue($value);
             }
-
-            if (
-                is_string($value) &&
-                trim($value) === ''
-            ) {
-                continue;
-            }
-
-            return $this->cellValue($value);
         }
 
         return '';
+    }
+
+    /**
+     * Ambil nilai dari beberapa kemungkinan nama field.
+     */
+    protected function firstAvailable(
+        array $sources,
+        array $fields
+    ) {
+        foreach ($fields as $field) {
+            $value = $this->firstValue(
+                $sources,
+                $field
+            );
+
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        return '';
+    }
+
+    protected function hasValue($value): bool
+    {
+        if ($value === null) {
+            return false;
+        }
+
+        if (
+            is_string($value) &&
+            trim($value) === ''
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -635,11 +951,11 @@ class LokasidanPemukimanExport extends DefaultValueBinder implements
         if (is_array($value)) {
             return collect($value)
                 ->flatten()
-                ->filter(function ($item) {
+                ->filter(function ($item): bool {
                     return $item !== null &&
                         trim((string) $item) !== '';
                 })
-                ->map(function ($item) {
+                ->map(function ($item): string {
                     return trim((string) $item);
                 })
                 ->implode(', ');

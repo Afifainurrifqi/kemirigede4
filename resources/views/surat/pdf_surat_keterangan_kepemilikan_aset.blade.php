@@ -205,7 +205,7 @@
             <td class="kop-desa-text">
                 <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                 <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                <div class="kop-desa-3">PEMERINTAH DESA Kemirigede</div>
                 <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                 <div class="kop-desa-kontak">
                     email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
@@ -213,7 +213,7 @@
             </td>
 
                 {{-- <td class="kop-desa-logo">
-                <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
             </td> --}}
         </tr>
     </table>
@@ -227,7 +227,7 @@
     Nomor : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now()->year }}
 </div>
 
-<p>Yang bertanda tangan di bawah ini KEPALA DESA KEMIRIGEDE menerangkan dengan sebenarnya bahwa :</p>
+<p>Yang bertanda tangan di bawah ini KEPALA DESA Kemirigede menerangkan dengan sebenarnya bahwa :</p>
 
 <table class="data">
     <tr>
@@ -329,7 +329,7 @@
     </tr>
     <tr>
         <td></td>
-        <td><strong>KEPALA DESA KEMIRIGEDE</strong></td>
+        <td><strong>KEPALA DESA Kemirigede</strong></td>
     </tr>
     <tr>
         <td></td>
@@ -342,7 +342,7 @@
 
             {{-- <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR">
-                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
             </div> --}}
         </td>
     </tr>

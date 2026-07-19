@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Nota Angkutan Hasil Hutan Kayu - Desa KEMIRIGEDE</title>
+    <title>Nota Angkutan Hasil Hutan Kayu - Desa Kemirigede</title>
 
     <style>
         @page {
@@ -374,8 +374,8 @@
         ? \Carbon\Carbon::parse($data->tanggal_peraturan)->locale('id')->translatedFormat('d F Y')
         : '';
 
-    $desa = $data->desa ?? 'KEMIRIGEDE';
-    $kecamatan = $data->kecamatan ?? 'KEMIRIGEDE';
+    $desa = $data->desa ?? 'Kemirigede';
+    $kecamatan = $data->kecamatan ?? 'Kemirigede';
     $kabupaten = $data->kabupaten ?? 'Blitar';
     $provinsi = $data->provinsi ?? 'Jawa Timur';
 
@@ -409,7 +409,7 @@
                 <td class="kop-desa-text">
                     <div class="kop-desa-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-desa-2">KECAMATAN KESAMBEN</div>
-                    <div class="kop-desa-3">PEMERINTAH DESA KEMIRIGEDE</div>
+                    <div class="kop-desa-3">PEMERINTAH DESA Kemirigede</div>
                     <div class="kop-desa-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
                     <div class="kop-desa-kontak">
                         email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
@@ -417,7 +417,7 @@
                 </td>
 
                 {{-- <td class="kop-desa-logo">
-                    <img src="{{ public_path('assets/images/wates.png') }}" alt="Logo Desa KEMIRIGEDE">
+                    <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
                 </td> --}}
             </tr>
         </table>

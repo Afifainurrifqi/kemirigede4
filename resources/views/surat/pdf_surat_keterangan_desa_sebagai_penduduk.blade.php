@@ -138,14 +138,14 @@
             <td class="kop-text">
                 <strong>PEMERINTAH KABUPATEN BLITAR</strong><br>
                 <strong>KECAMATAN KESAMBEN</strong><br>
-                <strong>KANTOR KEPALA DESA KEMIRIGEDE</strong><br>
+                <strong>KANTOR KEPALA DESA Kemirigede</strong><br>
                 <small>
                     Jln. Merdeka No. 74 Telp. 082139324445<br>
-                    Email: KEMIRIGEDEberkelas@gmail.com | Website: KEMIRIGEDE-blitarkab.desa.id
+                    Email: Kemirigedeberkelas@gmail.com | Website: Kemirigede-blitarkab.desa.id
                 </small>
             </td>
             <td class="kop-logo">
-                <img src="{{ public_path('assets/images/KEMIRIGEDE.png') }}" alt="Logo Desa KEMIRIGEDE">
+                <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
             </td>
         </tr>
     </table>
@@ -163,7 +163,7 @@
 </div>
 
 <p class="tulisan">
-    Yang bertanda tangan di bawah ini, kami KEPALA DESA KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar,
+    Yang bertanda tangan di bawah ini, kami KEPALA DESA Kemirigede Kecamatan Kesamben Kabupaten Blitar,
     menerangkan dengan sebenarnya bahwa orang tersebut di bawah ini :
 </p>
 
@@ -180,7 +180,7 @@
 </table>
 
 <p class="tulisan">
-    Orang tersebut adalah benar-benar penduduk Desa KEMIRIGEDE Kecamatan Kesamben Kabupaten Blitar.
+    Orang tersebut adalah benar-benar penduduk Desa Kemirigede Kecamatan Kesamben Kabupaten Blitar.
     Surat pengantar/keterangan ini dipergunakan untuk {{ $data->keterangan_tambahan ?? 'keperluan yang bersangkutan' }}.
 </p>
 
@@ -192,8 +192,8 @@
     <tr>
         <td class="ttd-spacer"></td>
         <td class="ttd-cell">
-            <p>KEMIRIGEDE, {{ $tanggalSurat }}</p>
-            <p><strong>KEPALA DESA KEMIRIGEDE</strong></p>
+            <p>Kemirigede, {{ $tanggalSurat }}</p>
+            <p><strong>KEPALA DESA Kemirigede</strong></p>
             <div class="ttd-img-wrapper">
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
             </div>
@@ -201,7 +201,7 @@
               {{--
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
-                <small>Scan untuk verifikasi surat resmi Desa KEMIRIGEDE</small>
+                <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
             </div> --}}
         </td>
     </tr>

@@ -480,7 +480,7 @@
         /*
          * Penandatangan dibuat tetap karena tidak disimpan dalam Model.
          */
-        $jabatanKades = 'KEPALA DESA KEMIRIGEDE';
+        $jabatanKades = 'KEPALA DESA Kemirigede';
         $namaKades = 'Hari Purnawan, S.Sos.';
     @endphp
 
@@ -507,7 +507,7 @@
                     </div>
 
                     <div class="kop-desa-3">
-                        PEMERINTAH DESA KEMIRIGEDE
+                        PEMERINTAH DESA Kemirigede
                     </div>
 
                     <div class="kop-desa-alamat">
