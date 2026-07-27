@@ -186,9 +186,9 @@
                     <div class="kop-baris-1">PEMERINTAH KABUPATEN BLITAR</div>
                     <div class="kop-baris-2">KECAMATAN KESAMBEN</div>
                     <div class="kop-baris-3">PEMERINTAH DESA Kemirigede</div>
-                    <div class="kop-alamat">Jln. Merdeka No. 74 Telp. 082139324445</div>
+                    <div class="kop-alamat">Jln. Kawi No. 4 Desa Kemirigede Telp. 082139324445</div>
                     <div class="kop-kontak">
-                        email :Kemiriberkelas@gmail.com / website : Kemirigede-blitarkab.desa.id
+                        email :pemdeskemirigede@gmail.com / website : Kemirigede-blitarkab.desa.id
                     </div>
                 </td>
 
@@ -280,7 +280,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper" style="margin-top: 35px;">
         <div class="ttd-right">
-            <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
             <p><strong>Yang membuat pernyataan</strong></p>
 
             {{-- <div class="ttd-img-wrapper">

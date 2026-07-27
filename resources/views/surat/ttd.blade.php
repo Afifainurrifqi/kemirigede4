@@ -24,5 +24,5 @@
         Kemirigede, ..................................<br>
         KEPALA DESA Kemirigede
     </div>
-    <div class="nama-kades">Hari Purnawan, S.Sos. S.Pd.I</div>
+    <div class="nama-kades">Hari Purnawan, S.Sos </div>
 </div>

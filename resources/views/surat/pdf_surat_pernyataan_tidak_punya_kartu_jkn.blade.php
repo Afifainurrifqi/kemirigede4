@@ -238,11 +238,11 @@
                     </div>
 
                     <div class="kop-desa-alamat">
-                        Jln. Merdeka No. 74 Telp. 082139324445
+                        Jln. Kawi No. 4 Desa Kemirigede Telp. 082139324445
                     </div>
 
                     <div class="kop-desa-kontak">
-                        Email: Kemiriberkelas@gmail.com /
+                        Email: pemdeskemirigede@gmail.com /
                         Website: Kemirigede-blitarkab.desa.id
                     </div>
                 </td>

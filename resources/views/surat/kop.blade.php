@@ -33,7 +33,7 @@
                 KECAMATAN KESAMBEN<br>
                 KANTOR KEPALA DESA Kemirigede</strong><br>
                 <small>
-                    Jln. Merdeka No. 74 Telp. 082139324445<br>
+                    Jln. Kawi No. 4 Desa Kemirigede Telp. 082139324445<br>
                     Email : Kemirigedeberkelas@gmail.com Website : Kemirigede-blitarkab.desa.id| Website: Kemirigede-blitarkab.desa.id
                 </small>
             </td>
