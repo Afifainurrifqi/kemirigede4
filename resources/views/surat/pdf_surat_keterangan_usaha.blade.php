@@ -302,7 +302,7 @@
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                 <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
-            </div> --}} --}}
+            </div> --}}
         </td>
     </tr>
 </table>
