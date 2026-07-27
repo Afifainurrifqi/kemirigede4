@@ -118,8 +118,8 @@ class SuratKeteranganKematianDesaController extends Controller
     public function edit(surat_keterangan_kematian_desa $surat)
     {
 
-        $status     = \App\Models\Status::all();
-        $pekerjaan  = \App\Models\Pekerjaan::all();
+        $status     = Status::all();
+        $pekerjaan  = Pekerjaan::all();
         return view('surat.edit_surat_keterangan_kematian_desa', compact('surat', 'status', 'pekerjaan'));
     }
     /**
