@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Surat Keterangan Kematian Desa</title>
@@ -215,6 +216,7 @@
 <body>
 
     @php
+        use App\Models\Status;
         $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
 
         $tanggalMeninggal = !empty($data->tanggal)
@@ -247,7 +249,7 @@
                     </div>
                 </td>
 
-               {{-- <td class="kop-logo">
+                {{-- <td class="kop-logo">
                     <img src="{{ public_path('assets/images/Kemirigede.png') }}" alt="Logo Desa Kemirigede">
                 </td> --}}
             </tr>
@@ -347,7 +349,7 @@
                 {{-- {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
- --}}
+                --}}
 
                 <br><br><br>
 
@@ -364,4 +366,5 @@
     </table>
 
 </body>
+
 </html>
