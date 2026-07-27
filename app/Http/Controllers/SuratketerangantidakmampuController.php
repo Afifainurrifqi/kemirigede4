@@ -97,6 +97,9 @@ class SuratketerangantidakmampuController extends Controller
     /**
      * Cek & assign nomor_surat bila eligible.
      */
+    /**
+     * Cek & assign nomor_surat bila eligible.
+     */
     protected function maybeAssignNomorSurat($sktmOrNull, array &$payload): void
     {
         $status = $payload['status_surat'] ?? ($sktmOrNull->status_surat ?? null);
@@ -107,15 +110,15 @@ class SuratketerangantidakmampuController extends Controller
             && empty($payload['nomor_surat'])
             && empty($sktmOrNull?->nomor_surat)
         ) {
-
             $tahun = now('Asia/Jakarta')->year;
-            $urut  = $this->svc->next($tahun);
+
+            // Perbaikan: gunakan nextGlobal() dan sertakan jenis surat 'sktm' pada method format()
+            $urut  = $this->svc->nextGlobal();
             $payload['nomor_urut']  = $urut;
             $payload['tahun_nomor'] = $tahun;
-            $payload['nomor_surat'] = $this->svc->format($urut, $tahun);
+            $payload['nomor_surat'] = $this->svc->format('sktm', $urut, $tahun);
         }
     }
-
     /**
      * Store (Admin).
      */
