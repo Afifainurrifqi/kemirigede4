@@ -223,10 +223,10 @@
 
         $statusLabel = '...........................................';
 
-        // if (!empty($data->status)) {
-        //     $statusData = \App\Models\Status::find($data->status);
-        //     $statusLabel = $statusData->nama ?? $data->status;
-        // }
+        if (!empty($data->status)) {
+            $statusData = Status::find($data->status);
+            $statusLabel = $statusData->nama ?? $data->status;
+        }
     @endphp
 
     {{-- KOP SURAT --}}
