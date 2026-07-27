@@ -14,7 +14,7 @@ class SuratKeteranganKematianDesaController extends Controller
      */
     public function index()
     {
-        $status     = \App\Models\Status::all();
+        // $status     = \App\Models\Status::all();
         $pekerjaan  = \App\Models\Pekerjaan::all();   // ← Tambahkan ini
 
         return view('surat.surat_keterangan_kematian_desa', compact( 'status', "pekerjaan"));
