@@ -223,12 +223,7 @@
             ? \Carbon\Carbon::parse($data->tanggal)->translatedFormat('d F Y')
             : '...........................................';
 
-        $statusLabel = '...........................................';
-
-        if (!empty($data->status)) {
-            $statusData = Status::find($data->status);
-            $statusLabel = $statusData->nama ?? $data->status;
-        }
+        $statusLabel = $data->status ?? '...........................................';
     @endphp
 
     {{-- KOP SURAT --}}
