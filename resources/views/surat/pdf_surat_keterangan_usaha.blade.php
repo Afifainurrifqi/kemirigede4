@@ -220,7 +220,7 @@
         <tr>
             <td>Nama</td>
             <td>:</td>
-            <td>Moh. Hamid Almauludi, S.Pd.I</td>
+            <td>Moh. Hamid Almauludi,  </td>
         </tr>
         <tr>
             <td>Jabatan</td>

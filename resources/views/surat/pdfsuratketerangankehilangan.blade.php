@@ -286,7 +286,7 @@
             <br><br><br><br>
 
 
-            <p><strong><u>Hari Purnawan, S.Sos. S.Pd.I</u></strong></p>
+            <p><strong><u>Hari Purnawan, S.Sos.  </u></strong></p>
 
             {{-- <div class="barcode">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
