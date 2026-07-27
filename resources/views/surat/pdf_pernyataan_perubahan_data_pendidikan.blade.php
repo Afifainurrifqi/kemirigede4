@@ -300,11 +300,11 @@
                 </p>
                 <p>NIK: {{ $data->nik ?? '...........................................' }}</p>
 
-                <div class="barcode">
+                {{-- <div class="barcode">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="Barcode">
                     <br>
                     <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
-                </div>
+                </div> --}}
             </td>
         </tr>
     </table>
