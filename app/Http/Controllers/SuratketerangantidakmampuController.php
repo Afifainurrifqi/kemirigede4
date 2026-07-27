@@ -97,24 +97,24 @@ class SuratketerangantidakmampuController extends Controller
     /**
      * Cek & assign nomor_surat bila eligible.
      */
-    protected function maybeAssignNomorSurat($sktmOrNull, array &$payload): void
-    {
-        $status = $payload['status_surat'] ?? ($sktmOrNull->status_surat ?? null);
-        $verif  = $payload['status_verif'] ?? ($sktmOrNull->status_verif ?? null);
+    // protected function maybeAssignNomorSurat($sktmOrNull, array &$payload): void
+    // {
+    //     $status = $payload['status_surat'] ?? ($sktmOrNull->status_surat ?? null);
+    //     $verif  = $payload['status_verif'] ?? ($sktmOrNull->status_verif ?? null);
 
-        if (
-            $status === 'Di terima' && $verif === 'Terverifikasi'
-            && empty($payload['nomor_surat'])
-            && empty($sktmOrNull?->nomor_surat)
-        ) {
+    //     if (
+    //         $status === 'Di terima' && $verif === 'Terverifikasi'
+    //         && empty($payload['nomor_surat'])
+    //         && empty($sktmOrNull?->nomor_surat)
+    //     ) {
 
-            $tahun = now('Asia/Jakarta')->year;
-            $urut  = $this->svc->next($tahun);
-            $payload['nomor_urut']  = $urut;
-            $payload['tahun_nomor'] = $tahun;
-            $payload['nomor_surat'] = $this->svc->format($urut, $tahun);
-        }
-    }
+    //         $tahun = now('Asia/Jakarta')->year;
+    //         $urut  = $this->svc->next($tahun);
+    //         $payload['nomor_urut']  = $urut;
+    //         $payload['tahun_nomor'] = $tahun;
+    //         $payload['nomor_surat'] = $this->svc->format($urut, $tahun);
+    //     }
+    // }
 
     /**
      * Store (Admin).
