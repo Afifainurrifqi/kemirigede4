@@ -14,22 +14,28 @@ class SuratKeteranganKehilanganController extends Controller
     /**
      * Assign nomor surat kalau status "Di terima" + "Terverifikasi"
      */
-    protected function maybeAssignNomorSurat($suratOrNull, array &$payload): void
+    /**
+     * Cek & assign nomor_surat bila eligible.
+     */
+    protected function maybeAssignNomorSurat($sktmOrNull, array &$payload): void
     {
-        $status = $payload['status_surat'] ?? ($suratOrNull->status_surat ?? null);
-        $verif  = $payload['status_verif'] ?? ($suratOrNull->status_verif ?? null);
+        $status = $payload['status_surat'] ?? ($sktmOrNull->status_surat ?? null);
+        $verif  = $payload['status_verif'] ?? ($sktmOrNull->status_verif ?? null);
 
-        $sudahAdaNomor = !empty($payload['nomor_surat']) || !empty($suratOrNull?->nomor_surat);
+        if (
+            $status === 'Di terima' && $verif === 'Terverifikasi'
+            && empty($payload['nomor_surat'])
+            && empty($sktmOrNull?->nomor_surat)
+        ) {
+            $tahun = now('Asia/Jakarta')->year;
 
-        if ($status === 'Di terima' && $verif === 'Terverifikasi' && !$sudahAdaNomor) {
-            // issue nomor untuk jenis "kehilangan"
-            $issued = $this->svc->issue('kehilangan'); // ['urut','tahun','nomor_surat']
-            $payload['nomor_urut']  = $issued['urut'];
-            $payload['tahun_nomor'] = $issued['tahun'];
-            $payload['nomor_surat'] = $issued['nomor_surat'];
+            // Perbaikan: gunakan nextGlobal() dan sertakan jenis surat 'sktm' pada method format()
+            $urut  = $this->svc->nextGlobal();
+            $payload['nomor_urut']  = $urut;
+            $payload['tahun_nomor'] = $tahun;
+            $payload['nomor_surat'] = $this->svc->format('sktm', $urut, $tahun);
         }
     }
-
     /** List arsip/admin */
     public function index()
     {
