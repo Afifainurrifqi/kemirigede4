@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\pekerjaan;
+use App\Models\status;
 use App\Models\surat_keterangan_kematian_desa;
 use Illuminate\Http\Request;
 
@@ -14,8 +16,8 @@ class SuratKeteranganKematianDesaController extends Controller
      */
     public function index()
     {
-        // $status     = \App\Models\Status::all();
-        $pekerjaan  = \App\Models\Pekerjaan::all();   // ← Tambahkan ini
+        $status     = status::all();
+        $pekerjaan  = pekerjaan::all();   // ← Tambahkan ini
 
         return view('surat.surat_keterangan_kematian_desa', compact( 'status', "pekerjaan"));
     }
