@@ -246,7 +246,7 @@
             <td>
                 : {{ $data->ttl_tempat ?? '' }} /
                 {{ !empty($data->ttl_tanggal)
-                    ? \Carbon\Carbon::parse($data->ttl_tanggal)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->ttl_tanggal) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -276,7 +276,7 @@
             <td>
                 : {{ $data->ttl_tempat_izin ?? '' }} /
                 {{ !empty($data->ttl_tanggal_izin)
-                    ? \Carbon\Carbon::parse($data->ttl_tanggal_izin)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->ttl_tanggal_izin) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -305,7 +305,7 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+                <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
                 <p>Saya yang menyatakan,</p>
 
                 {{-- <div class="ttd-img-wrapper">

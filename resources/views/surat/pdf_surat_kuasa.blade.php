@@ -252,7 +252,7 @@
 
 <body>
 @php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
     $tanggalLahirPihak1 = !empty($data->tanggal_lahir_pihak1)
         ? \Carbon\Carbon::parse($data->tanggal_lahir_pihak1)->format('d-m-Y')

@@ -294,8 +294,8 @@
 <body>
 @php
     $tanggalSurat = !empty($data->tanggal_surat)
-        ? \Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat('d F Y')
-        : now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y');
+        ? \Carbon\Carbon::parse($data->tanggal_surat)->locale('id') ->locale('id')->translatedFormat('d F Y')
+        : now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y');
 
     $tahunSurat = !empty($data->tanggal_surat)
         ? \Carbon\Carbon::parse($data->tanggal_surat)->format('Y')

@@ -230,7 +230,7 @@
             <td>
                 : {{ $data->tempat_lahir_pelapor ?? '' }},
                 {{ !empty($data->tanggal_lahir_pelapor)
-                    ? \Carbon\Carbon::parse($data->tanggal_lahir_pelapor)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->tanggal_lahir_pelapor) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -263,7 +263,7 @@
         pada tanggal
         <strong>
             {{ !empty($data->tanggal_kehilangan)
-                ? \Carbon\Carbon::parse($data->tanggal_kehilangan)->translatedFormat('d F Y')
+                ? \Carbon\Carbon::parse($data->tanggal_kehilangan) ->locale('id')->translatedFormat('d F Y')
                 : '...........................................' }}
         </strong>,
         hilang saat <strong>{{ $data->hilang_saat ?? '...........................................' }}</strong>.
@@ -276,7 +276,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper">
         <div class="ttd-right">
-            <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
             <p><strong>KEPALA DESA Kemirigede</strong></p>
 
             {{-- <div class="ttd-img-wrapper">

@@ -198,10 +198,10 @@
 
 <body>
     @php
-        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
         $tanggalLahir = !empty($surat->tanggal_lahir)
-            ? \Carbon\Carbon::parse($surat->tanggal_lahir)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($surat->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
             : '...........................................';
     @endphp
 

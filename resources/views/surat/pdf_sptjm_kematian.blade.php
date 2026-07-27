@@ -234,18 +234,18 @@
     @php
         \Carbon\Carbon::setLocale('id');
 
-        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
         $tanggalLahirPemohon = !empty($data->ttl_tanggal)
-            ? \Carbon\Carbon::parse($data->ttl_tanggal)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($data->ttl_tanggal) ->locale('id')->translatedFormat('d F Y')
             : '';
 
         $tanggalLahirJenazah = !empty($data->ttl_tanggal_jenazah)
-            ? \Carbon\Carbon::parse($data->ttl_tanggal_jenazah)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($data->ttl_tanggal_jenazah) ->locale('id')->translatedFormat('d F Y')
             : '';
 
         $tanggalKematian = !empty($data->tanggal_kematian)
-            ? \Carbon\Carbon::parse($data->tanggal_kematian)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($data->tanggal_kematian) ->locale('id')->translatedFormat('d F Y')
             : '';
 
         $ttlPemohon = trim(

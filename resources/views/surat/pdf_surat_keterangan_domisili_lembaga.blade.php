@@ -188,7 +188,7 @@
 <body>
 
     @php
-        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
     @endphp
 
     {{-- KOP SURAT --}}

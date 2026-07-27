@@ -264,7 +264,7 @@
             <td>
                 :
                 {{ !empty($data->subjek_tanggal_lahir)
-                    ? \Carbon\Carbon::parse($data->subjek_tanggal_lahir)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->subjek_tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -284,7 +284,7 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+                <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
                 <p>Saya yang menyatakan,</p>
 
                 {{-- <div class="ttd-img-wrapper">

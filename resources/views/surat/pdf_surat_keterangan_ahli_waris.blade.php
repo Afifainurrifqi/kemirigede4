@@ -195,14 +195,14 @@
 <body>
 
     @php
-        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
         $tanggalLahir = !empty($data->tanggal_lahir)
-            ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($data->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
             : '...........................................';
 
         $tanggalLahirIstri = !empty($data->tanggal_lahir_istri)
-            ? \Carbon\Carbon::parse($data->tanggal_lahir_istri)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($data->tanggal_lahir_istri) ->locale('id')->translatedFormat('d F Y')
             : '...........................................';
 
         $namaAnak = (array) ($data->nama_anak ?? []);

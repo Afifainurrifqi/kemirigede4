@@ -282,7 +282,7 @@
             <td>
                 : {{ $data->tempat_lahir_penumpang_kk ?? '' }},
                 {{ !empty($data->tanggal_lahir_penumpang_kk)
-                    ? \Carbon\Carbon::parse($data->tanggal_lahir_penumpang_kk)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->tanggal_lahir_penumpang_kk) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -304,7 +304,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper clearfix">
         <div class="ttd-right">
-            <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
             <p><strong>Saya yang menyatakan,</strong></p>
 
             {{-- <div class="materai">Materai<br>10.000</div> --}}

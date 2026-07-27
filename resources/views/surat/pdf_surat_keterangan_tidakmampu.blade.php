@@ -311,7 +311,7 @@
             <td>
                 : {{ $data->tempat_lahir ?? '' }},
                 {{ !empty($data->tanggal_lahir)
-                    ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -389,7 +389,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper">
         <div class="ttd-right">
-            <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
             <p><strong>KEPALA DESA Kemirigede</strong></p>
 
             {{--

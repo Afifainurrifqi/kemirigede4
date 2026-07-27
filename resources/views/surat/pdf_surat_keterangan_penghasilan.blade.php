@@ -185,7 +185,7 @@
 @php
     $s = $surat ?? $data ?? null;
 
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
     $isiField = function ($field, $default = '...........................................') use ($s) {
         $value = data_get($s, $field);
@@ -193,7 +193,7 @@
     };
 
     $tanggalLahir = !empty(data_get($s, 'tanggal_lahir'))
-        ? \Carbon\Carbon::parse(data_get($s, 'tanggal_lahir'))->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse(data_get($s, 'tanggal_lahir')) ->locale('id')->translatedFormat('d F Y')
         : '...........................................';
 @endphp
 

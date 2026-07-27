@@ -174,10 +174,10 @@
 
 <body>
 @php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
     $tanggalLahir = !empty($data->tanggal_lahir)
-        ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
         : '...........................................';
 @endphp
 
@@ -220,7 +220,7 @@
         <tr>
             <td>Nama</td>
             <td>:</td>
-            <td>Moh. Hamid Almauludi,  </td>
+            <td>Hari Purnawan, S.Sos.</td>
         </tr>
         <tr>
             <td>Jabatan</td>

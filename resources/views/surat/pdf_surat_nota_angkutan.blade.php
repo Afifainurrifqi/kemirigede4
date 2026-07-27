@@ -357,11 +357,11 @@
 <body>
 @php
     $tanggalMulai = !empty($data->tanggal_mulai)
-        ? \Carbon\Carbon::parse($data->tanggal_mulai)->locale('id')->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_mulai)->locale('id') ->locale('id')->translatedFormat('d F Y')
         : '';
 
     $tanggalSelesai = !empty($data->tanggal_selesai)
-        ? \Carbon\Carbon::parse($data->tanggal_selesai)->locale('id')->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_selesai)->locale('id') ->locale('id')->translatedFormat('d F Y')
         : '';
 
     $bulanTahunSurat = !empty($data->tanggal_surat)
@@ -371,7 +371,7 @@
     $nomorSurat = $data->nomor_surat ?? '';
     $nomorPeraturan = $data->nomor_peraturan ?? '';
     $tanggalPeraturan = !empty($data->tanggal_peraturan)
-        ? \Carbon\Carbon::parse($data->tanggal_peraturan)->locale('id')->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_peraturan)->locale('id') ->locale('id')->translatedFormat('d F Y')
         : '';
 
     $desa = $data->desa ?? 'Kemirigede';

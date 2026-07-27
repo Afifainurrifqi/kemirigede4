@@ -215,10 +215,10 @@
 <body>
 
     @php
-        $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
         $tanggalMeninggal = !empty($data->tanggal)
-            ? \Carbon\Carbon::parse($data->tanggal)->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($data->tanggal) ->locale('id')->translatedFormat('d F Y')
             : '...........................................';
 
         $statusLabel = '...........................................';

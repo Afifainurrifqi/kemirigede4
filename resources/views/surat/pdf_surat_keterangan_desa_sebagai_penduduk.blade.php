@@ -125,7 +125,7 @@
 <body>
 
 @php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 @endphp
 
 {{-- KOP SURAT --}}
@@ -170,7 +170,7 @@
 <table class="data">
     <tr><td>Nama</td><td>:</td><td>{{ $data->nama_lengkap ?? '...........................................' }}</td></tr>
     <tr><td>Jenis Kelamin</td><td>:</td><td>{{ $data->jenis_kelamin ?? '...........................................' }}</td></tr>
-    <tr><td>Tempat, Tgl Lahir</td><td>:</td><td>{{ $data->tempat_lahir ?? '...........................................' }}, {{ $data->tanggal_lahir ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') : '...........................................' }}</td></tr>
+    <tr><td>Tempat, Tgl Lahir</td><td>:</td><td>{{ $data->tempat_lahir ?? '...........................................' }}, {{ $data->tanggal_lahir ? \Carbon\Carbon::parse($data->tanggal_lahir) ->locale('id')->translatedFormat('d F Y') : '...........................................' }}</td></tr>
     <tr><td>Kewarganegaraan</td><td>:</td><td>{{ $data->kewarganegaraan ?? '...........................................' }}</td></tr>
     <tr><td>Agama</td><td>:</td><td>{{ $data->agama ?? '...........................................' }}</td></tr>
     <tr><td>NIK</td><td>:</td><td>{{ $data->nik ?? '...........................................' }}</td></tr>

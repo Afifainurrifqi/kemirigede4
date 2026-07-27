@@ -98,7 +98,7 @@
                             $surat->tanggal_kegiatan
                         )
                             ->locale('id')
-                            ->translatedFormat('d F Y');
+                             ->locale('id')->translatedFormat('d F Y');
                     } catch (\Throwable $e) {
                         $tanggalKegiatan =
                             (string) $surat->tanggal_kegiatan;

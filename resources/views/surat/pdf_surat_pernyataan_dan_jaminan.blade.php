@@ -293,7 +293,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper clearfix">
         <div class="ttd-right">
-            <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
             <p><strong>Hormat Saya,</strong></p>
 
             {{-- <div class="materai">Materai<br>10.000</div> --}}

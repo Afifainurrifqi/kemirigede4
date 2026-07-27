@@ -86,7 +86,7 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Kemirigede, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+                <p>Kemirigede, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
                 <p>Saya yang menyatakan,</p>
                 <div style="height: 45px;"></div>
                 <p class="nama"><u>{{ $data->nama_deklaran ?? '...........................................' }}</u></p>

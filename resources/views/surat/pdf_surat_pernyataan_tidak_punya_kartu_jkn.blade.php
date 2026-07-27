@@ -206,7 +206,7 @@
         $tanggalLahir = !empty($data->tanggal_lahir)
             ? \Carbon\Carbon::parse($data->tanggal_lahir)
                 ->locale('id')
-                ->translatedFormat('d F Y')
+                 ->locale('id')->translatedFormat('d F Y')
             : '-';
 
         $namaPemohon = !empty($data->nama)

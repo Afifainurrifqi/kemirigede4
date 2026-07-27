@@ -197,18 +197,18 @@
 
 <body>
 @php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
     $tanggalPernyataan = !empty($data->tanggal_pernyataan)
-        ? \Carbon\Carbon::parse($data->tanggal_pernyataan)->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_pernyataan) ->locale('id')->translatedFormat('d F Y')
         : '................................';
 
     $tanggalHilang = !empty($data->tanggal_hilang)
-        ? \Carbon\Carbon::parse($data->tanggal_hilang)->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_hilang) ->locale('id')->translatedFormat('d F Y')
         : '................................';
 
     $tanggalLahir = !empty($data->tanggal_lahir)
-        ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
         : '';
 @endphp
 

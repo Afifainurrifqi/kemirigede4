@@ -446,7 +446,7 @@
     <p>
         4. Jangka Waktu pemberlakuan surat Rekomendasi sampai dengan
         <strong>
-            {{ !empty($data->jangka_waktu) ? \Carbon\Carbon::parse($data->jangka_waktu)->translatedFormat('d F Y') : '-' }}
+            {{ !empty($data->jangka_waktu) ? \Carbon\Carbon::parse($data->jangka_waktu) ->locale('id')->translatedFormat('d F Y') : '-' }}
         </strong>
     </p>
 
@@ -481,7 +481,7 @@
     <p>
         Masa berlaku surat rekomendasi sampai dengan
         <strong>
-            {{ !empty($data->jangka_waktu) ? \Carbon\Carbon::parse($data->jangka_waktu)->translatedFormat('d F Y') : '-' }}
+            {{ !empty($data->jangka_waktu) ? \Carbon\Carbon::parse($data->jangka_waktu) ->locale('id')->translatedFormat('d F Y') : '-' }}
         </strong>
     </p>
 
@@ -496,7 +496,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+                    <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
                 </td>
             </tr>
 

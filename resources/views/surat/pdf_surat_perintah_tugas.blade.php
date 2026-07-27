@@ -303,7 +303,7 @@
             $tanggalSurat = \Carbon\Carbon::parse($sumberTanggal)
                 ->timezone('Asia/Jakarta')
                 ->locale('id')
-                ->translatedFormat('d F Y');
+                 ->locale('id')->translatedFormat('d F Y');
 
             $tahunSurat = \Carbon\Carbon::parse($sumberTanggal)
                 ->timezone('Asia/Jakarta')
@@ -311,7 +311,7 @@
         } catch (\Throwable $e) {
             $tanggalSurat = now('Asia/Jakarta')
                 ->locale('id')
-                ->translatedFormat('d F Y');
+                 ->locale('id')->translatedFormat('d F Y');
 
             $tahunSurat = now('Asia/Jakarta')->format('Y');
         }
@@ -430,7 +430,7 @@
                         $data->tanggal_kegiatan
                     )
                         ->locale('id')
-                        ->translatedFormat('d F Y');
+                         ->locale('id')->translatedFormat('d F Y');
                 } catch (\Throwable $e) {
                     $tanggalKegiatan =
                         (string) $data->tanggal_kegiatan;

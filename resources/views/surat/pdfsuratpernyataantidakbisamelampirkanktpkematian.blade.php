@@ -225,7 +225,7 @@
         <tr>
             <td>Tempat, Tanggal Lahir</td>
             <td>: {{ $data->tempat_lahir_pelapor ?? '' }},
-                {{ isset($data->tanggal_lahir_pelapor) ? \Carbon\Carbon::parse($data->tanggal_lahir_pelapor)->translatedFormat('d F Y') : '...........................................' }}
+                {{ isset($data->tanggal_lahir_pelapor) ? \Carbon\Carbon::parse($data->tanggal_lahir_pelapor) ->locale('id')->translatedFormat('d F Y') : '...........................................' }}
             </td>
         </tr>
         <tr>
@@ -255,7 +255,7 @@
         <tr>
             <td>Nama / Tanggal Lahir</td>
             <td>: {{ $data->nama_jenazah ?? '...........................................' }} /
-                {{ isset($data->tanggal_lahir_jenazah) ? \Carbon\Carbon::parse($data->tanggal_lahir_jenazah)->translatedFormat('d F Y') : '...........................................' }}
+                {{ isset($data->tanggal_lahir_jenazah) ? \Carbon\Carbon::parse($data->tanggal_lahir_jenazah) ->locale('id')->translatedFormat('d F Y') : '...........................................' }}
             </td>
         </tr>
         <tr>
@@ -280,7 +280,7 @@
     <!-- TANDA TANGAN -->
     <div class="ttd-wrapper" style="margin-top: 35px;">
         <div class="ttd-right">
-            <p>Blitar, {{ now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y') }}</p>
+            <p>Blitar, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}</p>
             <p><strong>Yang membuat pernyataan</strong></p>
 
             {{-- <div class="ttd-img-wrapper">

@@ -164,14 +164,14 @@
 <body>
 
 @php
-    $tanggalSurat = now('Asia/Jakarta')->translatedFormat('d F Y');
+    $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
     $tanggalLahir = !empty($data->tanggal_lahir)
-        ? \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
         : '...........................................';
 
     $tanggalKegiatan = !empty($data->tanggal_kegiatan)
-        ? \Carbon\Carbon::parse($data->tanggal_kegiatan)->translatedFormat('d F Y')
+        ? \Carbon\Carbon::parse($data->tanggal_kegiatan) ->locale('id')->translatedFormat('d F Y')
         : '...........................................';
 @endphp
 

@@ -262,7 +262,7 @@
         </div>
 
         <div class="header-right">
-            Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}<br><br>
+            Blitar, {{ now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y') }}<br><br>
             Kepada Yth.<br>
             Kepala Dinas Kependudukan dan Pencatatan Sipil<br>
             Kabupaten Blitar<br>
@@ -294,7 +294,7 @@
             <td>
                 : {{ $data->ttl_tempat ?? '' }} /
                 {{ !empty($data->ttl_tanggal)
-                    ? \Carbon\Carbon::parse($data->ttl_tanggal)->translatedFormat('d F Y')
+                    ? \Carbon\Carbon::parse($data->ttl_tanggal) ->locale('id')->translatedFormat('d F Y')
                     : '...........................................' }}
             </td>
         </tr>
@@ -327,7 +327,7 @@
         <tr>
             <td class="ttd-spacer"></td>
             <td class="ttd-cell">
-                <p>Blitar, {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
+                <p>Blitar, {{ now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y') }}</p>
                 <p>Hormat Saya,</p>
 
                 {{-- <div class="ttd-img-wrapper">

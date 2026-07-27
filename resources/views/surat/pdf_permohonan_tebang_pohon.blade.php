@@ -269,8 +269,8 @@
 
     @php
         $tanggalSurat = !empty($data->tanggal_surat)
-            ? \Carbon\Carbon::parse($data->tanggal_surat)->translatedFormat('d F Y')
-            : now('Asia/Jakarta')->translatedFormat('d F Y');
+            ? \Carbon\Carbon::parse($data->tanggal_surat) ->locale('id')->translatedFormat('d F Y')
+            : now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
         $nomorSurat = $data->nomor_surat ?? '522/ / 409.41.2/' . now('Asia/Jakarta')->year;
 
