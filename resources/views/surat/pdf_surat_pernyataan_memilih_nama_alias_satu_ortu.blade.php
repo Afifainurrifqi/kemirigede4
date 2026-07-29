@@ -293,9 +293,9 @@
             <p><strong>Saya yang menyatakan,</strong></p>
 
             {{-- <div class="materai">Materai<br>10.000</div> --}}
-
-            <div class="signature-line"></div>
 <br><br><br><br>
+            <div class="signature-line"></div>
+
             <p>
                 <strong>
                     ( {{ $data->nama_menyatakan ?? $data->nama ?? '...........................................' }} )
