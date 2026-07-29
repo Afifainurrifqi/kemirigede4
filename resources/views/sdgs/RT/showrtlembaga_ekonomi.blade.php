@@ -13,7 +13,7 @@
                         {{-- <button type="button" class="btn mb-1 btn-warning"
                             onclick="window.location='{{ route('rtlembaga_ekonomi.index') }}'">Kembali
                         </button>
-                        <br><br><br><br><br><br> --}}
+                        <br><br><br><br> --}}
                         <div class="form-validation">
                             <form class="form-valide" action="{{ route('rtlembaga_ekonomi.update') }}" method="POST">
                                 @csrf

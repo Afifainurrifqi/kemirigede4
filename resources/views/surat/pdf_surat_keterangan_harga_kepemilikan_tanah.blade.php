@@ -468,7 +468,7 @@
                 {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
-                <br><br><br><br><br><br>
+                <br><br><br><br>
 
                 <p class="nama-kades">Hari Purnawan, S.Sos.</p>
 

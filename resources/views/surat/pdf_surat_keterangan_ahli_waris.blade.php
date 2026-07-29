@@ -379,7 +379,7 @@
 
                     {{-- Jarak tanda tangan dioptimalkan dengan margin murni --}}
                     <div style="margin-top: 45px;"></div>
-                     <br><br><br><br><br><br><br>
+                     <br><br><br><br><br>
 
                     <p class="nama-kades">Hari Purnawan, S.Sos.</p>
                 </td>

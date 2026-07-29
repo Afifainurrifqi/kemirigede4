@@ -681,7 +681,7 @@
             @endif
         </div> --}}
 
-        <br><br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br>
 
         <div class="nama-kades">
             {{ $namaKades }}

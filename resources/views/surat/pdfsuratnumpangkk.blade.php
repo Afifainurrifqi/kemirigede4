@@ -310,7 +310,7 @@
             {{-- <div class="materai">Materai<br>10.000</div> --}}
 
             <div class="signature-line"></div>
-            <br><br><br><br><br><br>
+            <br><br><br><br>
 
             <p>
                 <strong>

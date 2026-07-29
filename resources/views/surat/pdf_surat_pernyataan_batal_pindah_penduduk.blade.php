@@ -274,7 +274,7 @@
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
 
-<br><br><br><br><br><br>
+<br><br><br><br>
                 <p class="nama">
                     <u>{{ $data->nama ?? '...........................................' }}</u>
                 </p>

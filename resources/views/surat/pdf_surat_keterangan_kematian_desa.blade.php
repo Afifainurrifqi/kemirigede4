@@ -346,7 +346,7 @@
                 </div> --}}
                 --}}
 
-                <br><br><br><br><br><br>
+                <br><br><br><br>
 
                 <p class="nama">
                     <u>Hari Purnawan, S.Sos.</u>

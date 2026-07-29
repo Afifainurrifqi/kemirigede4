@@ -398,7 +398,7 @@
             </div>
             --}}
 
-            <br><br><br><br><br><br>
+            <br><br><br><br>
 
             {{-- <div class="materai">Materai<br>10.000</div> --}}
 

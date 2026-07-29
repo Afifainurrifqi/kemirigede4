@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <h1 class="card-title">Form Tambah Penduduk</h1>
                         {{-- <button type="button" class="btn mb-1 btn-warning" onclick="window.location='{{ url('datapenduduk') }}'">Kembali</button> --}}
-                        <br><br><br><br><br><br>
+                        <br><br><br><br>
                         <div class="form-validation">
                             <form class="form-valide" action="{{ route('datapenduduk.store') }}" method="POST" id="form-tambah-penduduk">
                                 @csrf

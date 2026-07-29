@@ -14,7 +14,7 @@
                         {{-- <button type="button" class="btn mb-1 btn-warning"
                             onclick="window.location='{{ route('rt_keamanan.index') }}'">Kembali
                         </button>
-                        <br><br><br><br><br><br> --}}
+                        <br><br><br><br> --}}
                         <div class="form-validation">
                             <form class="form-valide" action="{{ route('rt_keamanan.update') }}" method="POST">
                                 @csrf
