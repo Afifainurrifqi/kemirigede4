@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Keterangan Pengantar SKCK</title>
@@ -198,10 +199,10 @@
 
 <body>
     @php
-        $tanggalSurat = now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
+        $tanggalSurat = now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y');
 
         $tanggalLahir = !empty($surat->tanggal_lahir)
-            ? \Carbon\Carbon::parse($surat->tanggal_lahir) ->locale('id')->translatedFormat('d F Y')
+            ? \Carbon\Carbon::parse($surat->tanggal_lahir)->locale('id')->translatedFormat('d F Y')
             : '...........................................';
     @endphp
 
@@ -337,10 +338,10 @@
                 {{-- <div class="ttd-img-wrapper">
                     <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="Tanda Tangan">
                 </div> --}}
-<br><br><br>
+                <br><br><br><br><br><br><br>
 
                 <div class="nama-ttd">Hari Purnawan, S.Sos </div>
-{{--
+                {{--
                 <div class="qr-section">
                     <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                     <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>
@@ -357,4 +358,5 @@
         ___________________
     </div>
 </body>
+
 </html>

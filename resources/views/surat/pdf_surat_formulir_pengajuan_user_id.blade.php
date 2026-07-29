@@ -75,7 +75,7 @@
             <td width="55%"></td>
             <td width="45%" style="text-align: center;">
                 Kemirigede, {{ now('Asia/Jakarta')->locale('id') ->locale('id')->translatedFormat('d F Y') }}<br>
-                Yang Mengajukan,<br><br><br><br>
+                Yang Mengajukan,<br><br><br><br><br><br><br>
                 <u><strong>{{ $data->nama_pemohon ?? '...........................................' }}</strong></u><br>
                 NIK. {{ $data->nik_pemohon ?? '...........................................' }}
             </td>

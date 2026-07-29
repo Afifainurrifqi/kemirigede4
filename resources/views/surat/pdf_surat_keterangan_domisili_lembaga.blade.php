@@ -305,7 +305,7 @@
                 <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD">
             </div> --}}
 
-                <br><br><br>
+                <br><br><br><br><br><br>
 
                 <p class="nama">
                     <u>Hari Purnawan, S.Sos.</u>

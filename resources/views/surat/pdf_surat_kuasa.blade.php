@@ -434,7 +434,7 @@
         {{-- <div class="ttd-img-wrapper">
             <img src="{{ public_path('assets/images/ttd.png') }}" class="ttd-img" alt="TTD Kepala Desa">
         </div> --}}
-<br><br><br>
+<br><br><br><br><br><br>
         <p class="nama-kades">Hari Purnawan, S.Sos.</p>
 
         <div class="barcode">

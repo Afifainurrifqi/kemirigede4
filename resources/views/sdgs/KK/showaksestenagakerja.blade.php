@@ -12,7 +12,7 @@
                         {{-- <button type="button" class="btn mb-1 btn-warning"
                             onclick="window.location='{{ route('aksestenagakerja.index') }}'">Kembali
                         </button>
-                        <br><br><br> --}}
+                        <br><br><br><br><br><br> --}}
                         <div class="form-validation">
                             <form class="form-valide" action="{{ route('aksestenagakerja.update') }}" method="POST">
                                 @csrf

@@ -390,10 +390,12 @@
         <tr>
             <td class="ttd-left">
                 <p class="saksi-title">Saksi I,</p>
+                <br><br><br><br><br><br>
                 <div class="saksi-name uppercase">{{ $data->nama_saksi_1 ?? '' }}</div>
                 <div class="saksi-nik">NIK: {{ $data->nik_saksi_1 ?? '' }}</div>
 
                 <p class="saksi-title">Saksi II,</p>
+                <br><br><br><br><br><br>
                 <div class="saksi-name uppercase">{{ $data->nama_saksi_2 ?? '' }}</div>
                 <div class="saksi-nik">NIK: {{ $data->nik_saksi_2 ?? '' }}</div>
 
@@ -411,7 +413,7 @@
                 {{-- <div class="materai-space">
                 Meterai 10.000
             </div> --}}
-                <br><br><br>
+                <br><br><br><br><br><br>
 
                 <div class="nama-pernyataan uppercase">
                     {{ $data->nama ?? '' }}

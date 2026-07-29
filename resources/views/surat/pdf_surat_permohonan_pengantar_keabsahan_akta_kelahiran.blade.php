@@ -336,7 +336,7 @@
 
 
                 {{-- <div class="materai">Materai<br>10.000</div> --}}
-                <br><br><br>
+                <br><br><br><br><br><br>
                 <p class="nama">
                     <u>{{ $data->nama ?? '...........................................' }}</u>
                 </p>

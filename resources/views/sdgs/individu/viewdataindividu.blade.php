@@ -11,7 +11,7 @@
                         {{-- <button type="button" class="btn mb-1 btn-warning"
                             onclick="window.location='{{ url('/sdgs/individu/dataindividu') }}'">Kembali
                         </button>
-                        <br><br><br> --}}
+                        <br><br><br><br><br><br> --}}
                         <div class="form-validation">
 
                             <form class="form-valide" action="{{ route('individu.update') }}" method="POST">
