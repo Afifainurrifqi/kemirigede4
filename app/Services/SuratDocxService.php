@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\Concerns\BuildsHybridDocx;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -11,7 +12,7 @@ use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use App\Services\Concerns\BuildsHybridDocx;
+
 
 class SuratDocxService
 {
