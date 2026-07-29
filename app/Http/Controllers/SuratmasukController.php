@@ -123,10 +123,10 @@ class SuratmasukController extends Controller
                         ->getCollection(),
                     'semua' => $notaSemua->count(),
                     'surat_keluar' => $notaSemua
-                        ->reject(fn ($item) => $this->sudahMasukArsip($item))
+                        ->reject(fn($item) => $this->sudahMasukArsip($item))
                         ->count(),
                     'arsip' => $notaSemua
-                        ->filter(fn ($item) => $this->sudahMasukArsip($item))
+                        ->filter(fn($item) => $this->sudahMasukArsip($item))
                         ->count(),
                 ],
 
@@ -135,10 +135,10 @@ class SuratmasukController extends Controller
                         ->getCollection(),
                     'semua' => $bbmSemua->count(),
                     'surat_keluar' => $bbmSemua
-                        ->reject(fn ($item) => $this->sudahMasukArsip($item))
+                        ->reject(fn($item) => $this->sudahMasukArsip($item))
                         ->count(),
                     'arsip' => $bbmSemua
-                        ->filter(fn ($item) => $this->sudahMasukArsip($item))
+                        ->filter(fn($item) => $this->sudahMasukArsip($item))
                         ->count(),
                 ],
 
@@ -410,7 +410,7 @@ class SuratmasukController extends Controller
             return redirect()->route('surat.rekomendasi_bbm.index');
         }
 
-         if ($kategori === 'pernyataan' && $jenis_form === 'surat_perintah_tugas') {
+        if ($kategori === 'pernyataan' && $jenis_form === 'surat_perintah_tugas') {
             return redirect()->route('surat.perintah_tugas.index');
         }
 
@@ -452,7 +452,21 @@ class SuratmasukController extends Controller
             return redirect()->route('surat.domisili_warga.index');
         }
 
-        if ($kategori === 'adminduk' && $jenis_form === 'pernyataan_mengizinkan_ikut_kk_suami-istri-keluarga') {
+        /*
+|--------------------------------------------------------------------------
+| Surat Pernyataan Mengizinkan Ikut KK Suami, Istri, atau Keluarga
+|--------------------------------------------------------------------------
+*/
+
+        if (
+            $kategori === 'adminduk' &&
+            in_array($jenis_form, [
+                'surat_pernyataan_mengizinkan_ikut_kk_suami_istri_keluarga',
+                'pernyataan_mengizinkan_ikut_kk_suami_istri_keluarga',
+                'surat_mengizinkan_ikut_kk_suami_istri_keluarga',
+                'mengizinkan_ikut_kk_suami_istri_keluarga',
+            ], true)
+        ) {
             return redirect()->route('surat.izinkk.index');
         }
 

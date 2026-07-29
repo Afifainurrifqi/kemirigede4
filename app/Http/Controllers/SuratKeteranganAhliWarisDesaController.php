@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Models\status;
 use App\Models\surat_keterangan_ahli_waris_desa;
 use Illuminate\Http\Request;
 
@@ -7,13 +9,13 @@ class SuratKeteranganAhliWarisDesaController extends Controller
 {
     public function index()
     {
-        $status = \App\Models\Status::all();
+        $status = Status::all();
         return view('surat.surat_keterangan_ahli_waris_desa', compact('status'));
     }
 
     public function user_ahliwaris_desa()
     {
-        $status = \App\Models\Status::all();
+        $status = Status::all();
         return view('surat.user_surat_keterangan_ahli_waris_desa', compact('status'));
     }
 
@@ -67,7 +69,7 @@ class SuratKeteranganAhliWarisDesaController extends Controller
 
     public function edit(surat_keterangan_ahli_waris_desa $surat)
     {
-        $status = \App\Models\Status::all();
+        $status = status::all();
         return view('surat.edit_surat_keterangan_ahli_waris_desa', compact('surat', 'status'));
     }
 

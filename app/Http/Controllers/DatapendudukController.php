@@ -190,21 +190,20 @@ class DatapendudukController extends Controller
         ));
     }
 
-    public function lookupByNik($nik)
+    public function lookupByNik(string $nik)
     {
-        $nik = preg_replace('/\D/', '', trim($nik));
+        $nik = preg_replace('/\D/', '', $nik);
 
-        if (!preg_match('/^\d{16}$/', $nik)) {
+        if (strlen($nik) !== 16) {
             return response()->json([
                 'success' => false,
-                'message' => 'NIK harus terdiri dari 16 digit.',
+                'message' => 'NIK harus terdiri atas 16 digit.',
             ], 422);
         }
 
         $penduduk = Datapenduduk::with([
             'agama',
             'pekerjaan',
-            'pendidikan',
             'status',
             'detailkk.kk',
         ])
@@ -220,110 +219,37 @@ class DatapendudukController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | Pekerjaan
+    | Normalisasi jenis kelamin
     |--------------------------------------------------------------------------
+    |
+    | Mendukung data:
+    | 1, 2, L, P, LK, PR, Laki-laki, dan Perempuan.
+    |
     */
 
-        $pekerjaan = optional($penduduk->pekerjaan)->nama
-            ?? optional($penduduk->pekerjaan)->nama_pekerjaan
-            ?? optional($penduduk->pekerjaan)->pekerjaan
-            ?? '';
-
-        /*
-    |--------------------------------------------------------------------------
-    | Pendidikan
-    |--------------------------------------------------------------------------
-    */
-
-        $pendidikan = optional($penduduk->pendidikan)->nama
-            ?? optional($penduduk->pendidikan)->nama_pendidikan
-            ?? optional($penduduk->pendidikan)->pendidikan
-            ?? optional($penduduk->pendidikan)->jenjang
-            ?? '';
-
-        /*
-    |--------------------------------------------------------------------------
-    | Agama
-    |--------------------------------------------------------------------------
-    */
-
-        $agama = optional($penduduk->agama)->nama
-            ?? optional($penduduk->agama)->agama
-            ?? optional($penduduk->agama)->nama_agama
-            ?? '';
-
-        /*
-    |--------------------------------------------------------------------------
-    | Status perkawinan
-    |--------------------------------------------------------------------------
-    */
-
-        $statusPerkawinan = optional($penduduk->status)->nama
-            ?? optional($penduduk->status)->status
-            ?? optional($penduduk->status)->nama_status
-            ?? '';
-
-        /*
-    |--------------------------------------------------------------------------
-    | Nomor KK
-    |--------------------------------------------------------------------------
-    */
-
-        $nokk = optional(
-            optional($penduduk->detailkk)->kk
-        )->nokk ?? '';
-
-        /*
-    |--------------------------------------------------------------------------
-    | Jenis kelamin
-    |--------------------------------------------------------------------------
-    */
-
-        $jenisKelaminRaw = $penduduk->getRawOriginal('jenis_kelamin')
-            ?? $penduduk->jenis_kelamin
-            ?? $penduduk->jk
-            ?? $penduduk->kelamin
-            ?? '';
-
-        $jenisKelaminNormal = strtoupper(
-            preg_replace(
-                '/[^A-Za-z0-9]/',
-                '',
-                trim((string) $jenisKelaminRaw)
-            )
+        $jenisKelaminRaw = strtolower(
+            trim((string) ($penduduk->jenis_kelamin ?? ''))
         );
 
-        if (
-            in_array($jenisKelaminNormal, [
-                '1',
-                'L',
-                'LK',
-                'LAKI',
-                'LAKILAKI',
-                'PRIA',
-                'MALE',
-            ], true)
-        ) {
-            $jenisKelamin = 'Laki-laki';
-        } elseif (
-            in_array($jenisKelaminNormal, [
-                '0',
-                '2',
-                'P',
-                'PR',
-                'PEREMPUAN',
-                'WANITA',
-                'FEMALE',
-            ], true)
-        ) {
-            $jenisKelamin = 'Perempuan';
-        } else {
-            $jenisKelamin = '';
-        }
+        $jenisKelamin = match ($jenisKelaminRaw) {
+            '1',
+            'l',
+            'lk',
+            'laki-laki',
+            'laki laki',
+            'lakilaki' => 'Laki-Laki',
+
+            '2',
+            'p',
+            'pr',
+            'perempuan' => 'Perempuan',
+
+            default => '',
+        };
 
         /*
     |--------------------------------------------------------------------------
-    | Tanggal lahir
+    | Format tanggal lahir
     |--------------------------------------------------------------------------
     */
 
@@ -331,7 +257,7 @@ class DatapendudukController extends Controller
 
         if (!empty($penduduk->tanggal_lahir)) {
             try {
-                $tanggalLahir = \Carbon\Carbon::parse(
+                $tanggalLahir = Carbon::parse(
                     $penduduk->tanggal_lahir
                 )->format('Y-m-d');
             } catch (\Throwable $e) {
@@ -339,52 +265,45 @@ class DatapendudukController extends Controller
             }
         }
 
+        /*
+    |--------------------------------------------------------------------------
+    | Nomor kartu keluarga
+    |--------------------------------------------------------------------------
+    */
+
+        $nokk = optional(
+            optional($penduduk->detailkk)->kk
+        )->nokk ?? '';
+
         return response()->json([
             'success' => true,
-
+            'message' => 'Data penduduk ditemukan.',
             'data' => [
+                'nik' => $penduduk->nik ?? '',
                 'nama' => $penduduk->nama ?? '',
-
                 'tempat_lahir' => $penduduk->tempat_lahir ?? '',
-
                 'tanggal_lahir' => $tanggalLahir,
-
                 'jenis_kelamin' => $jenisKelamin,
 
-                'pekerjaan' => trim((string) $pekerjaan),
+                'pekerjaan' => optional($penduduk->pekerjaan)->nama
+                    ?? optional($penduduk->pekerjaan)->pekerjaan
+                    ?? optional($penduduk->pekerjaan)->nama_pekerjaan
+                    ?? '',
 
-                'pendidikan' => trim((string) $pendidikan),
-
-                'agama' => trim((string) $agama),
-
-                'kewarganegaraan' => $penduduk->kewarganegaraan
-                    ?? $penduduk->warganegara
-                    ?? 'WNI',
+                'agama' => optional($penduduk->agama)->nama
+                    ?? optional($penduduk->agama)->agama
+                    ?? optional($penduduk->agama)->nama_agama
+                    ?? '',
 
                 'alamat' => $penduduk->alamat ?? '',
-
-                'rt' => $penduduk->RT
-                    ?? $penduduk->rt
-                    ?? '',
-
-                'rw' => $penduduk->RW
-                    ?? $penduduk->rw
-                    ?? '',
-
+                'rt' => $penduduk->RT ?? $penduduk->rt ?? '',
+                'rw' => $penduduk->RW ?? $penduduk->rw ?? '',
                 'nokk' => $nokk,
 
-                'status_perkawinan' => trim(
-                    (string) $statusPerkawinan
-                ),
-            ],
-
-            /*
-         * Debug sementara. Hapus setelah berhasil.
-         */
-            'debug' => [
-                'jenis_kelamin_asli' => $jenisKelaminRaw,
-                'jenis_kelamin_normal' => $jenisKelaminNormal,
-                'jenis_kelamin_hasil' => $jenisKelamin,
+                'status_perkawinan' => optional($penduduk->status)->nama
+                    ?? optional($penduduk->status)->status
+                    ?? optional($penduduk->status)->nama_status
+                    ?? '',
             ],
         ]);
     }
