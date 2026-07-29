@@ -9,7 +9,7 @@ class SuratKeteranganAhliWarisDesaController extends Controller
 {
     public function index()
     {
-        $status = Status::all();
+        $status = status::all();
         return view('surat.surat_keterangan_ahli_waris_desa', compact('status'));
     }
 
@@ -69,7 +69,7 @@ class SuratKeteranganAhliWarisDesaController extends Controller
 
     public function edit(surat_keterangan_ahli_waris_desa $surat)
     {
-        $status = status::all();
+        $status = Status::all();
         return view('surat.edit_surat_keterangan_ahli_waris_desa', compact('surat', 'status'));
     }
 

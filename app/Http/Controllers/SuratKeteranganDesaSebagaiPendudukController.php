@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\status;
 use App\Models\SuratKeteranganDesaSebagaiPenduduk;
 use Illuminate\Http\Request;
 
@@ -9,13 +10,13 @@ class SuratKeteranganDesaSebagaiPendudukController extends Controller
 {
     public function index() // Admin
     {
-        $status = \App\Models\Status::all();
+        $status = status::all();
         return view('surat.surat_keterangan_desa_sebagai_penduduk', compact('status'));
     }
 
     public function userForm()
     {
-        $status = \App\Models\Status::all();
+        $status = status::all();
         return view('surat.user_surat_keterangan_desa_sebagai_penduduk', compact('status'));
     }
 

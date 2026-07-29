@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\pekerjaan;
+use App\Models\status;
 use App\Models\surat_keterangan_penghasilan;
 use Illuminate\Http\Request;
 
@@ -9,15 +11,15 @@ class SuratKeteranganPenghasilanController extends Controller
 {
     public function index()
     {
-        $status = \App\Models\Status::all();
-        $pekerjaan = \App\Models\Pekerjaan::all();
+        $status = status::all();
+        $pekerjaan = pekerjaan::all();
         return view('surat.surat_keterangan_penghasilan', compact('status', 'pekerjaan'));
     }
 
     public function user_penghasilan()
     {
-        $status = \App\Models\Status::all();
-        $pekerjaan = \App\Models\Pekerjaan::all();
+        $status = Status::all();
+        $pekerjaan = Pekerjaan::all();
         return view('surat.user_surat_keterangan_penghasilan', compact('status', 'pekerjaan'));
     }
 
@@ -93,8 +95,8 @@ class SuratKeteranganPenghasilanController extends Controller
 
     public function edit(surat_keterangan_penghasilan $surat)
     {
-        $status = \App\Models\Status::all();
-        $pekerjaan = \App\Models\Pekerjaan::all();
+        $status = Status::all();
+        $pekerjaan = Pekerjaan::all();
         return view('surat.edit_surat_keterangan_penghasilan', compact('surat', 'status', 'pekerjaan'));
     }
 

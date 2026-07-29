@@ -6,8 +6,11 @@ use App\Models\suratmasuk;
 use App\Http\Requests\StoresuratmasukRequest;
 use App\Http\Requests\UpdatesuratmasukRequest;
 use App\Models\nama_alias_ortu;
+use App\Models\surat_formulir_pengajuan_user_id;
 use App\Models\surat_keterangan_ahli_waris;
+use App\Models\surat_keterangan_ahli_waris_desa;
 use App\Models\surat_keterangan_desa_pernah_menikah;
+use App\Models\surat_keterangan_ghoib;
 use App\Models\surat_keterangan_harga_kepemilikan_tanah;
 use App\Models\surat_keterangan_kehilangan;
 use App\Models\surat_keterangan_kematian_desa;
@@ -16,8 +19,10 @@ use App\Models\surat_keterangan_penghasilan;
 
 use App\Models\surat_permohonan_pembukaan_rekening;
 use App\Models\surat_permohonan_pengantar_keabsahan_akta_kelahiran;
+use App\Models\surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak;
 use App\Models\surat_pernyataan_akta_barcode_nomor_sama;
 use App\Models\surat_pernyataan_anak_seorang_nama_ibu;
+use App\Models\surat_pernyataan_batal_pindah_penduduk;
 use App\Models\surat_pernyataan_beda_nama_buku_nikah;
 use App\Models\surat_pernyataan_belum_akta;
 use App\Models\surat_pernyataan_dan_jaminan;
@@ -29,6 +34,7 @@ use App\Models\surat_pernyataan_pembetulan_data_tidak_merubah_lagi;
 use App\Models\surat_pernyataan_perubahan_data_pendidikan;
 use App\Models\surat_pernyataan_tidak_bisa_melampirkan_ktp_kematian;
 use App\Models\surat_sptjm_kematian;
+use App\Models\surat_sptjm_suami_istri;
 use App\Models\SuratIjinKeluarga;
 use App\Models\SuratKeteranganDesaMiskin;
 use App\Models\SuratKeteranganDesaSebagaiPenduduk;
@@ -210,16 +216,16 @@ class SuratmasukController extends Controller
             surat_pernyataan_pembetulan_data_tidak_merubah_lagi::class,
             surat_pernyataan_mengizinkan_ikut_kk::class,
             surat_permohonan_pengantar_keabsahan_akta_kelahiran::class,
-            \App\Models\surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak::class,
-            \App\Models\surat_pernyataan_batal_pindah_penduduk::class,
-            \App\Models\surat_formulir_pengajuan_user_id::class,
-            \App\Models\surat_sptjm_suami_istri::class,
+            surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak::class,
+            surat_pernyataan_batal_pindah_penduduk::class,
+            surat_formulir_pengajuan_user_id::class,
+            surat_sptjm_suami_istri::class,
             surat_keterangan_numpang_nikah::class,
             SuratKeteranganUsaha::class,
             SuratKeteranganDesaMiskin::class,
             SuratKeteranganMiskinSkm::class,
-            \App\Models\surat_keterangan_ahli_waris_desa::class,
-            \App\Models\surat_keterangan_ghoib::class,
+            surat_keterangan_ahli_waris_desa::class,
+            surat_keterangan_ghoib::class,
             surat_keterangan_penghasilan::class,
             SuratKeteranganDesaSebagaiPenduduk::class,
             SuratKeteranganDomisiliLembaga::class,
@@ -935,7 +941,7 @@ class SuratmasukController extends Controller
         }
 
         if ($jenis === 'surat_keterangan_ghoib' || $jenis === 'ghoib') {
-            $data = \App\Models\surat_keterangan_ghoib::findOrFail($id);
+            $data = surat_keterangan_ghoib::findOrFail($id);
 
             $pdf = Pdf::loadView('surat.pdf_surat_keterangan_ghoib', compact('data'))
                 ->setPaper('A4', 'portrait');
@@ -964,7 +970,7 @@ class SuratmasukController extends Controller
             $jenis === 'ahliwarisdesa' ||
             $jenis === 'suratketeranganahliwarisdesa'
         ) {
-            $data = \App\Models\surat_keterangan_ahli_waris_desa::findOrFail($id);
+            $data = surat_keterangan_ahli_waris_desa::findOrFail($id);
 
             $pdf = Pdf::loadView('surat.pdf_ahli_waris_desa', compact('data'))
                 ->setPaper('A4', 'portrait');
@@ -1026,7 +1032,7 @@ class SuratmasukController extends Controller
             $jenis === 'surat_sptjm_suami_istri' ||
             $jenis === 'sptjm_suami_istri'
         ) {
-            $data = \App\Models\surat_sptjm_suami_istri::findOrFail($id);
+            $data = surat_sptjm_suami_istri::findOrFail($id);
             $pdf = Pdf::loadView('surat.pdf_surat_sptjm_suami_istri', compact('data'))
                 ->setPaper('A4', 'portrait');
 
@@ -1061,7 +1067,7 @@ class SuratmasukController extends Controller
             $jenis === 'surat_pernyataan_batal_pindah_penduduk' ||
             $jenis === 'pernyataan_batal_pindah_penduduk'
         ) {
-            $data = \App\Models\surat_pernyataan_batal_pindah_penduduk::findOrFail($id);
+            $data = surat_pernyataan_batal_pindah_penduduk::findOrFail($id);
             $pdf = Pdf::loadView('surat.pdf_surat_pernyataan_batal_pindah_penduduk', compact('data'))
                 ->setPaper('A4', 'portrait');
 
@@ -1073,7 +1079,7 @@ class SuratmasukController extends Controller
             $jenis === 'surat_formulir_pengajuan_user_id' ||
             $jenis === 'formulir_pengajuan_user_id'
         ) {
-            $data = \App\Models\surat_formulir_pengajuan_user_id::findOrFail($id);
+            $data = surat_formulir_pengajuan_user_id::findOrFail($id);
             $pdf = Pdf::loadView('surat.pdf_surat_formulir_pengajuan_user_id', compact('data'))
                 ->setPaper('A4', 'portrait');
 
@@ -1106,7 +1112,7 @@ class SuratmasukController extends Controller
             $jenis === 'surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak' ||
             $jenis === 'permohonan_pengantar_keabsahan_akta_kelahiran_anak'
         ) {
-            $data = \App\Models\surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak::findOrFail($id);
+            $data = surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak::findOrFail($id);
             $pdf = Pdf::loadView('surat.pdf_surat_permohonan_pengantar_keabsahan_akta_kelahiran_anak', compact('data'))
                 ->setPaper('A4', 'portrait');
 
@@ -1284,7 +1290,7 @@ class SuratmasukController extends Controller
         }
 
         if ($jenis === 'suratketeranganhargakepemilikantanah') {
-            $data = \App\Models\surat_keterangan_harga_kepemilikan_tanah::findOrFail($id);
+            $data = surat_keterangan_harga_kepemilikan_tanah::findOrFail($id);
             $pdf  = Pdf::loadView('surat.pdf_surat_keterangan_harga_kepemilikan_tanah', compact('data'))->setPaper('A4');
             $filename = Str::slug($data->nama ?? 'dokumen', '_');
             return $pdf->download('pdf_surat_keterangan_harga_kepemilikan_tanah_' . $filename . '.pdf');
