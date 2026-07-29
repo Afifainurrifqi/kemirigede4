@@ -120,7 +120,7 @@
     <div id="spinner" class="spinner"></div>
     <h1 id="title">Menyiapkan dokumen Word</h1>
     <p id="description">
-        Tampilan surat akan dipertahankan seperti PDF. Hanya nilai nomor surat yang dapat diedit.
+        Tampilan surat akan dipertahankan seperti PDF. Baris nomor surat tetap dapat diedit.
     </p>
 
     <div class="progress">
@@ -164,12 +164,39 @@
 
         function cleanText(value) {
             return String(value ?? '')
+                .replace(/\u00a0/g, ' ')
                 .replace(/\s+/g, ' ')
                 .trim();
         }
 
+        function compactText(value) {
+            return cleanText(value)
+                .replace(/\s+/g, '')
+                .replace(/：/g, ':');
+        }
+
+        function normalizeFontFamily(value) {
+            const family = cleanText(value).replace(/["']/g, '');
+
+            if (!family) {
+                return 'Times New Roman';
+            }
+
+            if (/times|serif/i.test(family)) {
+                return 'Times New Roman';
+            }
+
+            if (/arial|helvetica|sans/i.test(family)) {
+                return 'Arial';
+            }
+
+            return family;
+        }
+
         /**
-         * Kelompokkan item teks PDF berdasarkan posisi baseline.
+         * Mengelompokkan item teks PDF berdasarkan baseline.
+         * rawText digabung tanpa spasi tambahan agar teks terfragmentasi seperti
+         * "Nomo" + "r:" tetap terbaca sebagai "Nomor:".
          */
         function buildTextLines(textContent, viewport) {
             const lines = [];
@@ -190,20 +217,21 @@
                     7,
                     Math.hypot(transform[2], transform[3])
                 );
-
                 const width = Math.max(
                     1,
                     Number(item.width || 0) * viewport.scale
                 );
 
+                const tolerance = Math.max(3, fontHeight * 0.25);
                 let line = lines.find(existing =>
-                    Math.abs(existing.baselineY - baselineY) <= Math.max(3, fontHeight * 0.22)
+                    Math.abs(existing.baselineY - baselineY) <= tolerance
                 );
 
                 if (!line) {
                     line = {
                         baselineY,
                         top: baselineY - fontHeight,
+                        bottom: baselineY + Math.max(1, fontHeight * 0.12),
                         height: fontHeight,
                         items: [],
                     };
@@ -211,6 +239,10 @@
                 }
 
                 line.top = Math.min(line.top, baselineY - fontHeight);
+                line.bottom = Math.max(
+                    line.bottom,
+                    baselineY + Math.max(1, fontHeight * 0.12)
+                );
                 line.height = Math.max(line.height, fontHeight);
                 line.items.push({
                     raw: String(item.str),
@@ -218,143 +250,250 @@
                     x,
                     width,
                     top: baselineY - fontHeight,
+                    bottom: baselineY + Math.max(1, fontHeight * 0.12),
                     height: fontHeight,
+                    baselineY,
                     fontName: item.fontName,
                 });
             }
 
             return lines.map(line => {
                 line.items.sort((a, b) => a.x - b.x);
-                line.text = cleanText(line.items.map(item => item.text).join(' '));
+                line.rawText = line.items.map(item => item.raw).join('');
+                line.spacedText = cleanText(
+                    line.items.map(item => item.text).join(' ')
+                );
                 line.xMin = Math.min(...line.items.map(item => item.x));
                 line.xMax = Math.max(...line.items.map(item => item.x + item.width));
                 return line;
             });
         }
 
-        /**
-         * Cari baris nomor surat pada bagian atas halaman pertama.
-         */
-        function findNumberLine(lines, viewport) {
-            const strictPattern = /^\s*(nomor(?:\s+surat)?|no\.?|reg\.?\s*no)\s*:/i;
-            const loosePattern = /\b(nomor(?:\s+surat)?|reg\.?\s*no|no\.?)\s*:/i;
-
-            const candidates = lines
-                .filter(line => line.top > viewport.height * 0.06)
-                .filter(line => line.top < viewport.height * 0.48)
-                .map(line => {
-                    let score = 0;
-
-                    if (strictPattern.test(line.text)) score += 100;
-                    else if (loosePattern.test(line.text)) score += 35;
-
-                    if (/undang-undang|perpres|permendagri|pasal/i.test(line.text)) {
-                        score -= 120;
-                    }
-
-                    // Surat umumnya menempatkan nomor tepat setelah judul/kop.
-                    score += Math.max(0, 40 - (line.top / viewport.height) * 100);
-
-                    return { line, score };
-                })
-                .filter(candidate => candidate.score > 20)
-                .sort((a, b) => b.score - a.score || a.line.top - b.line.top);
-
-            return candidates[0]?.line ?? null;
-        }
-
-        /**
-         * Sisakan label "Nomor:" pada background, lalu hapus hanya nilainya.
-         */
-        function maskNumberValue(context, line, textContent, viewport) {
-            if (!line) return null;
-
-            const fullText = cleanText(line.text);
-            const colonIndex = fullText.indexOf(':');
-
-            if (colonIndex < 0) return null;
-
-            const editableText = cleanText(fullText.slice(colonIndex + 1));
-            if (editableText === '') return null;
-
+        function extractNumberParts(line) {
             let colonFound = false;
-            let editableX = null;
-            let selectedFontName = null;
-            let selectedFontHeight = line.height;
-
-            context.save();
-            context.fillStyle = '#ffffff';
+            const labelParts = [];
+            const valueParts = [];
 
             for (const item of line.items) {
-                const raw = item.raw;
-                const itemColonIndex = raw.indexOf(':');
+                const raw = String(item.raw).replace(/：/g, ':');
+                const colonIndex = raw.indexOf(':');
 
-                if (!colonFound && itemColonIndex >= 0) {
+                if (!colonFound && colonIndex >= 0) {
                     colonFound = true;
 
-                    const fraction = raw.length > 0
-                        ? (itemColonIndex + 1) / raw.length
-                        : 1;
+                    const before = raw.slice(0, colonIndex);
+                    const after = raw.slice(colonIndex + 1);
 
-                    const startX = item.x + item.width * fraction;
-                    editableX = startX + 2;
-                    selectedFontName = item.fontName;
-                    selectedFontHeight = item.height;
+                    if (cleanText(before)) {
+                        labelParts.push(before);
+                    }
 
-                    const remainingWidth = Math.max(
-                        0,
-                        (item.x + item.width) - startX
-                    );
-
-                    if (remainingWidth > 1) {
-                        context.fillRect(
-                            startX - 1,
-                            item.top - 2,
-                            remainingWidth + 4,
-                            item.height + 5
-                        );
+                    if (cleanText(after)) {
+                        valueParts.push(after);
                     }
 
                     continue;
                 }
 
                 if (colonFound) {
-                    if (editableX === null) editableX = item.x;
-                    if (selectedFontName === null) selectedFontName = item.fontName;
-                    selectedFontHeight = Math.max(selectedFontHeight, item.height);
-
-                    context.fillRect(
-                        item.x - 2,
-                        item.top - 2,
-                        item.width + 5,
-                        item.height + 5
-                    );
+                    valueParts.push(raw);
+                } else {
+                    labelParts.push(raw);
                 }
             }
 
-            context.restore();
+            if (!colonFound) {
+                return null;
+            }
 
-            if (!colonFound || editableX === null) return null;
+            const labelCompact = compactText(labelParts.join(''))
+                .toLowerCase()
+                .replace(/\.$/, '');
 
-            const fontFamily =
-                textContent.styles?.[selectedFontName]?.fontFamily
-                || 'Times New Roman';
+            let label = null;
+
+            if (/^nomor(?:surat)?$/.test(labelCompact)) {
+                label = 'Nomor :';
+            } else if (/^no$/.test(labelCompact)) {
+                label = 'No :';
+            } else if (/^reg\.?no$/.test(labelCompact)) {
+                label = 'Reg. No :';
+            }
+
+            if (!label) {
+                return null;
+            }
+
+            const value = cleanText(valueParts.join(' '));
+
+            if (!value) {
+                return null;
+            }
 
             return {
-                text: editableText,
-                xRatio: editableX / viewport.width,
-                yRatio: line.top / viewport.height,
-                fontSizePt: Math.max(7, selectedFontHeight / viewport.scale),
+                label,
+                value,
+                fullText: `${label} ${value}`,
+            };
+        }
+
+        /**
+         * Menentukan kandidat nomor surat di area atas halaman pertama.
+         */
+        function findNumberLine(lines, viewport) {
+            const candidates = lines
+                .map(line => ({
+                    line,
+                    parts: extractNumberParts(line),
+                }))
+                .filter(candidate => candidate.parts)
+                .filter(candidate => candidate.line.top > viewport.height * 0.045)
+                .filter(candidate => candidate.line.top < viewport.height * 0.52)
+                .map(candidate => {
+                    const { line, parts } = candidate;
+                    let score = 120;
+
+                    const normalized = compactText(parts.fullText).toLowerCase();
+
+                    if (/undang-?undang|perpres|permendagri|pasal/.test(normalized)) {
+                        score -= 200;
+                    }
+
+                    // Nomor utama umumnya berada dekat bagian judul/kop.
+                    score += Math.max(
+                        0,
+                        55 - (line.top / viewport.height) * 110
+                    );
+
+                    // Kandidat yang dekat pusat halaman lebih mungkin nomor surat utama.
+                    const centerDelta = Math.abs(
+                        ((line.xMin + line.xMax) / 2) - (viewport.width / 2)
+                    ) / viewport.width;
+
+                    if (centerDelta <= 0.18) {
+                        score += 35;
+                    }
+
+                    return { line, parts, score };
+                })
+                .sort((a, b) =>
+                    b.score - a.score || a.line.top - b.line.top
+                );
+
+            return candidates[0] ?? null;
+        }
+
+        /**
+         * Menghapus seluruh baris nomor dari background.
+         * Seluruh label dan nilai akan ditulis ulang di Word sebagai satu textbox.
+         * Ini mencegah masking memotong huruf terakhir pada kata "Nomor".
+         */
+        function maskWholeNumberLine(context, candidate, textContent, viewport) {
+            if (!candidate) {
+                return null;
+            }
+
+            const { line, parts } = candidate;
+            const horizontalPadding = Math.max(4, line.height * 0.22);
+            const verticalPadding = Math.max(3, line.height * 0.18);
+
+            const maskLeft = Math.max(0, line.xMin - horizontalPadding);
+            const maskTop = Math.max(0, line.top - verticalPadding);
+            const maskRight = Math.min(
+                viewport.width,
+                line.xMax + horizontalPadding
+            );
+            const maskBottom = Math.min(
+                viewport.height,
+                line.bottom + verticalPadding
+            );
+
+            context.save();
+            context.fillStyle = '#ffffff';
+            context.fillRect(
+                maskLeft,
+                maskTop,
+                Math.max(1, maskRight - maskLeft),
+                Math.max(1, maskBottom - maskTop)
+            );
+            context.restore();
+
+            const dominantItem = line.items.reduce((selected, item) =>
+                item.height > selected.height ? item : selected
+            , line.items[0]);
+
+            const sourceStyle = textContent.styles?.[dominantItem.fontName] ?? {};
+            const fontFamily = normalizeFontFamily(sourceStyle.fontFamily);
+            const fontSizePt = Math.max(
+                7,
+                dominantItem.height / viewport.scale
+            );
+
+            const centerDelta = Math.abs(
+                ((line.xMin + line.xMax) / 2) - (viewport.width / 2)
+            ) / viewport.width;
+
+            const isCentered = centerDelta <= 0.18;
+
+            let xRatio;
+            let widthRatio;
+            let alignment;
+
+            if (isCentered) {
+                // Gunakan area halaman yang lebar dan alignment center.
+                // Posisi horizontal tidak lagi bergantung pada lebar teks hasil ekstraksi.
+                xRatio = 0.05;
+                widthRatio = 0.90;
+                alignment = 'center';
+            } else {
+                xRatio = Math.max(0, line.xMin / viewport.width);
+                widthRatio = Math.min(
+                    1 - xRatio,
+                    Math.max(
+                        0.22,
+                        ((line.xMax - line.xMin) + line.height * 3) / viewport.width
+                    )
+                );
+                alignment = 'left';
+            }
+
+            return {
+                text: parts.fullText,
+                label: parts.label,
+                value: parts.value,
+                xRatio,
+                yRatio: Math.max(0, line.top / viewport.height),
+                baselineRatio: Math.max(0, line.baselineY / viewport.height),
+                widthRatio,
+                heightRatio: Math.max(
+                    0.018,
+                    (line.height * 1.65) / viewport.height
+                ),
+                fontSizePt,
+                lineHeightPt: Math.max(fontSizePt, fontSizePt * 1.05),
                 fontFamily,
+                alignment,
+                bold: false,
+                verticalCorrectionPt: -0.8,
+                detection: {
+                    rawText: line.rawText,
+                    spacedText: line.spacedText,
+                    maskLeftRatio: maskLeft / viewport.width,
+                    maskTopRatio: maskTop / viewport.height,
+                    maskWidthRatio: (maskRight - maskLeft) / viewport.width,
+                    maskHeightRatio: (maskBottom - maskTop) / viewport.height,
+                },
             };
         }
 
         function canvasToBlob(canvas) {
             return new Promise((resolve, reject) => {
                 canvas.toBlob(
-                    blob => blob ? resolve(blob) : reject(new Error('Gagal membuat gambar halaman.')),
+                    blob => blob
+                        ? resolve(blob)
+                        : reject(new Error('Gagal membuat gambar halaman.')),
                     'image/jpeg',
-                    0.96
+                    0.97
                 );
             });
         }
@@ -362,7 +501,10 @@
         function filenameFromResponse(response) {
             const disposition = response.headers.get('Content-Disposition') || '';
             const utfMatch = disposition.match(/filename\*=UTF-8''([^;]+)/i);
-            if (utfMatch) return decodeURIComponent(utfMatch[1]);
+
+            if (utfMatch) {
+                return decodeURIComponent(utfMatch[1]);
+            }
 
             const normalMatch = disposition.match(/filename="?([^";]+)"?/i);
             return normalMatch?.[1] || 'surat.docx';
@@ -372,9 +514,11 @@
             retryButton.disabled = true;
             actions.style.display = 'none';
             spinner.style.display = 'block';
+            progressBar.style.background = '#2563eb';
+            statusElement.classList.remove('error');
             title.textContent = 'Menyiapkan dokumen Word';
             description.textContent =
-                'Tampilan surat akan dipertahankan seperti PDF. Hanya nilai nomor surat yang dapat diedit.';
+                'Tampilan surat akan dipertahankan seperti PDF. Baris nomor surat tetap dapat diedit.';
 
             try {
                 setProgress(8, 'Memuat PDF sumber...');
@@ -391,13 +535,14 @@
 
                 for (let pageIndex = 0; pageIndex < pdf.numPages; pageIndex++) {
                     const pageNumber = pageIndex + 1;
+
                     setProgress(
                         12 + Math.round((pageIndex / pdf.numPages) * 55),
                         `Memproses halaman ${pageNumber} dari ${pdf.numPages}...`
                     );
 
                     const page = await pdf.getPage(pageNumber);
-                    const scale = 2.0;
+                    const scale = 2.25;
                     const viewport = page.getViewport({ scale });
 
                     const canvas = document.createElement('canvas');
@@ -415,12 +560,15 @@
                     }).promise;
 
                     if (pageIndex === 0) {
-                        const textContent = await page.getTextContent();
+                        const textContent = await page.getTextContent({
+                            normalizeWhitespace: false,
+                            disableCombineTextItems: false,
+                        });
                         const lines = buildTextLines(textContent, viewport);
-                        const numberLine = findNumberLine(lines, viewport);
-                        const detected = maskNumberValue(
+                        const numberCandidate = findNumberLine(lines, viewport);
+                        const detected = maskWholeNumberLine(
                             context,
-                            numberLine,
+                            numberCandidate,
                             textContent,
                             viewport
                         );
@@ -437,12 +585,16 @@
                     pageMetadata.push({
                         width: canvas.width,
                         height: canvas.height,
+                        widthPt: viewport.width / scale,
+                        heightPt: viewport.height / scale,
+                        scale,
                     });
                 }
 
                 setProgress(72, 'Menyusun file DOCX...');
 
                 const formData = new FormData();
+
                 renderedPages.forEach((blob, index) => {
                     formData.append(
                         `pages[${index}]`,
@@ -452,6 +604,7 @@
                 });
 
                 formData.append('metadata', JSON.stringify({
+                    version: 2,
                     pages: pageMetadata,
                     number: numberMetadata,
                 }));
@@ -475,7 +628,10 @@
                         message = json.message || message;
                     } else {
                         const text = await response.text();
-                        if (text.trim()) message = text.slice(0, 500);
+
+                        if (text.trim()) {
+                            message = text.slice(0, 500);
+                        }
                     }
 
                     throw new Error(message);
@@ -485,22 +641,26 @@
                 const filename = filenameFromResponse(response);
                 const objectUrl = URL.createObjectURL(blob);
                 const link = document.createElement('a');
+
                 link.href = objectUrl;
                 link.download = filename;
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
-                URL.revokeObjectURL(objectUrl);
 
-                setProgress(100, numberMetadata
-                    ? 'DOCX selesai. Nomor surat dapat diedit.'
-                    : 'DOCX selesai. Nomor surat tidak ditemukan pada halaman pertama.'
+                setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
+
+                setProgress(
+                    100,
+                    numberMetadata
+                        ? 'DOCX selesai. Baris nomor surat dapat diedit.'
+                        : 'DOCX selesai. Nomor surat tidak ditemukan pada halaman pertama.'
                 );
 
                 spinner.style.display = 'none';
                 title.textContent = 'Dokumen berhasil dibuat';
                 description.textContent = numberMetadata
-                    ? 'Tampilan surat dipertahankan sebagai background dan nilai nomor surat tetap editable.'
+                    ? 'Baris nomor ditulis ulang sebagai teks Word agar tidak terpotong dan lebih presisi.'
                     : 'Tampilan surat dipertahankan. Template ini tidak memiliki nomor surat yang terdeteksi.';
                 actions.style.display = 'flex';
                 retryButton.disabled = false;
@@ -510,7 +670,8 @@
                 progressBar.style.width = '100%';
                 progressBar.style.background = '#dc2626';
                 title.textContent = 'Export DOCX gagal';
-                description.textContent = 'Periksa koneksi internet dan pastikan PHPWord sudah terpasang.';
+                description.textContent =
+                    'Periksa koneksi, PDF sumber, dan pemasangan PHPWord.';
                 statusElement.textContent = error.message || 'Terjadi kesalahan.';
                 statusElement.classList.add('error');
                 actions.style.display = 'flex';
@@ -518,12 +679,7 @@
             }
         }
 
-        retryButton.addEventListener('click', () => {
-            progressBar.style.background = '#2563eb';
-            statusElement.classList.remove('error');
-            startExport();
-        });
-
+        retryButton.addEventListener('click', startExport);
         startExport();
     })();
 </script>

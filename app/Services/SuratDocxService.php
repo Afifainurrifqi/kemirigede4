@@ -11,9 +11,12 @@ use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Services\Concerns\BuildsHybridDocx;
 
 class SuratDocxService
 {
+
+    use BuildsHybridDocx;
     /**
      * Pastikan jenis surat terdaftar dan dokumen tersedia.
      */
@@ -49,6 +52,8 @@ class SuratDocxService
 
         return $pdf->stream('sumber-docx.pdf');
     }
+
+
 
     /**
      * Buat DOCX hybrid:
@@ -231,7 +236,7 @@ class SuratDocxService
                     $filename,
                     [
                         'Content-Type' =>
-                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     ]
                 )
                 ->deleteFileAfterSend(true);
@@ -250,6 +255,8 @@ class SuratDocxService
             return false;
         }
     }
+
+
 
     private function resolveDefinition(string $jenis): array
     {
