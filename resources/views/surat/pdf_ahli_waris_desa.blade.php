@@ -155,7 +155,7 @@
     </div>
 
     <div class="judul-surat">SURAT KETERANGAN AHLI WARIS DESA</div>
-    <div class="nomor-surat">Nomor : {{ $data->nomor_surat ?? '422.4/---/409.41.2/' . now()->year }}</div>
+    <div class="nomor-surat">Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'ahli_waris_desa') }}</div>
 
     <p>Kami yang bertanda tangan di bawah ini adalah ahli waris yang sah dari almarhum/almarhumah
         <strong>{{ $data->nama_almarhum }}</strong> yang meninggal dunia pada hari

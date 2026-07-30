@@ -335,9 +335,7 @@
             ? \Carbon\Carbon::parse($data->tanggal_surat)->format('Y')
             : now('Asia/Jakarta')->format('Y');
 
-        $nomorSppd =
-            $data->nomor_sppd ??
-            ($data->nomor_surat ?? 'B/010.02/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/409.41.2/' . $tahunSurat);
+        $nomorSppd = app(\App\Services\NomorSuratService::class)->display($data, 'sppd');
 
         $namaKades = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
         $pejabat = $data->pejabat_pemberi_perintah ?? 'KEPALA DESA Kemirigede Kecamatan Kesamben Kabupaten Blitar';

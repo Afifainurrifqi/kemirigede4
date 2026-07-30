@@ -215,7 +215,7 @@
 <div class="judul">SURAT KETERANGAN DESA</div>
 
 <div class="nomor">
-    Nomor : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+    Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'desa_miskin') }}
 </div>
 
 <div class="isi">

@@ -229,7 +229,7 @@
 
     <!-- NOMOR SURAT -->
     <div class="nomor-surat">
-        Nomor: {{ $data->nomor_surat ?? '440 / --- / 409.41.2 / ' . now()->year }}
+        Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'beda_nama_buku_nikah') }}
     </div>
 
     <!-- ISI SURAT -->

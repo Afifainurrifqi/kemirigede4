@@ -292,7 +292,7 @@
 </div>
 
 <div class="nomor-surat">
-    Reg. No : {{ $data->nomor_surat ?? '474.2 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+    Reg. No : {{ app(\App\Services\NomorSuratService::class)->display($data, 'numpang_nikah') }}
 </div>
 
 <p class="pembuka">

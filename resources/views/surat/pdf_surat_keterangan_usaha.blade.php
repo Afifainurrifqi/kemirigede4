@@ -210,7 +210,7 @@
 <div class="judul">SURAT KETERANGAN USAHA</div>
 
 <div class="nomor">
-    No : {{ $data->nomor_surat ?? '470 / --- / 409.42.1 / ' . now('Asia/Jakarta')->year }}
+    No : {{ app(\App\Services\NomorSuratService::class)->display($data, 'usaha') }}
 </div>
 
 <div class="isi">
@@ -298,7 +298,7 @@
             <br><br><br><br>
             <div class="nama-kades">Hari Purnawan, S.Sos.</div>
 
-            {{--   {{--
+            {{--
             <div class="qr-section">
                 <img src="{{ public_path('assets/images/barcode.png') }}" alt="QR Code">
                 <small>Scan untuk verifikasi surat resmi Desa Kemirigede</small>

@@ -47,6 +47,7 @@
 
     <div class="judul">SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK (SPTJM)<br>
     KEBENARAN SEBAGAI PASANGAN SUAMI ISTRI</div>
+    <div style="text-align:center; margin-top:-4px; margin-bottom:10px;">Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'sptjm_suami_istri') }}</div>
 
     <p class="section-title">Saya yang bertandatangan di bawah ini:</p>
 

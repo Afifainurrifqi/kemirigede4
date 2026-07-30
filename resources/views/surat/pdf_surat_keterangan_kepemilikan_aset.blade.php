@@ -226,7 +226,7 @@
     <div class="judul">DATA KEPEMILIKAN</div>
 
     <div class="nomor">
-        Nomor : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now()->year }}
+        Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'kepemilikan_aset') }}
     </div>
 
     <p>Yang bertanda tangan di bawah ini KEPALA DESA Kemirigede menerangkan dengan sebenarnya bahwa :</p>

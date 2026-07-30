@@ -26,6 +26,7 @@
     </div>
 
     <div class="judul">FORMULIR PENGAJUAN USER ID (F-3.01)</div>
+    <div style="text-align:center; margin-top:-4px; margin-bottom:10px;">Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'formulir_user_id') }}</div>
 
     <p><strong>Kepada Yth.</strong><br>
     Menteri Dalam Negeri<br>

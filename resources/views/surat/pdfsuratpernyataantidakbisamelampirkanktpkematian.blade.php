@@ -207,7 +207,7 @@
     </div>
 
     <div class="nomor-surat">
-        Nomor: {{ $data->nomor_surat ?? '300 / --- / 409.41.2 / ' . now()->year }}
+        Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'ktp_kematian') }}
     </div>
 
     <!-- ISI -->

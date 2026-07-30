@@ -291,12 +291,7 @@
     <div class="judul">SURAT&nbsp;&nbsp;IJIN&nbsp;&nbsp;KELUARGA</div>
 
     <div class="nomor">
-        Nomor :
-        @if(!empty($data->nomor_surat))
-            {{ $data->nomor_surat }}
-        @else
-            470/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/409.41.2/{{ now('Asia/Jakarta')->year }}
-        @endif
+        Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'izin_keluarga') }}
     </div>
 
     <p class="pembuka">Yang bertanda tangan di bawah ini</p>

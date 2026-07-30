@@ -293,7 +293,7 @@
 <div class="judul">SURAT KUASA</div>
 
 <p class="nomor">
-    No : {{ $data->nomor_surat ?? '470 / --- / 409.42.1 / ' . now('Asia/Jakarta')->year }}
+    No : {{ app(\App\Services\NomorSuratService::class)->display($data, 'kuasa') }}
 </p>
 
 <p class="pembuka">

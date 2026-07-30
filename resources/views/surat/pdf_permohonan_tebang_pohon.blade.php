@@ -272,7 +272,7 @@
             ? \Carbon\Carbon::parse($data->tanggal_surat) ->locale('id')->translatedFormat('d F Y')
             : now('Asia/Jakarta') ->locale('id')->translatedFormat('d F Y');
 
-        $nomorSurat = $data->nomor_surat ?? '522/ / 409.41.2/' . now('Asia/Jakarta')->year;
+        $nomorSurat = app(\App\Services\NomorSuratService::class)->display($data, 'tebang_pohon');
 
         $namaPemohon = $data->nama ?? 'SUTAJI';
 

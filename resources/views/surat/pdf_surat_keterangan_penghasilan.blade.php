@@ -227,7 +227,7 @@
 <div class="judul">SURAT KETERANGAN PENGHASILAN</div>
 
 <div class="nomor">
-    Nomor : {{ $isiField('nomor_surat', '470/   /409.41.2/' . now('Asia/Jakarta')->year) }}
+    Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'penghasilan') }}
 </div>
 
 <div class="isi">

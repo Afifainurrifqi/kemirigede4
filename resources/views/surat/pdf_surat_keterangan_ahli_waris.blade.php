@@ -237,7 +237,7 @@
     {{-- JUDUL --}}
     <div class="judul-surat">SURAT KETERANGAN WARIS</div>
     <div class="nomor-surat">
-        No : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+        No : {{ app(\App\Services\NomorSuratService::class)->display($data, 'waris') }}
     </div>
 
     <p class="tulisan">

@@ -308,7 +308,7 @@
     <div class="judul">SURAT REKOMENDASI PEMBELIAN BBM JENIS TERTENTU</div>
 
     <div class="nomor">
-        Nomor : {{ $data->nomor_surat ?? '541 / / 409.41.2 / ' . date('Y') }}
+        Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'rekomendasi_bbm') }}
     </div>
 
     {{-- DASAR HUKUM --}}

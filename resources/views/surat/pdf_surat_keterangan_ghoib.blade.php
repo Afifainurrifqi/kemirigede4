@@ -242,7 +242,7 @@
 <div class="judul">SURAT KETERANGAN GHOIB</div>
 
 <div class="nomor">
-    Nomor : {{ $data->nomor_surat ?? '145/ /409.41.2/' . now('Asia/Jakarta')->year }}
+    Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'ghoib') }}
 </div>
 
 <div class="isi">

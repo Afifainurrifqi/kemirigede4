@@ -368,7 +368,7 @@
         ? \Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat('F Y')
         : now('Asia/Jakarta')->locale('id')->translatedFormat('F Y');
 
-    $nomorSurat = $data->nomor_surat ?? '';
+    $nomorSurat = app(\App\Services\NomorSuratService::class)->display($data, 'nota_angkutan');
     $nomorPeraturan = $data->nomor_peraturan ?? '';
     $tanggalPeraturan = !empty($data->tanggal_peraturan)
         ? \Carbon\Carbon::parse($data->tanggal_peraturan)->locale('id') ->locale('id')->translatedFormat('d F Y')

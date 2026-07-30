@@ -221,7 +221,7 @@
     <div class="judul-surat">SURAT KETERANGAN DOMISILI</div>
 
     <div class="nomor-surat">
-        Nomor : {{ $data->nomor_surat ?? '220 / --- / 409.41.2 / ' . now()->year }}
+        Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'domisili_lembaga') }}
     </div>
 
     <p class="tulisan">Yang bertanda tangan di bawah ini:</p>

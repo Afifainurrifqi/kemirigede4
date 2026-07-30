@@ -204,6 +204,8 @@
 
 <div class="judul">SURAT PERNYATAAN KESANGGUPAN</div>
 
+<div style="text-align:center; margin-top:-4px; margin-bottom:12px;">Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'kesanggupan') }}</div>
+
 <p>
     Berdasarkan Surat Edaran Bupati Blitar tertanggal 26 April 2022 Nomor : 440/10/409.208.1/2022,
     tentang Standart Operasional Prosedur (SOP) Penyelenggaraan Kegiatan Sosial Kemasyarakatan

@@ -434,9 +434,7 @@
          * nomor_surat tidak lagi ada pada Model/Controller.
          * Nilai lama tetap digunakan jika dokumen lama masih memilikinya.
          */
-        $nomorSurat =
-            $data->nomor_surat ??
-            '470/      /409.41.2/' . $tahunSurat;
+        $nomorSurat = app(\App\Services\NomorSuratService::class)->display($data, 'pembukaan_rekening');
     @endphp
 
     {{-- =========================================================

@@ -321,7 +321,7 @@
         $rentangTanggal = '-';
     }
 
-    $nomorSurat = $data->nomor_surat ?? '500/113/409.41.2/' . $tahunSurat;
+    $nomorSurat = app(\App\Services\NomorSuratService::class)->display($data, 'rekomendasi');
     $perihal = $data->perihal ?? 'Rekomendasi';
 
     $namaPemohon = $data->nama ?? 'Agus Setyawan';

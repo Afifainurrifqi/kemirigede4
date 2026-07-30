@@ -238,7 +238,7 @@
     </div>
 
     <div class="nomor-surat">
-        Nomor : {{ $surat->nomor_surat ?? '300 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+        Nomor : {{ app(\App\Services\NomorSuratService::class)->display($surat, 'skck') }}
     </div>
 
     <div class="isi">

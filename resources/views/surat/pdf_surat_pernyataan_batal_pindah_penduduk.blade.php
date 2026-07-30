@@ -207,6 +207,8 @@
 
     <div class="judul">SURAT PERNYATAAN BATAL PINDAH PENDUDUK</div>
 
+    <div style="text-align:center; margin-top:-4px; margin-bottom:12px;">Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'batal_pindah') }}</div>
+
     <p class="isi"><strong>Yang bertanda tangan di bawah ini:</strong></p>
 
     <table class="data">

@@ -249,6 +249,8 @@
         SURAT&nbsp;&nbsp;&nbsp;PERNYATAAN
     </div>
 
+    <div style="text-align:center; margin-top:-4px; margin-bottom:12px;">Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'pernyataan_miskin') }}</div>
+
     <p class="pembuka">Yang bertanda tangan di bawah ini :</p>
 
     <!-- DATA PEMOHON -->

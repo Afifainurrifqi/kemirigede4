@@ -211,7 +211,7 @@
 <div class="judul">SURAT KETERANGAN DOMISILI</div>
 
 <div class="nomor">
-    No : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+    No : {{ app(\App\Services\NomorSuratService::class)->display($data, 'domisili_warga') }}
 </div>
 
 <div class="isi">

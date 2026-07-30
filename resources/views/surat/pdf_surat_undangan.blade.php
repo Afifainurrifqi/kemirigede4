@@ -287,7 +287,7 @@
                 ? \Carbon\Carbon::parse($data->tanggal_acara)->locale('id')->translatedFormat('l')
                 : '-');
 
-        $nomorSurat = $data->nomor_surat ?? '005/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/409.41.2/' . $tahunSurat;
+        $nomorSurat = app(\App\Services\NomorSuratService::class)->display($data, 'undangan');
 
         $namaKades = $data->nama_kepala_desa ?? 'Hari Purnawan, S.Sos.';
 

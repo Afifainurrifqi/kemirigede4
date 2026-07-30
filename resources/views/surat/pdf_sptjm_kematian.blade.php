@@ -290,7 +290,7 @@
         KEBENARAN DATA KEMATIAN
     </div>
     <div class="nomor-surat">
-        Nomor: {{ $data->nomor_surat ?? '460 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+        Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'sptjm_kematian') }}
     </div>
 
     <!-- DATA PEMBUAT PERNYATAAN -->

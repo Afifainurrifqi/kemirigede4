@@ -394,8 +394,8 @@
             }
 
             const { line, parts } = candidate;
-            const horizontalPadding = Math.max(4, line.height * 0.22);
-            const verticalPadding = Math.max(3, line.height * 0.18);
+            const horizontalPadding = Math.max(5, line.height * 0.30);
+            const verticalPadding = Math.max(4, line.height * 0.28);
 
             const maskLeft = Math.max(0, line.xMin - horizontalPadding);
             const maskTop = Math.max(0, line.top - verticalPadding);
@@ -408,13 +408,18 @@
                 line.bottom + verticalPadding
             );
 
+            // Jangan gunakan composite mode `copy`. Pada sebagian browser,
+            // mode tersebut menghapus seluruh raster halaman di luar area mask,
+            // sehingga DOCX hanya menampilkan kotak putih dan surat menghilang.
             context.save();
+            context.globalAlpha = 1;
+            context.globalCompositeOperation = 'source-over';
             context.fillStyle = '#ffffff';
             context.fillRect(
-                maskLeft,
-                maskTop,
-                Math.max(1, maskRight - maskLeft),
-                Math.max(1, maskBottom - maskTop)
+                Math.floor(maskLeft),
+                Math.floor(maskTop),
+                Math.ceil(maskRight - maskLeft),
+                Math.ceil(maskBottom - maskTop)
             );
             context.restore();
 
@@ -429,59 +434,75 @@
                 dominantItem.height / viewport.scale
             );
 
+            const pageWidthPt = viewport.width / viewport.scale;
+            const pageHeightPt = viewport.height / viewport.scale;
+            const baselinePt = line.baselineY / viewport.scale;
+
             const centerDelta = Math.abs(
                 ((line.xMin + line.xMax) / 2) - (viewport.width / 2)
             ) / viewport.width;
 
             const isCentered = centerDelta <= 0.18;
 
-            let xRatio;
-            let widthRatio;
-            let alignment;
+            /*
+             * Jangan memakai textbox selebar halaman dengan alignment center.
+             * Beberapa versi Word mengabaikan alignment pada VML textbox dan
+             * menaruh teks di sisi kiri halaman. Posisi sekarang memakai x asli
+             * dari baris PDF dan selalu left-aligned, sehingga tetap presisi.
+             */
+            const alignment = 'left';
+            const leftPt = Math.max(0, line.xMin / viewport.scale);
+            const widthPt = Math.max(
+                90,
+                ((line.xMax - line.xMin) / viewport.scale) + 12
+            );
 
-            if (isCentered) {
-                // Gunakan area halaman yang lebar dan alignment center.
-                // Posisi horizontal tidak lagi bergantung pada lebar teks hasil ekstraksi.
-                xRatio = 0.05;
-                widthRatio = 0.90;
-                alignment = 'center';
-            } else {
-                xRatio = Math.max(0, line.xMin / viewport.width);
-                widthRatio = Math.min(
-                    1 - xRatio,
-                    Math.max(
-                        0.22,
-                        ((line.xMax - line.xMin) + line.height * 3) / viewport.width
-                    )
-                );
-                alignment = 'left';
-            }
+            // Baseline Word berada sedikit lebih rendah dari bagian atas kotak.
+            const topPt = Math.max(
+                0,
+                baselinePt - (fontSizePt * 0.90)
+            );
+
+            const heightPt = Math.max(
+                fontSizePt * 1.45,
+                (maskBottom - maskTop) / viewport.scale
+            );
 
             return {
                 text: parts.fullText,
                 label: parts.label,
                 value: parts.value,
-                xRatio,
-                yRatio: Math.max(0, line.top / viewport.height),
-                baselineRatio: Math.max(0, line.baselineY / viewport.height),
-                widthRatio,
-                heightRatio: Math.max(
-                    0.018,
-                    (line.height * 1.65) / viewport.height
-                ),
+                pageWidthPt,
+                pageHeightPt,
+                leftPt,
+                topPt,
+                widthPt,
+                heightPt,
+                baselinePt,
+                xRatio: leftPt / pageWidthPt,
+                yRatio: topPt / pageHeightPt,
+                widthRatio: widthPt / pageWidthPt,
+                heightRatio: heightPt / pageHeightPt,
                 fontSizePt,
-                lineHeightPt: Math.max(fontSizePt, fontSizePt * 1.05),
+                lineHeightPt: fontSizePt,
                 fontFamily,
                 alignment,
+                anchorX: 'left',
+                anchorY: 'top',
                 bold: false,
-                verticalCorrectionPt: -0.8,
+                horizontalCorrectionPt: 0,
+                verticalCorrectionPt: 0,
+                exactPosition: true,
+                geometryVersion: 4,
                 detection: {
                     rawText: line.rawText,
                     spacedText: line.spacedText,
-                    maskLeftRatio: maskLeft / viewport.width,
-                    maskTopRatio: maskTop / viewport.height,
-                    maskWidthRatio: (maskRight - maskLeft) / viewport.width,
-                    maskHeightRatio: (maskBottom - maskTop) / viewport.height,
+                    lineTopPt: line.top / viewport.scale,
+                    baselinePt,
+                    maskLeftPt: maskLeft / viewport.scale,
+                    maskTopPt: maskTop / viewport.scale,
+                    maskWidthPt: (maskRight - maskLeft) / viewport.scale,
+                    maskHeightPt: (maskBottom - maskTop) / viewport.scale,
                 },
             };
         }
@@ -492,8 +513,7 @@
                     blob => blob
                         ? resolve(blob)
                         : reject(new Error('Gagal membuat gambar halaman.')),
-                    'image/jpeg',
-                    0.97
+                    'image/png'
                 );
             });
         }
@@ -599,12 +619,12 @@
                     formData.append(
                         `pages[${index}]`,
                         blob,
-                        `page_${index + 1}.jpg`
+                        `page_${index + 1}.png`
                     );
                 });
 
                 formData.append('metadata', JSON.stringify({
-                    version: 2,
+                    version: 4,
                     pages: pageMetadata,
                     number: numberMetadata,
                 }));

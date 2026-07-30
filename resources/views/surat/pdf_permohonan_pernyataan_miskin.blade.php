@@ -311,6 +311,11 @@
             <td class="header-kiri">
                 <table class="meta-table">
                     <tr>
+                        <td class="meta-label">NOMOR</td>
+                        <td class="meta-colon">:</td>
+                        <td>{{ app(\App\Services\NomorSuratService::class)->display($data, 'permohonan_pernyataan_miskin') }}</td>
+                    </tr>
+                    <tr>
                         <td class="meta-label">SIFAT</td>
                         <td class="meta-colon">:</td>
                         <td>Penting</td>

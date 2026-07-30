@@ -41,6 +41,7 @@ use App\Http\Controllers\RtSaranapendidikanController;
 use App\Http\Controllers\RtTkejahatanController;
 use App\Http\Controllers\SdgspendidikanController;
 use App\Http\Controllers\SesiController;
+use App\Http\Controllers\SuratDocxController;
 use App\Http\Controllers\SuratFormulirPengajuanUserIdController;
 use App\Http\Controllers\SuratIjinKeluargaController;
 use App\Http\Controllers\SuratKeteranganAhliWarisController;
@@ -1176,6 +1177,18 @@ Route::middleware(['checkrole:admin,operator'])->group(
 
 Route::middleware(['checkrole:admin,dasawisma,akundemo'])->group(
     function () {
+
+
+        Route::get(
+            '/surat/{jenis}/{id}/docx-source.pdf',
+            [SuratDocxController::class, 'sourcePdf']
+        )->name('surat.docx.source');
+
+        Route::post(
+            '/surat/{jenis}/{id}/export-docx',
+            [SuratDocxController::class, 'export']
+        )->name('surat.docx.export');
+
         Route::get('datapenduduk/edit/{nik}', [DatapendudukController::class, 'edit'])->name('datapenduduk.edit');
         Route::get('datapenduduk/show/{nik}', [DatapendudukController::class, 'show'])->name('datapenduduk.show');
         Route::get('sdgs/individu/editdataindividu/{nik}', [DataindividuController::class, 'create'])->name('individu.edit');

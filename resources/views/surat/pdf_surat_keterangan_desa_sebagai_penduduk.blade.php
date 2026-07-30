@@ -159,7 +159,7 @@
 
 {{-- NOMOR SURAT --}}
 <div class="nomor-surat">
-    Nomor : {{ $data->nomor_surat ?? '470 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+    Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'desa_penduduk') }}
 </div>
 
 <p class="tulisan">

@@ -216,7 +216,7 @@
     <div class="judul">SURAT KETERANGAN MISKIN (SKM)</div>
 
     <div class="nomor">
-        Nomor : {{ $data->nomor_surat ?? '422.4 / --- / 409.41.2 / ' . now('Asia/Jakarta')->year }}
+        Nomor : {{ app(\App\Services\NomorSuratService::class)->display($data, 'skm') }}
     </div>
 
     <div class="isi">

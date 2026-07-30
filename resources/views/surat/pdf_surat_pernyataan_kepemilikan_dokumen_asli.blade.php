@@ -204,6 +204,8 @@
 
 <div class="judul">SURAT PERNYATAAN</div>
 
+    <div style="text-align:center; margin-top:-4px; margin-bottom:12px;">Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'kepemilikan_dokumen') }}</div>
+
 <p>Yang membuat Pernyataan di bawah ini :</p>
 
 <table class="data">

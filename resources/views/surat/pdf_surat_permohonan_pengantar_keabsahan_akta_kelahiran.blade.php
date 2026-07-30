@@ -251,7 +251,7 @@
 
     <!-- NOMOR SURAT -->
     <div class="nomor-surat">
-        Nomor: {{ $data->nomor_surat ?? '--- / --- / 409.41.2 / ' . now()->year }}
+        Nomor: {{ app(\App\Services\NomorSuratService::class)->display($data, 'keabsahan_diri') }}
     </div>
 
     <!-- HEADER SURAT -->
