@@ -20,6 +20,7 @@ use App\Http\Controllers\KkController;
 use App\Http\Controllers\LembagaMasyarakatController;
 use App\Http\Controllers\LokasipemukimanController;
 use App\Http\Controllers\NamaAliasOrtuController;
+use App\Http\Controllers\NotifikasiSuratController;
 use App\Http\Controllers\PenghasilanController;
 use App\Http\Controllers\RtAgamaController;
 use App\Http\Controllers\RtBencanaController;
@@ -120,6 +121,40 @@ Route::get('/akundemo', [SesiController::class, 'error2']);
 Route::get('/maintance', [SesiController::class, 'maintance'])->name('maintance');
 Route::get('/loginfarm', [SesiController::class, 'maintance'])->name('maintance');
 Route::prefix('surat')->group(function () {
+
+    Route::get(
+        '/surat/{jenis}/{id}/docx-source.pdf',
+        [SuratDocxController::class, 'sourcePdf']
+    )->name('surat.docx.source');
+
+    Route::post(
+        '/surat/{jenis}/{id}/export-docx',
+        [SuratDocxController::class, 'export']
+    )->name('surat.docx.export');
+
+    Route::prefix('surat')->group(function () {
+        Route::middleware(['auth', 'checkrole:admin,user'])->group(function () {
+            // route pelayanan surat
+        });
+    });
+
+    Route::middleware(['auth', 'checkrole:admin'])->group(function () {
+
+        Route::get(
+            'notifikasi-surat/data',
+            [NotifikasiSuratController::class, 'data']
+        )->name('notifikasi-surat.data');
+
+        Route::post(
+            'notifikasi-surat/tandai-semua-dibaca',
+            [NotifikasiSuratController::class, 'tandaiSemuaDibaca']
+        )->name('notifikasi-surat.tandai-semua');
+
+        Route::get(
+            'notifikasi-surat/{id}/buka',
+            [NotifikasiSuratController::class, 'buka']
+        )->name('notifikasi-surat.buka');
+    });
 
     Route::get('usersuratpernyataannumpangkk', [SuratPernyataanNumpangKkController::class, 'usernumpangkk'])->name('surat.usernumpangkk');
     Route::get('usersuratketerangankehilangan', [SuratKeteranganKehilanganController::class, 'userkehilangan'])->name('surat.userkehilangan');
@@ -1179,15 +1214,9 @@ Route::middleware(['checkrole:admin,dasawisma,akundemo'])->group(
     function () {
 
 
-        Route::get(
-            '/surat/{jenis}/{id}/docx-source.pdf',
-            [SuratDocxController::class, 'sourcePdf']
-        )->name('surat.docx.source');
 
-        Route::post(
-            '/surat/{jenis}/{id}/export-docx',
-            [SuratDocxController::class, 'export']
-        )->name('surat.docx.export');
+
+
 
         Route::get('datapenduduk/edit/{nik}', [DatapendudukController::class, 'edit'])->name('datapenduduk.edit');
         Route::get('datapenduduk/show/{nik}', [DatapendudukController::class, 'show'])->name('datapenduduk.show');

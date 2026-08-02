@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,10 +28,114 @@
 </head>
 
 <body>
+    <style>
+        .surat-notification-link {
+            position: relative;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .surat-notification-link i {
+            font-size: 21px;
+        }
+
+        .surat-notification-badge {
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            min-width: 19px;
+            height: 19px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-size: 11px;
+            line-height: 15px;
+            text-align: center;
+        }
+
+        .surat-notification-dropdown {
+            width: 380px;
+            max-width: calc(100vw - 30px);
+            padding: 0;
+        }
+
+        .surat-notification-heading {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eeeeee;
+            font-weight: 600;
+        }
+
+        .surat-notification-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .surat-notification-item {
+            display: block;
+            padding: 12px 16px;
+            color: #333333;
+            white-space: normal;
+            border-bottom: 1px solid #eeeeee;
+            transition: background-color 0.2s ease;
+        }
+
+        .surat-notification-item:hover {
+            color: #333333;
+            text-decoration: none;
+            background-color: #f5f5f5;
+        }
+
+        .surat-notification-title {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .surat-notification-name {
+            display: block;
+            font-size: 12px;
+            color: #555555;
+        }
+
+        .surat-notification-time {
+            display: block;
+            margin-top: 2px;
+            font-size: 11px;
+            color: #999999;
+        }
+
+        .surat-notification-empty {
+            padding: 25px 15px;
+            text-align: center;
+            color: #999999;
+        }
+
+        .surat-notification-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+        }
+
+        .surat-notification-footer a,
+        .surat-notification-footer button {
+            font-size: 12px;
+        }
+
+        @media (max-width: 576px) {
+            .surat-notification-dropdown {
+                width: 320px;
+            }
+        }
+    </style>
     <div id="preloader">
         <div class="loader">
             <svg class="circular" viewBox="25 25 50 50">
-                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
+                    stroke-miterlimit="10" />
             </svg>
         </div>
     </div>
@@ -52,6 +157,7 @@
         <!-- Header -->
         <div class="header">
             <div class="header-content clearfix">
+
                 <div class="nav-control">
                     <div class="hamburger">
                         <span class="toggle-icon"><i class="icon-menu"></i></span>
@@ -62,37 +168,133 @@
                         <span class="brand-title">
                             <img src="/assets/images/Kemirigede2.png" style="width:20%" alt="">
                         </span>
-                        <span class="nav-link" style="font-weight:bold;font-size:16px;">Haloo, {{ Auth::user()->role }}</span>
+                        <span class="nav-link" style="font-weight: bold; font-size: 16px;">Haloo,
+                            {{ Auth::user()->role }}</span>
                     </div>
                 </div>
                 <div class="header-right">
                     <ul class="clearfix">
+
+                        {{-- ====================================================== --}}
+                        {{-- NOTIFIKASI PENGAJUAN SURAT --}}
+                        {{-- ====================================================== --}}
+                        @if (Auth::check() && strtolower(Auth::user()->role) === 'admin')
+                            <li class="icons dropdown" id="surat-notification-wrapper">
+
+                                <a href="javascript:void(0)" class="nav-link surat-notification-link"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    title="Notifikasi pengajuan surat">
+
+                                    <i class="fas fa-bell"></i>
+
+                                    <span id="surat-notification-count"
+                                        class="badge badge-danger surat-notification-badge"
+                                        style="{{ ($jumlahNotifikasiSurat ?? 0) > 0 ? '' : 'display: none;' }}">
+                                        {{ $jumlahNotifikasiSurat ?? 0 }}
+                                    </span>
+                                </a>
+
+                                <div
+                                    class="drop-down dropdown-menu dropdown-menu-right animated fadeIn surat-notification-dropdown">
+
+                                    <div class="surat-notification-heading">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span>Pengajuan Surat Baru</span>
+
+                                            <span id="surat-notification-heading-count" class="badge badge-danger">
+                                                {{ $jumlahNotifikasiSurat ?? 0 }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div id="surat-notification-list" class="surat-notification-list">
+
+                                        @forelse ($notifikasiSurat ?? [] as $notifikasi)
+                                            <a href="{{ route('notifikasi-surat.buka', ['id' => (string) $notifikasi->getKey()]) }}"
+                                                class="surat-notification-item">
+
+                                                <span class="surat-notification-title">
+                                                    {{ $notifikasi->jenis_surat ?: 'Pengajuan Surat' }}
+                                                </span>
+
+                                                <span class="surat-notification-name">
+                                                    Diajukan oleh:
+                                                    {{ $notifikasi->nama_pemohon ?: 'Pemohon' }}
+                                                </span>
+
+                                                <span class="surat-notification-time">
+                                                    <i class="far fa-clock mr-1"></i>
+
+                                                    {{ $notifikasi->created_at ? $notifikasi->created_at->diffForHumans() : '' }}
+                                                </span>
+                                            </a>
+                                        @empty
+                                            <div class="surat-notification-empty">
+                                                <i class="far fa-bell-slash mb-2" style="font-size: 25px;"></i>
+
+                                                <div>
+                                                    Belum ada pengajuan surat baru.
+                                                </div>
+                                            </div>
+                                        @endforelse
+
+                                    </div>
+
+                                    <div class="surat-notification-footer">
+
+                                        <button type="button" id="surat-notification-read-all"
+                                            class="btn btn-sm btn-link p-0">
+                                            Tandai semua dibaca
+                                        </button>
+
+                                        <a href="{{ route('surat.keluar') }}">
+                                            Lihat semua pengajuan
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </li>
+                        @endif
+
+                        {{-- ====================================================== --}}
+                        {{-- PROFIL ADMIN --}}
+                        {{-- ====================================================== --}}
                         <li class="icons dropdown">
                             <div class="user-img c-pointer position-relative" data-toggle="dropdown">
+
                                 <span class="activity active"></span>
-                                <img src="/assets/images/Kemirigede2.png" height="40" width="40" alt="">
+
+                                <img src="/assets/images/Kemirigede2.png" height="40" width="40"
+                                    alt="Profil">
                             </div>
+
                             <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
                                 <div class="dropdown-content-body">
                                     <ul>
-                                        <li><a href="{{ route('logout') }}"><i class="icon-key"></i><span>Logout</span></a></li>
+                                        <li>
+                                            <a href="{{ route('logout') }}">
+                                                <i class="icon-key"></i>
+                                                <span>Logout</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </li>
+
                     </ul>
                 </div>
             </div>
         </div>
-
         <!-- Sidebar -->
         <div class="nk-sidebar">
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
                     <li>
                         <a class="nav-link {{ request()->segment('1') == 'home' ? 'active' : '' }}"
-                           href="{{ route('dashboard') }}">
-                           <i class="fas fa-tachometer-alt menu-icon"></i><span class="nav-text">Dashboard Admin</span>
+                            href="{{ route('dashboard') }}">
+                            <i class="fas fa-tachometer-alt menu-icon"></i><span class="nav-text">Dashboard
+                                Admin</span>
                         </a>
                     </li>
                     <li class="mega-menu mega-menu-sm">
@@ -193,12 +395,16 @@
         <div class="footer">
             <div class="copyright">
                 <p>Copyright &copy; Designed & Developed by
-                    <a href="https://wa.me/62811988274">Tim Smart Village Nasional</a> 2023</p>
+                    <a href="https://wa.me/62811988274">Tim Smart Village Nasional</a> 2023
+                </p>
             </div>
         </div>
     </div>
 
     <!-- Scripts (vendor) -->
+
+
+
     <script src="/assets/plugins/common/common.min.js"></script>
     <script src="/assets/js/custom.min.js"></script>
     <script src="/assets/js/settings.js"></script>
@@ -231,6 +437,245 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
     {{-- Penting: tempatkan script view --}}
+
+    @if (Auth::check() && strtolower(Auth::user()->role) === 'admin')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const notificationDataUrl =
+                    @json(route('notifikasi-surat.data'));
+
+                const notificationReadAllUrl =
+                    @json(route('notifikasi-surat.tandai-semua'));
+
+                const csrfToken =
+                    document.querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content');
+
+                const countElement =
+                    document.getElementById('surat-notification-count');
+
+                const headingCountElement =
+                    document.getElementById(
+                        'surat-notification-heading-count'
+                    );
+
+                const listElement =
+                    document.getElementById('surat-notification-list');
+
+                const readAllButton =
+                    document.getElementById(
+                        'surat-notification-read-all'
+                    );
+
+                /**
+                 * Mengamankan teks dari karakter HTML.
+                 */
+                function escapeHtml(value) {
+                    return String(value ?? '').replace(
+                        /[&<>"']/g,
+                        function(character) {
+                            const characters = {
+                                '&': '&amp;',
+                                '<': '&lt;',
+                                '>': '&gt;',
+                                '"': '&quot;',
+                                "'": '&#039;'
+                            };
+
+                            return characters[character];
+                        }
+                    );
+                }
+
+                /**
+                 * Memperbarui badge jumlah notifikasi.
+                 */
+                function updateCount(count) {
+                    const total = Number(count) || 0;
+
+                    if (countElement) {
+                        countElement.textContent = total;
+                        countElement.style.display =
+                            total > 0 ? 'inline-block' : 'none';
+                    }
+
+                    if (headingCountElement) {
+                        headingCountElement.textContent = total;
+                    }
+
+                    if (readAllButton) {
+                        readAllButton.disabled = total === 0;
+                    }
+                }
+
+                /**
+                 * Menampilkan daftar notifikasi.
+                 */
+                function renderNotificationList(items) {
+                    if (!listElement) {
+                        return;
+                    }
+
+                    if (!Array.isArray(items) || items.length === 0) {
+                        listElement.innerHTML = `
+                        <div class="surat-notification-empty">
+                            <i class="far fa-bell-slash mb-2"
+                               style="font-size: 25px;"></i>
+
+                            <div>
+                                Belum ada pengajuan surat baru.
+                            </div>
+                        </div>
+                    `;
+
+                        return;
+                    }
+
+                    listElement.innerHTML = items.map(function(item) {
+                        return `
+                        <a
+                            href="${escapeHtml(item.url)}"
+                            class="surat-notification-item">
+
+                            <span class="surat-notification-title">
+                                ${escapeHtml(item.jenis_surat)}
+                            </span>
+
+                            <span class="surat-notification-name">
+                                Diajukan oleh:
+                                ${escapeHtml(item.nama_pemohon)}
+                            </span>
+
+                            <span class="surat-notification-time">
+                                <i class="far fa-clock mr-1"></i>
+                                ${escapeHtml(item.waktu)}
+                            </span>
+                        </a>
+                    `;
+                    }).join('');
+                }
+
+                /**
+                 * Mengambil notifikasi terbaru dari server.
+                 */
+                async function refreshNotifikasiSurat() {
+                    try {
+                        const response = await fetch(
+                            notificationDataUrl, {
+                                method: 'GET',
+                                credentials: 'same-origin',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            }
+                        );
+
+                        /*
+                         * Session habis atau tidak lagi terautentikasi.
+                         */
+                        if (
+                            response.status === 401 ||
+                            response.status === 403
+                        ) {
+                            return;
+                        }
+
+                        if (!response.ok) {
+                            throw new Error(
+                                'HTTP error ' + response.status
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (!result.success) {
+                            return;
+                        }
+
+                        updateCount(result.count);
+                        renderNotificationList(result.items);
+
+                    } catch (error) {
+                        console.error(
+                            'Gagal mengambil notifikasi surat:',
+                            error
+                        );
+                    }
+                }
+
+                /**
+                 * Menandai semua notifikasi sudah dibaca.
+                 */
+                async function tandaiSemuaDibaca() {
+                    if (!readAllButton) {
+                        return;
+                    }
+
+                    readAllButton.disabled = true;
+
+                    try {
+                        const response = await fetch(
+                            notificationReadAllUrl, {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({})
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                'HTTP error ' + response.status
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            updateCount(0);
+                            renderNotificationList([]);
+                        }
+
+                    } catch (error) {
+                        console.error(
+                            'Gagal menandai notifikasi:',
+                            error
+                        );
+
+                        readAllButton.disabled = false;
+                    }
+                }
+
+                if (readAllButton) {
+                    readAllButton.addEventListener(
+                        'click',
+                        tandaiSemuaDibaca
+                    );
+                }
+
+                /*
+                 * Ambil data ketika halaman pertama dibuka.
+                 */
+                refreshNotifikasiSurat();
+
+                /*
+                 * Periksa pengajuan baru setiap 10 detik.
+                 */
+                window.setInterval(
+                    refreshNotifikasiSurat,
+                    10000
+                );
+            });
+        </script>
+    @endif
+
     @yield('scripts')
 </body>
+
 </html>

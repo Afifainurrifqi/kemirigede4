@@ -295,10 +295,42 @@ class SuratDocxService
             ? $clientMetadata
             : [];
 
-        $numberMetadata = array_replace_recursive(
-            $configuredMetadata,
-            $clientMetadata
-        );
+        $positionMode = strtolower((string) (
+            $definition['number_position_mode'] ?? 'auto'
+        ));
+
+        if ($positionMode === 'fixed') {
+            /*
+             * Koordinat hasil deteksi browser tidak boleh ikut terbawa karena
+             * `leftPt/topPt` mempunyai prioritas lebih tinggi daripada rasio.
+             * Hanya label, teks deteksi, dan informasi non-posisi yang dipakai.
+             */
+            $clientStyleMetadata = $clientMetadata;
+
+            foreach ([
+                'leftPt', 'xPt', 'topPt', 'yPt',
+                'widthPt', 'heightPt',
+                'left', 'x', 'top', 'y', 'width', 'height',
+                'xRatio', 'yRatio', 'widthRatio', 'heightRatio',
+                'baselineRatio', 'canvasWidth', 'canvasHeight',
+                'sourceWidth', 'sourceHeight',
+                'anchorX', 'anchorY',
+                'horizontalCorrectionPt', 'verticalCorrectionPt',
+                'box',
+            ] as $geometryKey) {
+                unset($clientStyleMetadata[$geometryKey]);
+            }
+
+            $numberMetadata = array_replace_recursive(
+                $clientStyleMetadata,
+                $configuredMetadata
+            );
+        } else {
+            $numberMetadata = array_replace_recursive(
+                $configuredMetadata,
+                $clientMetadata
+            );
+        }
 
         $numberText = $this->resolveDocumentNumber(
             $definition,
