@@ -108,7 +108,27 @@ use App\Models\SuratPengantarSkck;
 use App\Models\surat_pernyataan_pembetulan_data_tidak_merubah_lagi;
 
 
-Route::get('/', [DashboardController::class, 'landingpage'])->name('landingpage');
+/*
+|--------------------------------------------------------------------------
+| KUNCI SELURUH WEBSITE SAMPAI TAHUN 2027
+|--------------------------------------------------------------------------
+*/
+
+if (now('Asia/Jakarta')->year < 2027) {
+    Route::any('/{path?}', [SesiController::class, 'maintance'])
+        ->where('path', '.*')
+        ->name('website.ditutup');
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ROUTE WEBSITE LAMA
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', [DashboardController::class, 'landingpage'])
+    ->name('landingpage');
 
 Route::get('/login', [SesiController::class, 'index'])->name('login');
 Route::post('/login', [SesiController::class, 'login']);

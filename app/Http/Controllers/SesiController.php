@@ -21,10 +21,28 @@ class SesiController extends Controller
         return view('errorsrole');
     }
 
-    public function maintance()
-    {
-        return view('maintance');
+   public function maintance(Request $request)
+{
+    // Keluar paksa apabila pengguna masih memiliki sesi login.
+    if (Auth::check()) {
+        Auth::logout();
     }
+
+    // Hapus session lama agar dashboard tidak dapat dibuka dari history.
+    if ($request->hasSession()) {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
+
+    return response()
+        ->view('maintance', [], 503)
+        ->header(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, max-age=0'
+        )
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
+}
 
     public function login(Request $request)
     {
