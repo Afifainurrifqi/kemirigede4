@@ -531,7 +531,7 @@
                 alt="Logo SITAKRO"
             >
             <span class="brand-fallback" id="brandFallback" aria-hidden="true">S</span>
-            <span>SITAKRO WATES</span>
+            <span>SITAKRO KEMIRIGEDE</span>
         </div>
 
         <div class="lock-scene" aria-hidden="true">
@@ -588,7 +588,7 @@
         </button>
 
         <p class="footer-note">
-            &copy; <span id="currentYear"></span> SITAKRO Desa Wates
+            &copy; <span id="currentYear"></span> SITAKRO Desa KEMIRIGEDE
         </p>
     </main>
 
