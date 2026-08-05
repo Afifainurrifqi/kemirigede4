@@ -531,7 +531,7 @@
                 alt="Logo SITAKRO"
             >
             <span class="brand-fallback" id="brandFallback" aria-hidden="true">S</span>
-            <span>SITAKRO WATES</span>
+            <span>KEMIRIGEDE</span>
         </div>
 
         <div class="lock-scene" aria-hidden="true">
