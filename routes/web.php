@@ -114,11 +114,11 @@ use App\Models\surat_pernyataan_pembetulan_data_tidak_merubah_lagi;
 |--------------------------------------------------------------------------
 */
 
-if (now('Asia/Jakarta')->year < 2027) {
-    Route::any('/{path?}', [SesiController::class, 'maintance'])
-        ->where('path', '.*')
-        ->name('website.ditutup');
-}
+// if (now('Asia/Jakarta')->year < 2027) {
+//     Route::any('/{path?}', [SesiController::class, 'maintance'])
+//         ->where('path', '.*')
+//         ->name('website.ditutup');
+// }
 
 
 /*
